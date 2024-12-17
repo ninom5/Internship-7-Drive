@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drive.Presentation", "Drive.Presentation\Drive.Presentation.csproj", "{E3EAF56D-645F-43E0-AFC3-5CBF1B991C5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drive.Presentation", "Drive.Presentation\Drive.Presentation.csproj", "{E3EAF56D-645F-43E0-AFC3-5CBF1B991C5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drive.Domain", "Drive.Domain\Drive.Domain.csproj", "{0B99A4EA-201E-435D-AE4E-64C38396C33F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drive.Domain", "Drive.Domain\Drive.Domain.csproj", "{0B99A4EA-201E-435D-AE4E-64C38396C33F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drive.Data", "Drive.Data\Drive.Data.csproj", "{3BDA4A62-68B5-472A-B72E-498FB9C7D276}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drive.Data", "Drive.Data\Drive.Data.csproj", "{3BDA4A62-68B5-472A-B72E-498FB9C7D276}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -102,14 +102,7 @@ namespace Drive.Data.Entities
     {
         public DriveDbContext CreateDbContext(string[] args)
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddXmlFile("App.config")
-                .Build();
-
-            config.Providers
-                .First()
-                .TryGet("connectionStrings:add:Drive:connectionString", out var connectionString);
+            var connectionString = "Host=127.0.0.1;Port=5432;Database=Drive;User Id=postgres;Password=rootuser";
 
             var options = new DbContextOptionsBuilder<DriveDbContext>()
                 .UseNpgsql(connectionString)

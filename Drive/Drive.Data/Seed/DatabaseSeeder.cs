@@ -21,7 +21,7 @@ namespace Drive.Data.Seed
                         Surname = "Antic",
                         Email = "ante@gmail.com",
                         HashedPassword = Hash("ante123"),
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new User
                     {
@@ -30,7 +30,7 @@ namespace Drive.Data.Seed
                         Surname = "Matic",
                         Email = "mate@gmail.com",
                         HashedPassword = Hash("mate123"),
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new User
                     {
@@ -39,7 +39,7 @@ namespace Drive.Data.Seed
                         Surname = "Jones",
                         Email = "jonjones@gmail.com",
                         HashedPassword = Hash("jonjones123"),
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new User
                     {
@@ -48,7 +48,7 @@ namespace Drive.Data.Seed
                         Surname = "Curry",
                         Email = "curry@gmail.com",
                         HashedPassword = Hash("curry123"),
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     }
                 });
 
@@ -63,7 +63,7 @@ namespace Drive.Data.Seed
                         Name = "Root Folder",
                         OwnerId = 1,
                         ParentFolderId = null,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Folder
                     {
@@ -71,7 +71,7 @@ namespace Drive.Data.Seed
                         Name = "Root Folder",
                         OwnerId = 2,
                         ParentFolderId = null,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Folder
                     {
@@ -79,7 +79,7 @@ namespace Drive.Data.Seed
                         Name = "Root Folder",
                         OwnerId = 3,
                         ParentFolderId = null,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Folder
                     {
@@ -87,7 +87,7 @@ namespace Drive.Data.Seed
                         Name = "Root Folder",
                         OwnerId = 4,
                         ParentFolderId = null,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Folder
                     {
@@ -95,7 +95,7 @@ namespace Drive.Data.Seed
                         Name = "Projects",
                         OwnerId = 1,
                         ParentFolderId = 1,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Folder
                     {
@@ -103,7 +103,7 @@ namespace Drive.Data.Seed
                         Name = "Database",
                         OwnerId = 1,
                         ParentFolderId = 5,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Folder
                     {
@@ -111,7 +111,7 @@ namespace Drive.Data.Seed
                         Name = "College",
                         OwnerId = 1,
                         ParentFolderId = 1,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Folder
                     {
@@ -119,7 +119,7 @@ namespace Drive.Data.Seed
                         Name = "FESB",
                         OwnerId = 2,
                         ParentFolderId = 2,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Folder
                     {
@@ -127,7 +127,7 @@ namespace Drive.Data.Seed
                         Name = "Training",
                         OwnerId = 3,
                         ParentFolderId = 3,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Folder
                     {
@@ -135,7 +135,7 @@ namespace Drive.Data.Seed
                         Name = "Basketball Training",
                         OwnerId = 4,
                         ParentFolderId = 4,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     }
                 });
 
@@ -150,7 +150,7 @@ namespace Drive.Data.Seed
                         Content = "insert into Users(id) Values(1)",
                         FolderId = 1,
                         OwnerId = 1,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -159,7 +159,7 @@ namespace Drive.Data.Seed
                         Content = "public static class{\nint n = 1;\n}",
                         FolderId = 5,
                         OwnerId = 1,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -168,7 +168,7 @@ namespace Drive.Data.Seed
                         Content = "Create table",
                         FolderId = 6,
                         OwnerId = 1,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -177,7 +177,7 @@ namespace Drive.Data.Seed
                         Content = "Create table",
                         FolderId = 6,
                         OwnerId = 1,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -186,7 +186,7 @@ namespace Drive.Data.Seed
                         Content = "Bubble sort",
                         FolderId = 7,
                         OwnerId = 1,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -195,7 +195,7 @@ namespace Drive.Data.Seed
                         Content = "tree node",
                         FolderId = 8,
                         OwnerId = 2,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -204,7 +204,7 @@ namespace Drive.Data.Seed
                         Content = "Bench 3x15 - 100kg\n Deadlifts 2x10",
                         FolderId = 9,
                         OwnerId = 3,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -213,7 +213,7 @@ namespace Drive.Data.Seed
                         Content = "30min",
                         FolderId = 9,
                         OwnerId = 3,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     }
                 });
 
@@ -228,7 +228,7 @@ namespace Drive.Data.Seed
                         ItemId = 5,
                         SharedWithId = 2,
                         SharedById = 1,
-                        SharedAt = DateTime.Now
+                        SharedAt = DateTime.UtcNow
                     },
                     new SharedItem
                     {
@@ -237,7 +237,7 @@ namespace Drive.Data.Seed
                         ItemId = 3,
                         SharedWithId = 2,
                         SharedById = 1,
-                        SharedAt = DateTime.Now
+                        SharedAt = DateTime.UtcNow
                     }
                 });
 
@@ -251,7 +251,7 @@ namespace Drive.Data.Seed
                         FileId = 1,
                         UserId = 1,
                         Content = "lose",
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Comment
                     {
@@ -259,7 +259,7 @@ namespace Drive.Data.Seed
                         FileId = 3,
                         UserId = 2,
                         Content = "A?",
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     }
                 });
         }
