@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Drive.Data.Enums
 {
-    enum DataType
+    public enum DataType
     {
         Folder,
         File
