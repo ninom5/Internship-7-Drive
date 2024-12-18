@@ -14,7 +14,7 @@ namespace Drive.Presentation.Factories
         {
             return menuType switch
             {
-                "Main Menu" => new MainMenu(),
+                "MainMenu" => new MainMenu(),
             };
         }
     }

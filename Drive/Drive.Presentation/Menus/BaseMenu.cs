@@ -19,9 +19,9 @@ namespace Drive.Presentation.Menus
             Console.Clear();
             Console.WriteLine($"------------{Title}----------");
 
-            for (int i = 1; i <= Options.Count; i++)
+            for (int i = 0; i < Options.Count; i++)
             {
-                Console.WriteLine($"{i}. {Options[i].OptionText}");
+                Console.WriteLine($"{i + 1}. {Options[i].OptionText}");
             }
         }
 
