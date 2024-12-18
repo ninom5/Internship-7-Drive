@@ -63,8 +63,12 @@ namespace Drive.Presentation.Reader
             return true;
         }
 
-        public static string ?CheckPassword(string password, Func<string, bool> ?validate = null, string message = "Ne ispravan unos")
+        public static string ?CheckPassword(string prompt, Func<string, bool> ?validate = null, string message = "Ne ispravan unos")
         {
+            Console.WriteLine(prompt);
+            var password = Console.ReadLine();
+
+
             if(string.IsNullOrEmpty(password) && validate != null && !validate(password))
                 return null;
 
