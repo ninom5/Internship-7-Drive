@@ -1,11 +1,15 @@
-﻿public class Program
+﻿using Drive.Presentation.Interfaces;
+using Drive.Presentation.Factories;
+public class Program
 {
     public static void Main()
     {
-        OpenMainMenu();
-    }
-    public static void OpenMainMenu()
-    {
+        IMenu mainMenu = MenuFactory.CreateMenu("MainMenu");
 
+        while(true)
+        {
+            mainMenu.Display();
+            mainMenu.HandleInput();
+        }
     }
 }
