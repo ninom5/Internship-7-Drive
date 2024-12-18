@@ -1,20 +1,21 @@
-﻿using Drive.Presentation.Interfaces;
+﻿using Drive.Domain.Interfaces;
+using Drive.Presentation.Interfaces;
 using Drive.Presentation.Menus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Drive.Presentation.Factories
 {
     public static class MenuFactory
     {
+        private static IUserService _userService;
+        public static void Initialize(IUserService userService)
+        {
+            _userService = userService;
+        }
         public static IMenu CreateMenu(string menuType)
         {
             return menuType switch
             {
-                "MainMenu" => new MainMenu(),
+                "MainMenu" => new MainMenu(_userService),
             };
         }
     }
