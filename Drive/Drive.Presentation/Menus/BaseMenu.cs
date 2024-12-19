@@ -16,8 +16,9 @@ namespace Drive.Presentation.Menus
 
         public virtual void Display()
         {
+            Thread.Sleep(1500);
             Console.Clear();
-            Console.WriteLine($"------------{Title}----------");
+            Console.WriteLine($"------------{Title}------------");
 
             for (int i = 0; i < Options.Count; i++)
             {

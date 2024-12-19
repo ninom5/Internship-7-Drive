@@ -19,8 +19,8 @@ namespace Drive.Presentation.Actions
         }
         public void Execute() 
         {
-            Console.WriteLine("Unesite podatke za registraciju");
-            Console.WriteLine("Za odustajanje i povratak na prethodni meni unesite praznu liniju");
+            Console.Clear();
+            Console.WriteLine("Unesite podatke za registraciju \nZa odustajanje i povratak na prethodni meni unesite praznu liniju");
 
             string ?name = ReadInput.ReadString("Unesite ime", input => !string.IsNullOrEmpty(input), "Ime ne moze biti prazno. Povratak na prethodni meni...");
             if (name == null) return;

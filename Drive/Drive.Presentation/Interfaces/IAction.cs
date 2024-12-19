@@ -1,6 +1,4 @@
-﻿
-
-namespace Drive.Presentation.Interfaces
+﻿namespace Drive.Presentation.Interfaces
 {
     public interface IAction
     {

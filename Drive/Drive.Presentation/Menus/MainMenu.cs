@@ -12,7 +12,7 @@ namespace Drive.Presentation.Menus
             _userService = userService;
 
             Options.Add(("Registracija novog korisnika", new RegisterUserAction(_userService)));
-            Options.Add(("Prijava korisnika", new LoginAction()));
+            Options.Add(("Prijava korisnika", new LoginAction(_userService)));
             Options.Add(("Izlaz iz aplikacije", new ExitAction()));
         }
     }
