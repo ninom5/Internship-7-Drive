@@ -1,6 +1,4 @@
-﻿
-
-namespace Drive.Data.Entities.Models
+﻿namespace Drive.Data.Entities.Models
 {
     public class File
     {

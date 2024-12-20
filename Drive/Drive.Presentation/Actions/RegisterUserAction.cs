@@ -1,5 +1,4 @@
-﻿
-using Drive.Domain.Enums;
+﻿using Drive.Domain.Enums;
 using Drive.Domain.Interfaces;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Reader;

@@ -1,5 +1,4 @@
-﻿
-namespace Drive.Presentation.Utilities
+﻿namespace Drive.Presentation.Utilities
 {
     public static class Captcha
     {

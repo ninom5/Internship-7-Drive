@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Drive.Data.Entities.Models
+﻿namespace Drive.Data.Entities.Models
 {
     public class Comment
     {

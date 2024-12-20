@@ -2,9 +2,6 @@
 using Drive.Data.Entities.Models;
 using Drive.Domain.Enums;
 using Drive.Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
 
 namespace Drive.Domain.Services
 {

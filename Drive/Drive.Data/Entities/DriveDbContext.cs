@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Drive.Data.Seed;
-using Microsoft.Extensions.Configuration;
 
 namespace Drive.Data.Entities
 {
