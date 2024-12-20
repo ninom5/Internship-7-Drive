@@ -7,11 +7,11 @@ namespace Drive.Domain.Services
 {
     public class UserService : IUserService
     {
-        private readonly DriveDbContext _context;
+        private readonly IUserRepository _userRepository;
 
-        public UserService(DriveDbContext context)
+        public UserService(IUserRepository userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
 
 
@@ -29,8 +29,7 @@ namespace Drive.Domain.Services
                     CreatedAt = DateTime.UtcNow
                 };
 
-                _context.Users.Add(newUser);
-                _context.SaveChanges();
+                _userRepository.Add(newUser);
 
                 return Status.Success;
             }
@@ -41,7 +40,7 @@ namespace Drive.Domain.Services
         }
         public bool EmailExists(string email)
         {
-            return _context.Users.Any(u => u.Email == email);
+            return _userRepository.EmailExists(email);
         }
 
         public bool PasswordsMatch(string email, byte[] password)
@@ -55,7 +54,7 @@ namespace Drive.Domain.Services
         }
         public User ?GetUser(string email)
         {
-            return _context.Users.FirstOrDefault(u => u.Email == email);
+            return _userRepository.GetUser(email);
         }
     }
 }

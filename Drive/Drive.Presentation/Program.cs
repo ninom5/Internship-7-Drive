@@ -3,6 +3,7 @@ using Drive.Presentation.Factories;
 using Drive.Data.Entities;
 using Drive.Domain.Services;
 using Microsoft.EntityFrameworkCore;
+using Drive.Domain.Repositories;
 public class Program
 {
     public static void Main()
@@ -14,8 +15,11 @@ public class Program
            .Options;
         var dbContext = new DriveDbContext(options);
 
-        var userService = new UserService(dbContext);
+        var userRepository = new UserRepository(dbContext);
 
+        var userService = new UserService(userRepository);
+
+        
         MenuFactory.Initialize(userService);
 
         IMenu mainMenu = MenuFactory.CreateMenu("MainMenu");
