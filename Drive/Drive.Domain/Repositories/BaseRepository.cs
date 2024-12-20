@@ -1,8 +1,9 @@
 ﻿using Drive.Data.Entities;
+using Drive.Domain.Enums;
 
 namespace Drive.Domain.Repositories
 {
-    public abstract class BaseRepository
+    public abstract class BaseRepository<T> where T : class
     {
         protected readonly DriveDbContext _dbContext;
 
@@ -10,5 +11,13 @@ namespace Drive.Domain.Repositories
         {
             _dbContext = dbContext;
         }
+
+        //public Status Add(T entity)
+        //{
+        //    _dbContext.Set<T>().Add(entity);
+        //    _dbContext.SaveChanges();
+
+        //    return Status.Success;
+        //}
     }
 }

@@ -3,17 +3,16 @@ using Drive.Data.Entities.Models;
 
 namespace Drive.Domain.Repositories
 {
-    public class UserRepository : BaseRepository
+    public class UserRepository : BaseRepository<User>
     {
         public UserRepository(DriveDbContext dbContext) : base(dbContext) 
         {
         }
-        public (List<Folder>, List<Drive.Data.Entities.Models.File>) GetUserFiles(User user)
+        
+        public void Add(User user)
         {
-            var folders = user.Folders.ToList();
-            var files = user.Files.ToList();
-
-            return (folders, files);
+            _dbContext.Users.Add(user); 
+            _dbContext.SaveChanges();
         }
     }
 }
