@@ -19,7 +19,15 @@ namespace Drive.Domain.Repositories
         {
             return _dbContext.Users.Any(u => u.Email == email);
         }
-
+        public IEnumerable<T> GetFoldersOrFiles<T>(User user)
+        {
+            if(typeof(T) == typeof(Folder))
+            {
+                return _dbContext.Folders.Where(u => u.OwnerId == user.Id).Cast<T>().ToList();
+            }
+            
+            return _dbContext.Files.Where(f => f.OwnerId ==  user.Id).Cast<T>().ToList();
+        }
         public User? GetUser(string email)
         {
             return _dbContext.Users.FirstOrDefault(u => u.Email == email);

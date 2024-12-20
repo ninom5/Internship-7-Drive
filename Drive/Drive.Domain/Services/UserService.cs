@@ -52,9 +52,13 @@ namespace Drive.Domain.Services
 
             return user.HashedPassword.SequenceEqual(password);
         }
-        public User ?GetUser(string email)
+        public User? GetUser(string email)
         {
             return _userRepository.GetUser(email);
+        }
+        public IEnumerable<T> GetFoldersOrFiles<T>(User user)
+        {
+            return _userRepository.GetFoldersOrFiles<T>(user);
         }
     }
 }

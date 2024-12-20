@@ -7,5 +7,6 @@ namespace Drive.Domain.Interfaces
         void Add(User user);
         bool EmailExists(string email);
         User? GetUser(string email);
+        IEnumerable<T> GetFoldersOrFiles<T>(User user);
     }
 }

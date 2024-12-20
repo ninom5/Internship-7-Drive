@@ -9,5 +9,6 @@ namespace Drive.Domain.Interfaces
         Status Create(string name, string surname, string email, string password, byte[] hashedPassword);
         bool PasswordsMatch(string email, byte[] password);
         User ?GetUser(string email);
+        IEnumerable<T> GetFoldersOrFiles<T>(User user);
     }
 }
