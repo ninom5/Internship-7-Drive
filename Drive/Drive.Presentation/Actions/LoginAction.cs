@@ -1,5 +1,6 @@
 ﻿using Drive.Domain.Interfaces;
 using Drive.Presentation.Interfaces;
+using Drive.Presentation.Reader;
 
 
 namespace Drive.Presentation.Actions
@@ -28,8 +29,19 @@ namespace Drive.Presentation.Actions
                 Console.WriteLine("Korisnik s unesenim mailom nije registriran"); 
             }
 
-            Console.WriteLine("Unesite lozinku");
+            int i = 3;
+            while(!ReadInput.CheckUserPassword(userEmail, _userService))
+            {
+                Console.WriteLine($"Unesena sifra nije ispravna imate jos {i--} pokusaja");
+                if(i == -1)
+                {
+                    Console.WriteLine("Povratak na glavni menu...");
+                    return;
+                }
+            }
 
+            Console.WriteLine("Uspjesno ste prijavljeni\n Preusmjeravanje na vaš izbornik...");
+            Thread.Sleep(1000);
         }
     }
 }

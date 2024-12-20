@@ -7,5 +7,6 @@ namespace Drive.Domain.Interfaces
     {
         bool EmailExists(string email);
         Status Create(string name, string surname, string email, string password, byte[] hashedPassword);
+        bool PasswordsMatch(string email, byte[] password);
     }
 }

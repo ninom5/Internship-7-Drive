@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
+﻿using Drive.Domain.Interfaces;
+using Drive.Domain.Services;
+using Drive.Presentation.Utilities;
 
 namespace Drive.Presentation.Reader
 {
@@ -63,7 +60,7 @@ namespace Drive.Presentation.Reader
             return true;
         }
 
-        public static string ?CheckPassword(string prompt, Func<string, bool> ?validate = null, string message = "Ne ispravan unos")
+        public static string ?RegisterPassword(string prompt, Func<string, bool> ?validate = null, string message = "Ne ispravan unos")
         {
             Console.WriteLine(prompt);
             var password = Console.ReadLine();
@@ -90,6 +87,19 @@ namespace Drive.Presentation.Reader
                 Console.WriteLine("Lozinke se ne podudaraju, pokušajte ponovno; za odustajanje ostavite prazno");
             }
 
+        }
+
+        public static bool CheckUserPassword(string email, IUserService userService)
+        {
+            Console.WriteLine("Unesite vasu lozinku: ");
+            var password = Console.ReadLine();
+
+            if(string.IsNullOrEmpty(password) )
+                return false;
+
+            var hashedPassword = Hash.HashText(password);
+           
+            return userService.PasswordsMatch(email, hashedPassword);            
         }
 
         public static bool ConfirmAction(string prompt)

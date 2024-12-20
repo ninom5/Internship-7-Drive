@@ -17,10 +17,6 @@ namespace Drive.Domain.Services
             _context = context;
         }
 
-        public bool EmailExists(string email)
-        {
-            return _context.Users.Any(u => u.Email == email);
-        }
 
         public Status Create(string name, string surname, string email, string password, byte[] hashedPassword)
         {
@@ -46,6 +42,22 @@ namespace Drive.Domain.Services
                 Console.WriteLine($"Error: {ex.Message}");
                 return Status.Failed;
             }
+        }
+        public bool EmailExists(string email)
+        {
+            return _context.Users.Any(u => u.Email == email);
+        }
+
+        public bool PasswordsMatch(string email, byte[] password)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                Console.WriteLine("Pogreska");
+                return false;
+            }
+
+            return user.HashedPassword == password;
         }
         //public User GetData()
         //{

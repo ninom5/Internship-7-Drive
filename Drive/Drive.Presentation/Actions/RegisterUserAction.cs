@@ -37,7 +37,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            string ?password = ReadInput.CheckPassword("Unesite sifru", input => !string.IsNullOrEmpty(input), "Lozinka ne moze biti prazna. Povratak...");
+            string ?password = ReadInput.RegisterPassword("Unesite sifru", input => !string.IsNullOrEmpty(input), "Lozinka ne moze biti prazna. Povratak...");
             if (password == null) return;
 
             string captcha = Captcha.GenerateCaptcha();
