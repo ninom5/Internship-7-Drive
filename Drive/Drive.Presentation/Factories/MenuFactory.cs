@@ -1,4 +1,5 @@
-﻿using Drive.Domain.Interfaces;
+﻿using Drive.Data.Entities.Models;
+using Drive.Domain.Interfaces;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Menus;
 
@@ -17,6 +18,10 @@ namespace Drive.Presentation.Factories
             {
                 "MainMenu" => new MainMenu(_userService),
             };
+        }
+        public static IMenu CreateLoginMenu(User user)
+        {
+            return new LoginMenu(_userService, user);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Drive.Domain.Interfaces;
 using Drive.Presentation.Interfaces;
+using Drive.Presentation.Menus;
 using Drive.Presentation.Reader;
 
 
@@ -30,18 +31,24 @@ namespace Drive.Presentation.Actions
             }
 
             int i = 3;
-            while(!ReadInput.CheckUserPassword(userEmail, _userService))
+            if(!ReadInput.CheckUserPassword(userEmail, _userService))
             {
-                Console.WriteLine($"Unesena sifra nije ispravna imate jos {i--} pokusaja");
-                if(i == -1)
-                {
-                    Console.WriteLine("Povratak na glavni menu...");
-                    return;
-                }
+                Console.WriteLine($"Unesena sifra nije ispravna. Povratak na glavni izbornik...");
+                Thread.Sleep(30000);
+                return;
             }
 
             Console.WriteLine("Uspjesno ste prijavljeni\n Preusmjeravanje na vaš izbornik...");
-            Thread.Sleep(1000);
+
+            var user = _userService.GetUser(userEmail);
+            if(user == null)
+            {
+                Console.WriteLine("Pogreska");
+                return;
+            }
+
+            var loginMenu = new LoginMenu(_userService, user);
+            loginMenu.Execute();
         }
     }
 }

@@ -1,0 +1,27 @@
+﻿using Drive.Data.Entities.Models;
+using Drive.Domain.Interfaces;
+using Drive.Presentation.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Drive.Presentation.Actions
+{
+    public class UserProfileOptionsAction : IAction
+    {
+        private readonly IUserService _userService;
+        private readonly User _user;
+        public UserProfileOptionsAction(IUserService userService, User user) 
+        {
+            _userService = userService;
+            _user = user;
+        }
+
+        public void Execute()
+        {
+            Console.Clear();
+        }
+    }
+}

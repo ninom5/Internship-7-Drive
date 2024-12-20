@@ -39,7 +39,6 @@ namespace Drive.Domain.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
                 return Status.Failed;
             }
         }
@@ -50,18 +49,16 @@ namespace Drive.Domain.Services
 
         public bool PasswordsMatch(string email, byte[] password)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == email);
+            var user = GetUser(email);
+
             if (user == null)
-            {
-                Console.WriteLine("Pogreska");
                 return false;
-            }
 
-            return user.HashedPassword == password;
+            return user.HashedPassword.SequenceEqual(password);
         }
-        //public User GetData()
-        //{
-
-        //}
+        public User ?GetUser(string email)
+        {
+            return _context.Users.FirstOrDefault(u => u.Email == email);
+        }
     }
 }
