@@ -39,15 +39,8 @@ namespace Drive.Presentation.Actions
 
                 Console.WriteLine();
             }
-
-            Console.Write("Unesite komandu za upravljanje datotekama i fileovima. Za pomoc unesite ");
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("help");
-
-            Console.ResetColor();
-
             Console.ReadKey();
+            //CommandAction.CommandMode(_user, );
         }
     }
 }
