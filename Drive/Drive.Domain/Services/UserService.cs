@@ -1,11 +1,10 @@
-﻿using Drive.Data.Entities;
-using Drive.Data.Entities.Models;
+﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Enums;
 using Drive.Domain.Interfaces;
 
 namespace Drive.Domain.Services
 {
-    public class UserService : IUserService
+    public class UserService : IUserService 
     {
         private readonly IUserRepository _userRepository;
 

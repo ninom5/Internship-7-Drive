@@ -1,5 +1,7 @@
 ﻿using Drive.Domain.Enums;
 using Drive.Domain.Interfaces;
+using Drive.Domain.Repositories;
+using Drive.Domain.Services;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
@@ -10,9 +12,11 @@ namespace Drive.Presentation.Actions
     public class RegisterUserAction : IAction
     {
         private readonly IUserService _userService;
-        public RegisterUserAction(IUserService userService)
+        private readonly IFolderService _folderService;
+        public RegisterUserAction(IUserService userService, IFolderService folderService)
         {
             _userService = userService;
+            _folderService = folderService;
         }
         public void Execute() 
         {
@@ -45,12 +49,28 @@ namespace Drive.Presentation.Actions
 
             byte[] hashedPassword = Hash.HashText(password);
 
-            Status status = _userService.Create(name, surname, email, password, hashedPassword);
+            Status userCreatingStatus = _userService.Create(name, surname, email, password, hashedPassword);
 
-            if (status == Status.Success)
-                Console.WriteLine("Korisnik uspjesno registriran");
-            else
-                Console.WriteLine("Greska prilikom registracije");
+            if (userCreatingStatus != Status.Success)
+            {
+                Console.WriteLine("pogreska prilikom registracije");
+                return;
+            }
+
+            Console.WriteLine("Korisnik uspjesno registriran");
+
+            var user = _userService.GetUser(email);
+            if(user == null) return;    
+
+            var rootFolderStatus = _folderService.CreateFolder("Root Folder", user, null, null);
+
+            if(rootFolderStatus != Status.Success)
+            {
+                Console.WriteLine("Pogreska prilikom dodavanja root foldera");
+                return;
+            }
+
+            Console.WriteLine("Root folder uspjesno dodan");
         }
     }
 }

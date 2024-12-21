@@ -9,9 +9,11 @@ namespace Drive.Presentation.Actions
     public class LoginAction : IAction
     {
         private readonly IUserService _userService;
-        public LoginAction(IUserService userService)
+        private readonly IFolderService _folderService;
+        public LoginAction(IUserService userService, IFolderService folderService)
         {
             _userService = userService;
+            _folderService = folderService;
         }
         public void Execute()
         {
@@ -48,7 +50,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var loginMenu = new LoginMenu(_userService, user);
+            var loginMenu = new LoginMenu(_userService, user, _folderService);
             loginMenu.Execute();
         }
     }
