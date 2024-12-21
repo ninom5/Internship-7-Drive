@@ -7,11 +7,13 @@ namespace Drive.Presentation.Actions
     public class UserDiskAction : IAction
     {
         private readonly IUserService _userService;
+        private readonly IFolderService _folderService;
         private readonly User _user;
 
-        public UserDiskAction(IUserService userService, User user)
+        public UserDiskAction(IUserService userService, IFolderService folderService, User user)
         {
             _userService = userService;
+            _folderService = folderService;
             _user = user;
         }
 
@@ -40,7 +42,15 @@ namespace Drive.Presentation.Actions
                 Console.WriteLine();
             }
             Console.ReadKey();
-            //CommandAction.CommandMode(_user, );
+
+            var rootFolder = userFolders.Where(f => f.Name == "Root Folder").FirstOrDefault();
+            if (rootFolder == null)
+            {
+                Console.WriteLine("Pogreska pri pronalasku root foldera");
+                return;
+            }
+
+            CommandAction.CommandMode(_user, _folderService, rootFolder);
         }
     }
 }

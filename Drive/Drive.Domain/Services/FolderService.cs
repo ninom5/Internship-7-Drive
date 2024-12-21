@@ -12,7 +12,7 @@ namespace Drive.Domain.Services
             _folderRepository = folderRepository;
         }
 
-        public Status CreateFolder(string folderName, User user, int? currenteFolderId, Folder? parentFolder)
+        public Status CreateFolder(string folderName, User user, Folder? parentFolder)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace Drive.Domain.Services
                 {
                     Name = folderName,
                     OwnerId = user.Id,
-                    ParentFolderId = currenteFolderId,
+                    ParentFolderId = parentFolder?.Id,
                     CreatedAt = DateTime.UtcNow,
                     LastModifiedAt = DateTime.UtcNow,
                     Owner = user,

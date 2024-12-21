@@ -19,7 +19,7 @@ namespace Drive.Presentation.Menus
 
             Console.Title = $"Dobro dosli, {user.Name}";
 
-            Options.Add(("Moj disk", new UserDiskAction(_userService, _loggedUser)));
+            Options.Add(("Moj disk", new UserDiskAction(_userService, _folderService, _loggedUser)));
             Options.Add(("Dijeljeno sa mnom", new UserSharedFilesAction(_userService, _loggedUser)));
             Options.Add(("Postavke Profila", new UserProfileOptionsAction(_userService, _loggedUser)));
             Options.Add(("Odjava iz profila", new LogOutAction(_userService, _folderService)));

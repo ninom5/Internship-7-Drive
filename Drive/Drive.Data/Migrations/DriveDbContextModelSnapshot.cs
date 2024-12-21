@@ -59,7 +59,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 1,
                             Content = "lose",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3605),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3062),
                             FileId = 1,
                             UserId = 1
                         },
@@ -67,7 +67,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 2,
                             Content = "A?",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3607),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3064),
                             FileId = 3,
                             UserId = 2
                         });
@@ -114,7 +114,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 1,
                             Content = "insert into Users(id) Values(1)",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3559),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3017),
                             FolderId = 1,
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "insert.sql",
@@ -124,7 +124,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 2,
                             Content = "public static class{\nint n = 1;\n}",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3562),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3019),
                             FolderId = 5,
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Drive.cs",
@@ -134,7 +134,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 3,
                             Content = "Create table",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3564),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3021),
                             FolderId = 6,
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "FitnessCenter",
@@ -144,7 +144,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 4,
                             Content = "Create table",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3565),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3022),
                             FolderId = 6,
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Restaurant",
@@ -154,7 +154,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 5,
                             Content = "Bubble sort",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3566),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3023),
                             FolderId = 7,
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Algorithms",
@@ -164,7 +164,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 6,
                             Content = "tree node",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3568),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3025),
                             FolderId = 8,
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Strukture podataka",
@@ -174,7 +174,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 7,
                             Content = "Bench 3x15 - 100kg\n Deadlifts 2x10",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3569),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3026),
                             FolderId = 9,
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Training of strength",
@@ -184,7 +184,7 @@ namespace Drive.Data.Migrations
                         {
                             Id = 8,
                             Content = "30min",
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3570),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3027),
                             FolderId = 9,
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Cardio",
@@ -228,7 +228,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3518),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2983),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Root Folder",
                             OwnerId = 1
@@ -236,7 +236,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3521),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2985),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Root Folder",
                             OwnerId = 2
@@ -244,7 +244,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3522),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2986),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Root Folder",
                             OwnerId = 3
@@ -252,7 +252,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3523),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2988),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Root Folder",
                             OwnerId = 4
@@ -260,7 +260,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3525),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2989),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Projects",
                             OwnerId = 1,
@@ -269,7 +269,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3527),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2991),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Database",
                             OwnerId = 1,
@@ -278,7 +278,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3528),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2992),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "College",
                             OwnerId = 1,
@@ -287,7 +287,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3530),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2993),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "FESB",
                             OwnerId = 2,
@@ -296,7 +296,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3531),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2994),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Training",
                             OwnerId = 3,
@@ -305,7 +305,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3533),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2996),
                             LastModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Basketball Training",
                             OwnerId = 4,
@@ -336,16 +336,11 @@ namespace Drive.Data.Migrations
                     b.Property<int>("SharedWithId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("SharedById");
 
                     b.HasIndex("SharedWithId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("SharedItems");
 
@@ -355,7 +350,7 @@ namespace Drive.Data.Migrations
                             Id = 1,
                             ItemId = 5,
                             ItemType = 0,
-                            SharedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3589),
+                            SharedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3046),
                             SharedById = 1,
                             SharedWithId = 2
                         },
@@ -364,7 +359,7 @@ namespace Drive.Data.Migrations
                             Id = 2,
                             ItemId = 3,
                             ItemType = 1,
-                            SharedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3591),
+                            SharedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(3049),
                             SharedById = 1,
                             SharedWithId = 2
                         });
@@ -408,7 +403,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3414),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2923),
                             Email = "ante@gmail.com",
                             HashedPassword = new byte[] { 122, 89, 55, 159, 97, 165, 243, 126, 178, 86, 67, 235, 147, 97, 141, 112, 87, 128, 185, 121, 194, 211, 234, 95, 120, 103, 190, 181, 41, 26, 168, 254, 131, 161, 107, 172, 238, 129, 19, 114, 11, 151, 62, 190, 0, 194, 139, 130, 177, 212, 191, 8, 254, 115, 16, 56, 46, 192, 96, 254, 254, 53, 120, 167 },
                             Name = "Ante",
@@ -417,7 +412,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3428),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2936),
                             Email = "mate@gmail.com",
                             HashedPassword = new byte[] { 73, 113, 152, 34, 172, 33, 62, 225, 188, 192, 152, 87, 138, 5, 57, 222, 211, 30, 164, 62, 229, 147, 168, 225, 215, 53, 176, 134, 210, 18, 201, 129, 35, 204, 147, 183, 210, 138, 74, 198, 105, 168, 206, 94, 227, 3, 217, 24, 203, 199, 125, 245, 78, 87, 104, 28, 62, 131, 4, 143, 182, 89, 121, 19 },
                             Name = "Mate",
@@ -426,7 +421,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3437),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2945),
                             Email = "jonjones@gmail.com",
                             HashedPassword = new byte[] { 129, 57, 95, 117, 145, 114, 216, 10, 184, 63, 131, 92, 12, 83, 70, 101, 164, 212, 186, 141, 64, 64, 142, 63, 194, 180, 122, 230, 196, 113, 21, 112, 116, 90, 81, 205, 17, 249, 173, 14, 158, 220, 194, 37, 219, 176, 245, 84, 32, 148, 164, 218, 243, 201, 37, 56, 91, 178, 66, 185, 77, 138, 91, 56 },
                             Name = "Jon",
@@ -435,7 +430,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 12, 17, 20, 51, 24, 223, DateTimeKind.Utc).AddTicks(3445),
+                            CreatedAt = new DateTime(2024, 12, 21, 13, 43, 15, 940, DateTimeKind.Utc).AddTicks(2954),
                             Email = "curry@gmail.com",
                             HashedPassword = new byte[] { 79, 183, 97, 195, 214, 222, 118, 180, 185, 78, 163, 125, 171, 143, 196, 19, 31, 28, 159, 118, 86, 90, 67, 11, 109, 42, 179, 198, 74, 142, 193, 35, 239, 67, 167, 47, 132, 38, 4, 98, 61, 186, 13, 170, 224, 148, 72, 192, 64, 213, 127, 68, 33, 117, 208, 57, 159, 165, 215, 92, 65, 32, 245, 179 },
                             Name = "Steph",
@@ -471,7 +466,7 @@ namespace Drive.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Drive.Data.Entities.Models.User", "Owner")
-                        .WithMany("Files")
+                        .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -484,7 +479,7 @@ namespace Drive.Data.Migrations
             modelBuilder.Entity("Drive.Data.Entities.Models.Folder", b =>
                 {
                     b.HasOne("Drive.Data.Entities.Models.User", "Owner")
-                        .WithMany("Folders")
+                        .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -513,10 +508,6 @@ namespace Drive.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Drive.Data.Entities.Models.User", null)
-                        .WithMany("SharedItems")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("SharedBy");
 
                     b.Navigation("SharedWith");
@@ -527,15 +518,6 @@ namespace Drive.Data.Migrations
                     b.Navigation("Files");
 
                     b.Navigation("Subfolders");
-                });
-
-            modelBuilder.Entity("Drive.Data.Entities.Models.User", b =>
-                {
-                    b.Navigation("Files");
-
-                    b.Navigation("Folders");
-
-                    b.Navigation("SharedItems");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,8 +9,5 @@
         public string? Password { get; set; }
         public byte[] HashedPassword { get; set; }
         public DateTime CreatedAt { get; set; }
-        public ICollection<Folder> Folders { get; set; }
-        public ICollection<File> Files { get; set; }
-        public ICollection<SharedItem> SharedItems { get; set; }
     }
 }

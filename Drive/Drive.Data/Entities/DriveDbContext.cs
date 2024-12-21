@@ -33,10 +33,7 @@ namespace Drive.Data.Entities
                 .HasKey(f => f.Id);
 
             modelBuilder.Entity<Folder>()
-                .HasOne(f => f.Owner)
-                .WithMany(u => u.Folders)
-                .HasForeignKey(f => f.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(f => f.Owner);
 
             modelBuilder.Entity<Folder>()
                 .HasOne(f => f.ParentFolder)
@@ -55,10 +52,7 @@ namespace Drive.Data.Entities
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Entities.Models.File>()
-                .HasOne(o => o.Owner)
-                .WithMany(o => o.Files)
-                .HasForeignKey(o => o.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(o => o.Owner);
 
 
             modelBuilder.Entity<SharedItem>()

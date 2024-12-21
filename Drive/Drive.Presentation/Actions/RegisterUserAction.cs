@@ -62,7 +62,7 @@ namespace Drive.Presentation.Actions
             var user = _userService.GetUser(email);
             if(user == null) return;    
 
-            var rootFolderStatus = _folderService.CreateFolder("Root Folder", user, null, null);
+            var rootFolderStatus = _folderService.CreateFolder("Root Folder", user, null);
 
             if(rootFolderStatus != Status.Success)
             {

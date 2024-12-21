@@ -7,6 +7,6 @@ namespace Drive.Domain.Interfaces
 {
     public interface IFolderService
     {
-        public Status CreateFolder(string folderName, User user, int? currenteFolderId, Folder? parentFolder);
+        public Status CreateFolder(string folderName, User user, Folder? parentFolder);
     }
 }
