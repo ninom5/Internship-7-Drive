@@ -16,6 +16,11 @@ namespace Drive.Domain.Repositories
             _dbContext.Folders.Add(folder);
             _dbContext.SaveChanges();
         }
+        public void RemoveFolder(Folder folder)
+        {
+            _dbContext.Folders.Remove(folder);
+            _dbContext.SaveChanges();
+        }
         public static Folder? GetFolder(IEnumerable<Folder> userFolders)
         {
             return userFolders.FirstOrDefault(f => f.Name == "Root Folder");

@@ -98,6 +98,55 @@ namespace Drive.Presentation.Actions
                     else
                         Console.WriteLine("Pogresna komanda. Za pomoc unesite help");
                     break;
+                case "izbrisi":
+                    if (parts[1] == "mapu")
+                    {
+                        string pattern = @"'([^']*)'";
+
+                        Match match = Regex.Match(parts[2], pattern);
+
+                        var folderToDelete = FolderRepository.GetFolder(userFolders, match.Groups[1].Value);
+                        if(folderToDelete == null)
+                        {
+                            Console.WriteLine("Nije pronaden zelejni folder");
+                            return;
+                        }    
+
+                        var deletingStatus = _folderService.DeleteFolder(folderToDelete);
+                        if(deletingStatus != Domain.Enums.Status.Success)
+                        {
+                            Console.WriteLine("pogreska prilikom brisanja foldera");
+                            return;
+                        }
+
+                        Console.WriteLine($"Folder: {folderToDelete.Name} s id: {folderToDelete.Id} uspjesno izbrisan");
+
+                    }
+                    else if (parts[1] == "datoteku") //prominit na file sad je na folder!!
+                    {
+                        string pattern = @"'([^']*)'";
+
+                        Match match = Regex.Match(parts[2], pattern);
+
+                        var fileToDelete = FolderRepository.GetFolder(userFolders, match.Groups[1].Value);
+                        if (fileToDelete == null)
+                        {
+                            Console.WriteLine("Nije pronaden zelejni folder");
+                            return;
+                        }
+
+                        var deletingStatus = _folderService.DeleteFolder(fileToDelete);
+                        if (deletingStatus != Domain.Enums.Status.Success)
+                        {
+                            Console.WriteLine("pogreska prilikom brisanja foldera");
+                            return;
+                        }
+
+                        Console.WriteLine($"File: {fileToDelete.Name} s id: {fileToDelete.Id} uspjesno izbrisan");
+                    }
+                    else
+                        Console.WriteLine("pogresna komanda. Za pomoc unesite help");
+                    break;
                 case "trenutni_direktorij":
                     Console.WriteLine($"Trenutno se nalazite u mapi: {currentFolder.Name}");
                     break;

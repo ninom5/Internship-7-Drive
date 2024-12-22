@@ -36,5 +36,17 @@ namespace Drive.Domain.Services
                 return Status.Failed;
             }
         }
+        public Status DeleteFolder(Folder folder)
+        {
+            try
+            {
+                _folderRepository.RemoveFolder(folder);
+                return Status.Success;
+            }
+            catch
+            {
+                return Status.Failed;
+            }
+        }
     }
 }
