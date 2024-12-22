@@ -39,12 +39,12 @@ namespace Drive.Presentation.Actions
                 if (command == "povratak")
                     break;
 
-                CheckCommand(command, user, _folderService, _fileService, userFolders);
+                CheckCommand(command, user, _folderService, _fileService, userFolders, _userService);
                 userFolders = _userService.GetFoldersOrFiles<Folder>(user);
             }
         }
 
-        private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders)
+        private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService)
         {
             Console.Clear();
 
@@ -104,25 +104,26 @@ namespace Drive.Presentation.Actions
                         string pattern = @"'([^']*)'";
 
                         Match match = Regex.Match(parts[2], pattern);
+                        if(!match.Success)
+                        {
+                            Console.WriteLine("ne ispravan unos");
+                            return;
+                        }
+
 
                         var folderToDelete = FolderRepository.GetFolder(userFolders, match.Groups[1].Value);
                         if(folderToDelete == null)
                         {
                             Console.WriteLine("Nije pronaden zelejni folder");
                             return;
-                        }    
-
-                        var deletingStatus = _folderService.DeleteFolder(folderToDelete);
-                        if(deletingStatus != Domain.Enums.Status.Success)
-                        {
-                            Console.WriteLine("pogreska prilikom brisanja foldera");
-                            return;
                         }
+
+                        DeleteFolderAndContents(folderToDelete, userFolders, _folderService, _fileService, _userService, user);
 
                         Console.WriteLine($"Folder: {folderToDelete.Name} s id: {folderToDelete.Id} uspjesno izbrisan");
 
                     }
-                    else if (parts[1] == "datoteku") //prominit na file sad je na folder!!
+                    else if (parts[1] == "datoteku") //prominit na file sad je na folder!! i brisanje svega unutar tog foldera !! dodat nemogucnost brisanja root foldera!!
                     {
                         string pattern = @"'([^']*)'";
 
@@ -202,5 +203,38 @@ namespace Drive.Presentation.Actions
 
             }
         }
+        private static void DeleteFolderAndContents(Folder folderToDelete, IEnumerable<Folder> allFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, User user)
+        {
+            var subFolders = allFolders.Where(f => f.ParentFolderId == folderToDelete.Id).ToList();
+
+            foreach (var subFolder in subFolders)
+                DeleteFolderAndContents(subFolder, allFolders, _folderService, _fileService, _userService, user);
+            
+            var filesInFolder = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user)
+                                           .Where(file => file.FolderId == folderToDelete.Id)
+                                           .ToList();
+
+            //foreach (var file in filesInFolder)
+            //{
+            //    var deleteFileStatus = _fileService.DeleteFile(file);
+            //    if (deleteFileStatus == Domain.Enums.Status.Success)
+            //    {
+            //        Console.WriteLine($"Uspješno izbrisana datoteka: {file.Name} u mapi: {folderToDelete.Name}");
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine($"Pogreška prilikom brisanja datoteke: {file.Name}");
+            //    }
+            //}
+
+            var deleteFolderStatus = _folderService.DeleteFolder(folderToDelete);
+            if (deleteFolderStatus != Domain.Enums.Status.Success)
+            {
+                Console.WriteLine($"Pogreška prilikom brisanja mape: {folderToDelete.Name}");
+            }
+                
+            Console.WriteLine($"Uspješno izbrisana mapa: {folderToDelete.Name}");
+        }
+
     }
 }
