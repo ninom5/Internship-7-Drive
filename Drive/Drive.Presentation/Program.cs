@@ -21,8 +21,11 @@ public class Program
 
         var folderRepository = new FolderRepository(dbContext);
         var folderService = new FolderService(folderRepository);
-        
-        MenuFactory.Initialize(userService, folderService);
+
+        var fileRepository = new FileRepository(dbContext);
+        var fileService = new FileService(fileRepository);
+
+        MenuFactory.Initialize(userService, folderService, fileService);
 
         IMenu mainMenu = MenuFactory.CreateMenu("MainMenu");
 

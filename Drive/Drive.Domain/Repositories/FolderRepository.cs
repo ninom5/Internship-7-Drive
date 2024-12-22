@@ -16,5 +16,13 @@ namespace Drive.Domain.Repositories
             _dbContext.Folders.Add(folder);
             _dbContext.SaveChanges();
         }
+        public static Folder? GetFolder(IEnumerable<Folder> userFolders)
+        {
+            return userFolders.FirstOrDefault(f => f.Name == "Root Folder");
+        }
+        public static Folder? GetFolder(IEnumerable<Folder> userFolders, string name)
+        {
+            return userFolders.FirstOrDefault(f => f.Name == name);
+        }
     }
 }

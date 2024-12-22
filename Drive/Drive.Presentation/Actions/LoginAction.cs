@@ -1,4 +1,5 @@
 ﻿using Drive.Domain.Interfaces;
+using Drive.Domain.Services;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Menus;
 using Drive.Presentation.Reader;
@@ -10,10 +11,12 @@ namespace Drive.Presentation.Actions
     {
         private readonly IUserService _userService;
         private readonly IFolderService _folderService;
-        public LoginAction(IUserService userService, IFolderService folderService)
+        private readonly IFileService _fileService;
+        public LoginAction(IUserService userService, IFolderService folderService, IFileService fileService)
         {
             _userService = userService;
             _folderService = folderService;
+            _fileService = fileService;
         }
         public void Execute()
         {
@@ -50,7 +53,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var loginMenu = new LoginMenu(_userService, user, _folderService);
+            var loginMenu = new LoginMenu(_userService, user, _folderService, _fileService);
             loginMenu.Execute();
         }
     }

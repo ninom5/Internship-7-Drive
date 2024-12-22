@@ -3,13 +3,11 @@ namespace Drive.Presentation.Menus.SubMenu
 {
     public static class HelpMenu
     {
-        private static void DisplayHelp()
+        public static void DisplayHelp()
         {
-            Console.WriteLine("\nDostupne komande:");
-            Console.WriteLine(" - napravi_mapu [ime_mape]: Kreira novu mapu.");
-            Console.WriteLine(" - napravi_file [ime_fajla]: Kreira novi fajl.");
-            Console.WriteLine(" - help: Prikazuje listu dostupnih komandi.");
-            Console.WriteLine(" - exit: Izlaz iz komandnog moda.");
+            Console.WriteLine("\nDostupne komande: \n - stvori mapu/datoteku 'ime mape/datoteku': Stvara novu mapu/datoteku. \n - uđi u mapu 'ime mape': Mijenja se working directory \n" +
+                " - uredi datoteku 'ime datoteke': Uredivanje datoteke \n - promjeni naziv mape/datoteke ‘ime mape/datoteke’ u ‘novo ime mape/datoteke’: Mijenja se naziv datoteke/mape \n" +
+                " - trenutni_direktorij: Prikaz imena trenutnog direktorija u kojem se nalazite  \n - povratak: Povratak na user menu i izlazak iz komandnog moda");
         }
     }
 }
