@@ -155,6 +155,28 @@ namespace Drive.Presentation.Actions
                     else
                         Console.WriteLine("pogresna komanda. Za pomoc unesite help");
                     break;
+                case "promijeni naziv":
+                    if (parts[2] == "mape")
+                    {
+                        string pattern = @"'([^']*)'";
+
+                        Match match = Regex.Match(parts[2], pattern);
+
+                        var nameOfFile = match.Groups[1].Value;
+                        var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == nameOfFile).FirstOrDefault();
+
+                        var newName = Console.ReadLine();
+                        if(string.IsNullOrEmpty(newName))
+                        {
+                            Console.WriteLine("Novo ime ne moze biti prazno. Povratak...");
+                            return;
+                        }
+
+                        file.Name = newName;
+                        _dbContext.SaveChanges();//rjesit sutra
+                    }
+                    break;
+
                 case "trenutni_direktorij":
                     Console.WriteLine($"Trenutno se nalazite u mapi: {currentFolder.Name}");
                     break;
