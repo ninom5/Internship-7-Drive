@@ -41,6 +41,8 @@ namespace Drive.Presentation.Actions
 
                 Console.WriteLine();
             }
+
+            Console.WriteLine("Za ulazak u komandni nacin pritisnite bilo koju tipku");
             Console.ReadKey();
 
             var rootFolder = userFolders.Where(f => f.Name == "Root Folder").FirstOrDefault();

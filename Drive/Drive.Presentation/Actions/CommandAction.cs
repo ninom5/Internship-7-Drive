@@ -3,6 +3,7 @@
 using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces;
 using Drive.Domain.Services;
+using System.Text.RegularExpressions;
 
 
 namespace Drive.Presentation.Actions
@@ -41,7 +42,11 @@ namespace Drive.Presentation.Actions
                 case "stvori":
                     if (parts[1] == "mapu")
                     {
-                        Create<Folder>(parts[2], parrentFolder, user, _folderService);
+                        string pattern = @"'([^']*)'";
+
+                        Match match = Regex.Match(parts[2], pattern);
+
+                        Create<Folder>(match.Groups[1].Value, parrentFolder, user, _folderService);
                     }
                     
                     return;
@@ -52,6 +57,13 @@ namespace Drive.Presentation.Actions
             if(typeof(T) == typeof(Folder))
             {
                 var creatingFolderStatus = _folderService.CreateFolder(name, user, parrentFolder);
+                if(creatingFolderStatus != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine("Pogreska prilikom kreiranja foldera");
+                    return;
+                }
+
+                Console.WriteLine($"Folder: {name} uspjesno kreiran unutar mape: {parrentFolder.Name}");
             }
         }
     }
