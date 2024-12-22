@@ -1,4 +1,5 @@
 ﻿using Drive.Data.Entities;
+using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces;
 
 
@@ -14,6 +15,15 @@ namespace Drive.Domain.Repositories
         {
             _dbContext.Add(file);
             _dbContext.SaveChanges();
+        }
+        public void Remove(Drive.Data.Entities.Models.File file)
+        {
+            _dbContext.Remove(file);
+            _dbContext.SaveChanges();
+        }
+        public Drive.Data.Entities.Models.File ?GetFile(IEnumerable<Drive.Data.Entities.Models.File> userFiles, string name)
+        {
+            return userFiles.Where(f => f.Name == name).FirstOrDefault();
         }
     }
 }

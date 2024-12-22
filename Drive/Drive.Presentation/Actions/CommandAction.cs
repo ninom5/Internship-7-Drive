@@ -103,13 +103,18 @@ namespace Drive.Presentation.Actions
                     {
                         string pattern = @"'([^']*)'";
 
-                        Match match = Regex.Match(parts[2], pattern);
+                        Match match = Regex.Match(parts[2], pattern); //kad je vise rici odvojeno razmankon popravit
                         if(!match.Success)
                         {
                             Console.WriteLine("ne ispravan unos");
                             return;
                         }
 
+                        if(match.Groups[1].Value == "Root Folder")
+                        {
+                            Console.WriteLine("Ne mozete izbrisati root folder");
+                            break;
+                        }
 
                         var folderToDelete = FolderRepository.GetFolder(userFolders, match.Groups[1].Value);
                         if(folderToDelete == null)
@@ -123,20 +128,22 @@ namespace Drive.Presentation.Actions
                         Console.WriteLine($"Folder: {folderToDelete.Name} s id: {folderToDelete.Id} uspjesno izbrisan");
 
                     }
-                    else if (parts[1] == "datoteku") //prominit na file sad je na folder!! i brisanje svega unutar tog foldera !! dodat nemogucnost brisanja root foldera!!
+                    else if (parts[1] == "datoteku")
                     {
                         string pattern = @"'([^']*)'";
 
                         Match match = Regex.Match(parts[2], pattern);
 
-                        var fileToDelete = FolderRepository.GetFolder(userFolders, match.Groups[1].Value);
-                        if (fileToDelete == null)
+                        var nameOfFile = match.Groups[1].Value;
+
+                        var fileToDelete = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == nameOfFile).FirstOrDefault();
+                        if(fileToDelete == null)
                         {
-                            Console.WriteLine("Nije pronaden zelejni folder");
+                            Console.WriteLine("File nije pronaden");
                             return;
                         }
 
-                        var deletingStatus = _folderService.DeleteFolder(fileToDelete);
+                        var deletingStatus = _fileService.DeleteFile(fileToDelete);
                         if (deletingStatus != Domain.Enums.Status.Success)
                         {
                             Console.WriteLine("pogreska prilikom brisanja foldera");
@@ -214,18 +221,17 @@ namespace Drive.Presentation.Actions
                                            .Where(file => file.FolderId == folderToDelete.Id)
                                            .ToList();
 
-            //foreach (var file in filesInFolder)
-            //{
-            //    var deleteFileStatus = _fileService.DeleteFile(file);
-            //    if (deleteFileStatus == Domain.Enums.Status.Success)
-            //    {
-            //        Console.WriteLine($"Uspješno izbrisana datoteka: {file.Name} u mapi: {folderToDelete.Name}");
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine($"Pogreška prilikom brisanja datoteke: {file.Name}");
-            //    }
-            //}
+            foreach (var file in filesInFolder)
+            {
+                var deleteFileStatus = _fileService.DeleteFile(file);
+                if (deleteFileStatus != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine($"Pogreška prilikom brisanja datoteke: {file.Name}");
+                    return;
+                }
+                    
+                Console.WriteLine($"Uspješno izbrisana datoteka: {file.Name} u mapi: {folderToDelete.Name}");
+            }
 
             var deleteFolderStatus = _folderService.DeleteFolder(folderToDelete);
             if (deleteFolderStatus != Domain.Enums.Status.Success)

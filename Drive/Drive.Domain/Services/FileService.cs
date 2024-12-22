@@ -37,5 +37,18 @@ namespace Drive.Domain.Services
                 return Status.Failed;
             }
         }
+        public Status DeleteFile(Drive.Data.Entities.Models.File file)
+        {
+            try
+            {
+                _fileRepository.Remove(file);
+
+                return Status.Success;
+            }
+            catch
+            {
+                return Status.Failed;
+            }
+        }
     }
 }
