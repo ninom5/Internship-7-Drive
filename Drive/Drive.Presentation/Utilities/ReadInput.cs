@@ -20,19 +20,26 @@ namespace Drive.Presentation.Reader
 
         public static string ?ReadString(string propmpt, Func<string, bool> ?validate = null, string message = "Ne ispravan unos")
         {
-            do
+            while(true)
             {
                 Console.WriteLine(propmpt);
                 var userInput = Console.ReadLine();
 
                 if (string.IsNullOrEmpty(userInput))
-                    return null;
+                {
+                    Console.WriteLine("Podatak ne moze biti prazan. Povratak na glavni menu...");    
+                    return null; 
+                }
+                
+                if (validate != null && !validate(userInput))
+                {
+                    Console.WriteLine(message);
+                    continue;
+                }
+                
 
-                if (validate == null || validate(userInput))
-                    return userInput;
-
-                Console.WriteLine(message);
-            } while (true);
+                return userInput;
+            }
         }
 
         public static bool IsValidEmail(string email)

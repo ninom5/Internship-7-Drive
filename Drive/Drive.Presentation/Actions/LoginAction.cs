@@ -49,7 +49,7 @@ namespace Drive.Presentation.Actions
             var user = _userService.GetUser(userEmail);
             if(user == null)
             {
-                Console.WriteLine("Pogreska");
+                Console.WriteLine("Pogreska prilikom logiranja");
                 return;
             }
 

@@ -1,7 +1,5 @@
 ﻿using Drive.Domain.Enums;
 using Drive.Domain.Interfaces;
-using Drive.Domain.Repositories;
-using Drive.Domain.Services;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
@@ -18,38 +16,24 @@ namespace Drive.Presentation.Actions
             _userService = userService;
             _folderService = folderService;
         }
-        public void Execute() 
+        public void Execute()
         {
             Console.Clear();
-            Console.WriteLine("Unesite podatke za registraciju \nZa odustajanje i povratak na prethodni meni unesite praznu liniju");
 
-            string ?name = ReadInput.ReadString("Unesite ime", input => !string.IsNullOrEmpty(input), "Ime ne moze biti prazno. Povratak na prethodni meni...");
-            if (name == null) return;
+            var user = CollectBaseUserData();
 
-            string? surname = ReadInput.ReadString("Unesite prezime", input => !string.IsNullOrEmpty(input), "Prezime ne moze biti prazno. Povratak na prethodni meni...");
-            if (surname == null) return;
-
-            string ?email = ReadInput.ReadString("Unesite email: ", input => ReadInput.IsValidEmail(input), "Email mora biti u formati [string min 1 chara]@[string min 2 chara].[string min 3 chara]\n");
-            if (email == null) return;
-            
-            if(_userService.EmailExists(email))
-            {
-                Console.WriteLine("Uneseni email vec postoji");
+            if (new[] { user.Item1, user.Item2, user.Item3, user.Item4 }.Any(string.IsNullOrEmpty))
                 return;
-            }
-
-            string ?password = ReadInput.RegisterPassword("Unesite sifru", input => !string.IsNullOrEmpty(input), "Lozinka ne moze biti prazna. Povratak...");
-            if (password == null) return;
 
             string captcha = Captcha.GenerateCaptcha();
             Console.WriteLine($"Captcha: {captcha} . Unesite sto pise. Prazno za odustat");
 
-            if(!Captcha.ValidateCaptcha(captcha))
+            if (!Captcha.ValidateCaptcha(captcha))
                 return;
 
-            byte[] hashedPassword = Hash.HashText(password);
+            byte[] hashedPassword = Hash.HashText(user.Item4);
 
-            Status userCreatingStatus = _userService.Create(name, surname, email, password, hashedPassword);
+            Status userCreatingStatus = _userService.Create(user.Item1, user.Item2, user.Item3, user.Item4, hashedPassword);
 
             if (userCreatingStatus != Status.Success)
             {
@@ -57,20 +41,57 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
+            Console.Clear();
+
             Console.WriteLine("Korisnik uspjesno registriran");
 
-            var user = _userService.GetUser(email);
-            if(user == null) return;    
+            var createdUser = _userService.GetUser(user.Item3);
+            if (createdUser == null) return;
 
-            var rootFolderStatus = _folderService.CreateFolder("Root Folder", user, null);
+            var rootFolderStatus = _folderService.CreateFolder("Root Folder", createdUser, null);
 
-            if(rootFolderStatus != Status.Success)
+            if (rootFolderStatus != Status.Success)
             {
                 Console.WriteLine("Pogreska prilikom dodavanja root foldera");
                 return;
             }
 
             Console.WriteLine("Root folder uspjesno dodan");
+
+            Thread.Sleep(2000);
+        }
+        private (string, string, string, string) CollectBaseUserData()
+        {
+            Console.WriteLine("Unesite podatke za registraciju \nZa odustajanje i povratak na prethodni meni unesite praznu liniju\n");
+
+            string? name = ReadInput.ReadString("Unesite ime", input => input.Trim().Split(" ").Length < 2, "Ime ne moze biti dulje od 1 rijeci...");
+            if (name == null) return ("", "", "", "");
+
+            string? surname = ReadInput.ReadString("Unesite prezime", input => input.Trim().Split(" ").Length < 2, "Prezime ne moze biti dulje od 1 rijeci...");
+            if (surname == null) return ("", "", "", "");
+
+            string? email;
+            bool doesEmailExist = false;
+
+            do
+            {
+                email = ReadInput.ReadString("Unesite email: ", input => ReadInput.IsValidEmail(input), "Email mora biti u formatu [string min 1 chara]@[string min 2 chara].[string min 3 chara]\n");
+
+                if (email == null)
+                    return ("", "", "", "");
+
+                if (!_userService.EmailExists(email))
+                    break;
+
+                Console.WriteLine("Uneseni email vec postoji");
+                doesEmailExist = true;
+
+            } while (doesEmailExist);
+
+            string? password = ReadInput.RegisterPassword("Unesite sifru", input => !string.IsNullOrEmpty(input), "Lozinka ne moze biti prazna. Povratak...");
+            if (password == null) return ("", "", "", "");
+
+            return (name, surname, email, password);
         }
     }
 }
