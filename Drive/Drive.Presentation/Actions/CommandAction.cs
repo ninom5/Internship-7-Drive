@@ -1,7 +1,12 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces;
 using Drive.Domain.Repositories;
+using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
+using Drive.Presentation.Utilities;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.AccessControl;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -10,7 +15,7 @@ namespace Drive.Presentation.Actions
 {
     public class CommandAction
     {
-        public static Folder currentFolder = null;
+        public static Folder currentFolder { get; private set; } = null;
         public static void CommandMode(User user, IFolderService _folderService, Folder parrentFolder, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService)
         {
             currentFolder = parrentFolder;
@@ -31,7 +36,7 @@ namespace Drive.Presentation.Actions
                     continue;
 
                 if (command == "help")
-                {  
+                {
                     HelpMenu.DisplayHelp();
                     continue;
                 }
@@ -52,139 +57,245 @@ namespace Drive.Presentation.Actions
             switch (parts[0])
             {
                 case "stvori":
-                    if (parts[1] == "mapu")
-                    {
-                        string pattern = @"'([^']*)'";
-
-                        Match match = Regex.Match(parts[2], pattern);
-
-                        Create<Folder>(match.Groups[1].Value, currentFolder, user, _folderService, _fileService);
-                    }
-                    else if(parts[1] == "datoteku")
-                    {
-                        string pattern = @"'([^']*)'";
-
-                        Match match = Regex.Match(parts[2], pattern);
-
-                        Create<Drive.Data.Entities.Models.File>(match.Groups[1].Value, currentFolder, user, _folderService, _fileService);
-                    }
-                    else
-                        Console.WriteLine("pogresna komanda. Za pomoc unesite help");
-
+                    CreateFolderFile(parts, user, _folderService, _fileService);
                     break;
+
                 case "udi":
-                    if(parts.Length > 3 && parts[1] == "u" && parts[2] == "mapu")
-                    {
-                        string pattern = @"'([^']*)'";
-
-                        Match match = Regex.Match(parts[3], pattern);
-
-                        if (!match.Success)
-                        {
-                            Console.WriteLine("pogreska");
-                            return;
-                        }
-
-                        currentFolder = FolderRepository.GetFolder(userFolders, match.Groups[1].Value);
-
-                        if(currentFolder == null)
-                        { 
-                            Console.WriteLine("Mapa nije pronadena"); 
-                            return;
-                        }
-
-                        Console.WriteLine($"Trenutno unutar mape: {currentFolder.Name}");
-                    }
-                    else
-                        Console.WriteLine("Pogresna komanda. Za pomoc unesite help");
+                    ChangeWorkingDirectory(parts, userFolders);
                     break;
+
+                case "uredi":
+                    EditFile(parts, user, userFolders, _fileService, _userService);
+                    break;
+
                 case "izbrisi":
-                    if (parts[1] == "mapu")
-                    {
-                        string pattern = @"'([^']*)'";
-
-                        Match match = Regex.Match(parts[2], pattern); //kad je vise rici odvojeno razmankon popravit
-                        if(!match.Success)
-                        {
-                            Console.WriteLine("ne ispravan unos");
-                            return;
-                        }
-
-                        if(match.Groups[1].Value == "Root Folder")
-                        {
-                            Console.WriteLine("Ne mozete izbrisati root folder");
-                            break;
-                        }
-
-                        var folderToDelete = FolderRepository.GetFolder(userFolders, match.Groups[1].Value);
-                        if(folderToDelete == null)
-                        {
-                            Console.WriteLine("Nije pronaden zelejni folder");
-                            return;
-                        }
-
-                        DeleteFolderAndContents(folderToDelete, userFolders, _folderService, _fileService, _userService, user);
-
-                        Console.WriteLine($"Folder: {folderToDelete.Name} s id: {folderToDelete.Id} uspjesno izbrisan");
-
-                    }
-                    else if (parts[1] == "datoteku")
-                    {
-                        string pattern = @"'([^']*)'";
-
-                        Match match = Regex.Match(parts[2], pattern);
-
-                        var nameOfFile = match.Groups[1].Value;
-
-                        var fileToDelete = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == nameOfFile).FirstOrDefault();
-                        if(fileToDelete == null)
-                        {
-                            Console.WriteLine("File nije pronaden");
-                            return;
-                        }
-
-                        var deletingStatus = _fileService.DeleteFile(fileToDelete);
-                        if (deletingStatus != Domain.Enums.Status.Success)
-                        {
-                            Console.WriteLine("pogreska prilikom brisanja foldera");
-                            return;
-                        }
-
-                        Console.WriteLine($"File: {fileToDelete.Name} s id: {fileToDelete.Id} uspjesno izbrisan");
-                    }
-                    else
-                        Console.WriteLine("pogresna komanda. Za pomoc unesite help");
+                    DeleteFolderFile(parts, user, _folderService, _fileService, _userService, userFolders);
                     break;
-                case "promijeni naziv":
-                    if (parts[2] == "mape")
-                    {
-                        string pattern = @"'([^']*)'";
 
-                        Match match = Regex.Match(parts[2], pattern);
-
-                        var nameOfFile = match.Groups[1].Value;
-                        var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == nameOfFile).FirstOrDefault();
-
-                        var newName = Console.ReadLine();
-                        if(string.IsNullOrEmpty(newName))
-                        {
-                            Console.WriteLine("Novo ime ne moze biti prazno. Povratak...");
-                            return;
-                        }
-
-                        file.Name = newName;
-                        _dbContext.SaveChanges();//rjesit sutra
-                    }
+                case "promijeni":
+                    RenameFolderFile(parts, userFolders, _folderService, _fileService, _userService, user);
                     break;
 
                 case "trenutni_direktorij":
                     Console.WriteLine($"Trenutno se nalazite u mapi: {currentFolder.Name}");
                     break;
+
                 default:
-                    Console.WriteLine("Pogresna komanda unesite opet");
+                    Console.WriteLine("Pogresna komanda. Za pomoc unesite help");
                     break;
             }
         }
+        private static void CreateFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService)
+        {
+            if (parts.Length < 3 || (parts[1] != "mapu" && parts[1] != "datoteku"))
+            {
+                Console.WriteLine("Ne ispravna komanda za stvaranje nove mape/datoteke. Za pomoc unesite help");
+                return;
+            }
+
+            string dataType = parts[1];
+            string name = GetName(parts.Skip(2));
+
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("Ime ne moze biti prazno");
+                return;
+            }
+
+            if (dataType == "mapu")
+            {
+                Create<Folder>(name, currentFolder, user, _folderService, _fileService);
+                return;
+            }
+
+            Create<Drive.Data.Entities.Models.File>(name, currentFolder, user, _folderService, _fileService);
+        }
+        private static void ChangeWorkingDirectory(string[] parts, IEnumerable<Folder> userFolders)
+        {
+            if (parts.Length < 4 || parts[1] != "u" || parts[2] != "mapu")
+            {
+                Console.WriteLine("Pogresan oblik komande za promjenu trenutne mape. Za pomoc unesite help");
+                return;
+            }
+
+            string name = GetName(parts.Skip(3));
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("Ime ne moze biti prazno");
+                return;
+            }
+
+            var folder = FolderRepository.GetFolder(userFolders, name);
+            if (folder == null)
+            {
+                Console.WriteLine("Nije pronaden folder s unesenim imenom");
+                return;
+            }
+
+            currentFolder = folder;
+            Console.WriteLine($"Trenutno unutar mape: {currentFolder.Name}");
+        }
+        private static void EditFile(string[] parts, User user, IEnumerable<Folder> userFolders, IFileService _fileService, IUserService _userService)
+        {
+            if (parts[1] != "datoteku")
+            {
+                Console.WriteLine("Pogrešna komanda. Za pomoć unesite help.");
+                return;
+            }
+
+            var name = GetName(parts.Skip(2));
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("Ime datoteke ne može biti prazno.");
+                return;
+            }
+
+            var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user)
+                                   .FirstOrDefault(f => f.Name == name);
+            if (file == null)
+            {
+                Console.WriteLine("Datoteka s unesenim imenom nije pronađena.");
+                return;
+            }
+        }
+        private static void DeleteFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService, IUserService _userService, IEnumerable<Folder> userFolders)
+        {
+            if(parts.Length < 3 || (parts[1] != "mapu" && parts[1] != "datoteku"))
+            {
+                Console.WriteLine("Pogresan oblik komande za promjenu trenutne mape. Za pomoc unesite help");
+                return;
+            }
+
+            string dataType = parts[1];
+            string name = GetName(parts.Skip(2));
+
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("Ime ne moze biti prazno");
+                return;
+            }
+
+            if (dataType == "mapu")
+            {
+                var folderToDelete = FolderRepository.GetFolder(userFolders, name);
+                if (folderToDelete == null)
+                {
+                    Console.WriteLine("Nije pronaden folder s tim imenom");
+                    return;
+                }
+
+                if (folderToDelete.Name == "Root Folder" || folderToDelete == currentFolder || Helper.IsAncestor(currentFolder, name, userFolders))
+                {
+                    Console.WriteLine("Ne mozete izbrisati root folder, folder u kojem se trenutno nalazite ili nadmapu trenutnog foldera");
+                    return;
+                }
+
+                DeleteFolderAndContents(folderToDelete, userFolders, _folderService, _fileService, _userService, user);
+
+                return;
+            }
+            
+            
+            var fileToDelete = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).FirstOrDefault(f => f.Name == name);
+            if (fileToDelete == null)
+            {
+                Console.WriteLine("Nije pronaden zeljeni file");
+                return;
+            }
+
+            var deleteFileStatus = _fileService.DeleteFile(fileToDelete);
+            if(deleteFileStatus != Domain.Enums.Status.Success)
+            {
+                Console.WriteLine("pogreska prilikom brisanja filea");
+                return;
+            }
+
+            Console.WriteLine($"Datoteka {fileToDelete.Name} s id: {fileToDelete.Id} uspjesno obrisana");
+        }
+
+        private static void RenameFolderFile(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, User user)
+        {
+            if (parts.Length < 6 || (parts[2] != "mape" && parts[2] != "datoteke"))
+            {
+                Console.WriteLine("Pogresna komanda. Za pomoc unesite help");
+                return;
+            }
+
+            string pattern = @"'([^']*)' u '([^']*)'";
+            string fullName = string.Join(" ", parts.Skip(2));
+
+            Match match = Regex.Match(fullName, pattern);
+            if (!match.Success)
+            {
+                Console.WriteLine("pogreska prilikom dohvacanja imena. Za pomoc unesite help");
+                return;
+            }
+
+            string currentName = match.Groups[1].Value.Trim();
+            string newName = match.Groups[2].Value.Trim();
+
+            if (currentName == "Root Folder")
+            {
+                Console.WriteLine("Root folder se ne moze preimenovati");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(newName))
+            {
+                Console.WriteLine("Ime ne moze biti prazno");
+                return;
+            }
+            //root folder ne moze se preimenovat
+            if (parts[2] == "mape")
+            {
+
+                var folderToRename = FolderRepository.GetFolder(userFolders, currentName);
+                if (folderToRename == null)
+                {
+                    Console.WriteLine("Folder s unesenim imenom nije pronaden");
+                    return;
+                }
+
+                var status = _folderService.UpdateFolder(folderToRename, newName);
+                if (status != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine("Pogreska prilikom mijenjanja imena");
+                    return;
+                }
+
+                Console.WriteLine($"Mapa: {currentName} uspjesno preimenovana u: {newName}");
+
+                return;
+            }
+
+            var fileToRename = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == currentName).FirstOrDefault();
+            if (fileToRename == null)
+            {
+                Console.WriteLine("Nije pronaden zeljeni file");
+                return;
+            }
+
+            var renameStatus = _fileService.UpdateFile(fileToRename, newName);
+            
+            if(renameStatus != Domain.Enums.Status.Success)
+            {
+                Console.WriteLine("Pogreska prilikom mijenjanja imena");
+                return;
+            }
+            Console.WriteLine($"Uspjesno promijenjen naziv datoteke: {currentName} u: {newName}");
+        }
+
+        private static string ?GetName(IEnumerable<string> parts)
+        {
+            string fullInput = string.Join(" ", parts);
+            string pattern = @"'([^']*)'";
+            
+            Match match = Regex.Match(fullInput, pattern);
+            
+            return match.Success ? match.Groups[1].Value.Trim() : null;
+        }
+
+
         public static void Create<T>(string name, Folder folder, User user, IFolderService ?_folderService, IFileService ?_fileService)
         {
             if (typeof(T) == typeof(Folder))
@@ -263,6 +374,5 @@ namespace Drive.Presentation.Actions
                 
             Console.WriteLine($"Uspješno izbrisana mapa: {folderToDelete.Name}");
         }
-
     }
 }

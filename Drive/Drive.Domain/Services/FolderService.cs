@@ -48,5 +48,14 @@ namespace Drive.Domain.Services
                 return Status.Failed;
             }
         }
+        public Status UpdateFolder(Folder folder, string name)
+        {
+            try
+            {
+                _folderRepository.UpdateFolder(folder, name);
+                return Status.Success;
+            }catch
+            { return Status.Failed; }
+        }
     }
 }

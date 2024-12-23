@@ -1,6 +1,7 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Enums;
 using Drive.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Drive.Domain.Services
 {
@@ -50,5 +51,32 @@ namespace Drive.Domain.Services
                 return Status.Failed;
             }
         }
+        public Status UpdateFile(Drive.Data.Entities.Models.File file, string newName)
+        {
+            try
+            {
+                file.Name = newName;
+                _fileRepository.Update(file);
+
+                return Status.Success;
+            }
+            catch
+            {
+                return Status.Failed;
+            }
+        }
+        public Status UpdateFileContent(Drive.Data.Entities.Models.File file)
+        { 
+            try
+            {
+                _fileRepository.Update(file);
+                return Status.Success;
+            }
+            catch
+            {
+                return Status.Failed;
+            }
+        }
+
     }
 }

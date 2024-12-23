@@ -7,5 +7,6 @@ namespace Drive.Domain.Interfaces
     {
         public Status CreateFolder(string folderName, User user, Folder? parentFolder);
         public Status DeleteFolder(Folder folder);
+        public Status UpdateFolder(Folder folder, string name);
     }
 }

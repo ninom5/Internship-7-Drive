@@ -6,5 +6,6 @@ namespace Drive.Domain.Interfaces
     {
         public void AddFile(Drive.Data.Entities.Models.File file);
         public void Remove(Drive.Data.Entities.Models.File file);
+        public void Update(Drive.Data.Entities.Models.File file);
     }
 }

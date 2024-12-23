@@ -29,5 +29,11 @@ namespace Drive.Domain.Repositories
         {
             return userFolders.FirstOrDefault(f => f.Name == name);
         }
+        public void UpdateFolder(Folder folder, string name)
+        {
+            folder.Name = name;
+            _dbContext.Folders.Update(folder);
+            _dbContext.SaveChanges();
+        }
     }
 }
