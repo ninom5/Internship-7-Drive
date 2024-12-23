@@ -42,6 +42,20 @@ namespace Drive.Domain.Services
             return _userRepository.EmailExists(email);
         }
 
+        public Status UpdateUser(User user)
+        {
+            try
+            {
+                _userRepository.Update(user);
+
+                return Status.Success;
+            }
+            catch (Exception ex)
+            {
+                return Status.Failed;
+            }
+        }
+
         public bool PasswordsMatch(string email, byte[] password)
         {
             var user = GetUser(email);

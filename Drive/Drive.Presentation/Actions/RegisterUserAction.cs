@@ -70,23 +70,8 @@ namespace Drive.Presentation.Actions
             string? surname = ReadInput.ReadString("Unesite prezime", input => input.Trim().Split(" ").Length < 2, "Prezime ne moze biti dulje od 1 rijeci...");
             if (surname == null) return ("", "", "", "");
 
-            string? email;
-            bool doesEmailExist = false;
-
-            do
-            {
-                email = ReadInput.ReadString("Unesite email: ", input => ReadInput.IsValidEmail(input), "Email mora biti u formatu [string min 1 chara]@[string min 2 chara].[string min 3 chara]\n");
-
-                if (email == null)
-                    return ("", "", "", "");
-
-                if (!_userService.EmailExists(email))
-                    break;
-
-                Console.WriteLine("Uneseni email vec postoji");
-                doesEmailExist = true;
-
-            } while (doesEmailExist);
+            string? email = Helper.CollectMail(_userService);
+            if (string.IsNullOrEmpty(email)) return ("", "", "", "");
 
             string? password = ReadInput.RegisterPassword("Unesite sifru", input => !string.IsNullOrEmpty(input), "Lozinka ne moze biti prazna. Povratak...");
             if (password == null) return ("", "", "", "");

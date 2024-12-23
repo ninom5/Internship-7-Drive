@@ -1,9 +1,7 @@
 ﻿using Drive.Domain.Interfaces;
-using Drive.Domain.Services;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Menus;
 using Drive.Presentation.Reader;
-
 
 namespace Drive.Presentation.Actions
 {
@@ -12,6 +10,9 @@ namespace Drive.Presentation.Actions
         private readonly IUserService _userService;
         private readonly IFolderService _folderService;
         private readonly IFileService _fileService;
+
+        private static int failedPasswordCountdown = 30;
+        private static Timer timer;
         public LoginAction(IUserService userService, IFolderService folderService, IFileService fileService)
         {
             _userService = userService;
@@ -36,11 +37,19 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            int i = 3;
             if(!ReadInput.CheckUserPassword(userEmail, _userService))
             {
                 Console.WriteLine($"Unesena sifra nije ispravna. Povratak na glavni izbornik...");
-                Thread.Sleep(30000);
+
+                StartCountdown();
+
+                while (failedPasswordCountdown > 0)
+                {
+                    Thread.Sleep(1000);
+                }
+
+                Console.WriteLine("Povratak na glavni menu...");
+
                 return;
             }
 
@@ -55,6 +64,20 @@ namespace Drive.Presentation.Actions
 
             var loginMenu = new LoginMenu(_userService, user, _folderService, _fileService);
             loginMenu.Execute();
+        }
+
+        private static void StartCountdown()
+        {
+            timer = new Timer(OnTimerElapsed, null, 0, 1000);
+        }
+        private static void OnTimerElapsed(object state)
+        {
+            if (failedPasswordCountdown > 0) 
+            {
+                failedPasswordCountdown--;
+                Console.Clear();
+                Console.WriteLine($"Unesena sifra nije ispravna. Povratak na glavni izbornik za: {failedPasswordCountdown}");
+            }
         }
     }
 }

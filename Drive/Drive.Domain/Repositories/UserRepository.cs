@@ -15,6 +15,11 @@ namespace Drive.Domain.Repositories
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
         }
+        public void Update(User user)
+        {
+            _dbContext.Update(user);
+            _dbContext.SaveChanges();
+        }
         public bool EmailExists(string email)
         {
             return _dbContext.Users.Any(u => u.Email == email);

@@ -3,7 +3,7 @@ using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Factories;
-using Drive.Domain.Services;
+using Drive.Presentation.Menus.SubMenu;
 
 namespace Drive.Presentation.Menus
 {
@@ -24,7 +24,7 @@ namespace Drive.Presentation.Menus
 
             Options.Add(("Moj disk", new UserDiskAction(_userService, _folderService, _loggedUser, _fileService)));
             Options.Add(("Dijeljeno sa mnom", new UserSharedFilesAction(_userService, _loggedUser)));
-            Options.Add(("Postavke Profila", new UserProfileOptionsAction(_userService, _loggedUser)));
+            Options.Add(("Postavke Profila", new UserProfileMenu(_userService, _loggedUser)));
             Options.Add(("Odjava iz profila", new LogOutAction(_userService, _folderService)));
         }
         public void Execute()
