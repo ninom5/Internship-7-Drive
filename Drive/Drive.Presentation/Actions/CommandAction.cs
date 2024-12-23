@@ -4,6 +4,7 @@ using Drive.Domain.Repositories;
 using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Utilities;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.Mapping;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
@@ -89,7 +90,7 @@ namespace Drive.Presentation.Actions
         {
             if (parts.Length < 3 || (parts[1] != "mapu" && parts[1] != "datoteku"))
             {
-                Console.WriteLine("Ne ispravna komanda za stvaranje nove mape/datoteke. Za pomoc unesite help");
+                Console.WriteLine("Ne ispravna komanda za stvaranje nove mape  datoteke. Za pomoc unesite help");
                 return;
             }
 
@@ -150,17 +151,109 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user)
-                                   .FirstOrDefault(f => f.Name == name);
+            var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).FirstOrDefault(f => f.Name == name);
             if (file == null)
             {
                 Console.WriteLine("Datoteka s unesenim imenom nije pronađena.");
                 return;
             }
+
+            Console.WriteLine($"----------Trenutni sadrzaj datoteke----------\n{file.Content}" +
+                $"\n---------------------------------------------");
+
+            List<string> newContent = new List<string>();
+            var currentLine = "";
+            bool isSaved = false;
+
+            while (true)
+            {
+                var key = Console.ReadKey(intercept: true);
+
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    if (currentLine.StartsWith(":"))
+                    {
+                        currentLine = currentLine.Substring(1, currentLine.Length - 1).Trim();
+
+                        if (currentLine == "spremanje i izlaz")
+                        {
+                            Console.WriteLine("\nSpremanje promjena...\nIzlaz...");
+                            file.Content = string.Join(Environment.NewLine, newContent);
+
+                            file.LastModifiedAt = DateTime.UtcNow;
+
+                            _fileService.UpdateFileContent(file);
+
+                            isSaved = true;
+
+                            break;
+                        }
+                        else if (currentLine == "izlaz bez spremanja")
+                        {
+                            Console.WriteLine("\nNece se spremiti nista.\nIzlaz...");
+                            break;
+                        }
+                        else if(currentLine == "help")
+                        {
+                            Console.WriteLine("\n\t- :spremanje i izlaz spremanje promjena i izlaz \n\t- :izlaz bez spremanja odbacivanje promjena i izlaz\n");
+                            currentLine = "";
+                            continue;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nNe ispravna komanda. Unesite help za pomoc\n");
+                            currentLine = "";
+                            continue;
+                        }
+                    }
+
+                    newContent.Add(currentLine);
+                    Console.WriteLine();
+                    currentLine = "";
+                }
+                else if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (currentLine.Length > 0)
+                    {
+                        currentLine = currentLine.Substring(0, currentLine.Length - 1);
+                        Console.Write("\b \b");
+                    }
+                    else if (newContent.Count > 0)
+                    {
+                        currentLine = newContent[^1];
+                        newContent.RemoveAt(newContent.Count - 1);
+
+                        Console.CursorTop--;
+                        Console.CursorLeft = 0;
+                        Console.Write(new string(' ', Console.WindowWidth));
+                        Console.CursorLeft = 0;
+                        Console.Write(currentLine);
+                    }
+                }
+                else if(key.Key == ConsoleKey.Z && key.Modifiers == ConsoleModifiers.Control)
+                {
+                    Console.WriteLine();
+                    break;
+                }
+                else
+                {
+                    currentLine += key.KeyChar;
+                    Console.Write(key.KeyChar);
+                }
+            }
+
+            if (isSaved)
+            {
+                Console.WriteLine("Novi sadrzaj: ");
+                foreach (var line in newContent)
+                {
+                    Console.WriteLine(line);
+                }
+            }
         }
         private static void DeleteFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService, IUserService _userService, IEnumerable<Folder> userFolders)
         {
-            if(parts.Length < 3 || (parts[1] != "mapu" && parts[1] != "datoteku"))
+            if (parts.Length < 3 || (parts[1] != "mapu" && parts[1] != "datoteku"))
             {
                 Console.WriteLine("Pogresan oblik komande za promjenu trenutne mape. Za pomoc unesite help");
                 return;
@@ -194,8 +287,8 @@ namespace Drive.Presentation.Actions
 
                 return;
             }
-            
-            
+
+
             var fileToDelete = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).FirstOrDefault(f => f.Name == name);
             if (fileToDelete == null)
             {
@@ -204,7 +297,7 @@ namespace Drive.Presentation.Actions
             }
 
             var deleteFileStatus = _fileService.DeleteFile(fileToDelete);
-            if(deleteFileStatus != Domain.Enums.Status.Success)
+            if (deleteFileStatus != Domain.Enums.Status.Success)
             {
                 Console.WriteLine("pogreska prilikom brisanja filea");
                 return;
@@ -245,7 +338,7 @@ namespace Drive.Presentation.Actions
                 Console.WriteLine("Ime ne moze biti prazno");
                 return;
             }
-            //root folder ne moze se preimenovat
+
             if (parts[2] == "mape")
             {
 
@@ -276,8 +369,8 @@ namespace Drive.Presentation.Actions
             }
 
             var renameStatus = _fileService.UpdateFile(fileToRename, newName);
-            
-            if(renameStatus != Domain.Enums.Status.Success)
+
+            if (renameStatus != Domain.Enums.Status.Success)
             {
                 Console.WriteLine("Pogreska prilikom mijenjanja imena");
                 return;
@@ -285,18 +378,18 @@ namespace Drive.Presentation.Actions
             Console.WriteLine($"Uspjesno promijenjen naziv datoteke: {currentName} u: {newName}");
         }
 
-        private static string ?GetName(IEnumerable<string> parts)
+        private static string? GetName(IEnumerable<string> parts)
         {
             string fullInput = string.Join(" ", parts);
             string pattern = @"'([^']*)'";
-            
+
             Match match = Regex.Match(fullInput, pattern);
-            
+
             return match.Success ? match.Groups[1].Value.Trim() : null;
         }
 
 
-        public static void Create<T>(string name, Folder folder, User user, IFolderService ?_folderService, IFileService ?_fileService)
+        public static void Create<T>(string name, Folder folder, User user, IFolderService? _folderService, IFileService? _fileService)
         {
             if (typeof(T) == typeof(Folder))
             {
@@ -315,7 +408,7 @@ namespace Drive.Presentation.Actions
                 Console.WriteLine("Unesite sadrzaj datoteke");
                 StringBuilder stringBuilder = new StringBuilder();
 
-                while(true)
+                while (true)
                 {
                     var lineOfContent = Console.ReadLine();
                     if (string.IsNullOrEmpty(lineOfContent))
@@ -325,11 +418,11 @@ namespace Drive.Presentation.Actions
                 }
 
                 var content = stringBuilder.ToString();
-                if(string.IsNullOrEmpty(content))
+                if (string.IsNullOrEmpty(content))
                 {
                     Console.WriteLine("Sadrzaj ne moze biti prazan. Povratak...");
                     return;
-                } 
+                }
 
 
                 var creatingFileStatus = _fileService.CreateFile(name, content, user, folder);
@@ -349,10 +442,8 @@ namespace Drive.Presentation.Actions
 
             foreach (var subFolder in subFolders)
                 DeleteFolderAndContents(subFolder, allFolders, _folderService, _fileService, _userService, user);
-            
-            var filesInFolder = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user)
-                                           .Where(file => file.FolderId == folderToDelete.Id)
-                                           .ToList();
+
+            var filesInFolder = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(file => file.FolderId == folderToDelete.Id).ToList();
 
             foreach (var file in filesInFolder)
             {
@@ -362,7 +453,7 @@ namespace Drive.Presentation.Actions
                     Console.WriteLine($"Pogreška prilikom brisanja datoteke: {file.Name}");
                     return;
                 }
-                    
+
                 Console.WriteLine($"Uspješno izbrisana datoteka: {file.Name} u mapi: {folderToDelete.Name}");
             }
 
@@ -371,7 +462,7 @@ namespace Drive.Presentation.Actions
             {
                 Console.WriteLine($"Pogreška prilikom brisanja mape: {folderToDelete.Name}");
             }
-                
+
             Console.WriteLine($"Uspješno izbrisana mapa: {folderToDelete.Name}");
         }
     }
