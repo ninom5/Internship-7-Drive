@@ -1,6 +1,6 @@
 ﻿using Drive.Data.Entities;
 using Drive.Data.Entities.Models;
-using Drive.Domain.Interfaces;
+using Drive.Domain.Interfaces.Repositories;
 
 namespace Drive.Domain.Repositories
 {

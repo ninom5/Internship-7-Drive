@@ -1,5 +1,5 @@
 ﻿using Drive.Data.Entities.Models;
-using Drive.Domain.Interfaces;
+using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Utilities;
@@ -12,13 +12,14 @@ namespace Drive.Presentation.Actions
         private readonly IFolderService _folderService;
         private readonly User _user;
         private readonly IFileService _fileService;
-
-        public UserDiskAction(IUserService userService, IFolderService folderService, User user, IFileService fileService)
+        private readonly ISharedItemService _sharedItemService;
+        public UserDiskAction(IUserService userService, IFolderService folderService, User user, IFileService fileService, ISharedItemService sharedItemService)
         {
             _userService = userService;
             _folderService = folderService;
             _user = user;
             _fileService = fileService;
+            _sharedItemService = sharedItemService;
         }
 
         public void Execute()
@@ -51,7 +52,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            CommandAction.CommandMode(_user, _folderService, rootFolder, _fileService, userFolders, _userService);
+            CommandAction.CommandMode(_user, _folderService, rootFolder, _fileService, userFolders, _userService, _sharedItemService);
         }
     }
 }

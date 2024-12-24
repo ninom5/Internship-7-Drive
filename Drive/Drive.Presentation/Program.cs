@@ -25,7 +25,10 @@ public class Program
         var fileRepository = new FileRepository(dbContext);
         var fileService = new FileService(fileRepository);
 
-        MenuFactory.Initialize(userService, folderService, fileService);
+        var sharedItemRepository = new SharedItemRepository(dbContext);
+        var sharedItemService = new SharedItemsService(sharedItemRepository);
+
+        MenuFactory.Initialize(userService, folderService, fileService, sharedItemService);
 
         IMenu mainMenu = MenuFactory.CreateMenu("MainMenu");
 

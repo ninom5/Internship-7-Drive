@@ -1,8 +1,11 @@
 ﻿using Drive.Data.Entities.Models;
-using Drive.Domain.Interfaces;
+using Drive.Data.Enums;
+using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
+using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Utilities;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -12,7 +15,7 @@ namespace Drive.Presentation.Actions
     public class CommandAction
     {
         public static Folder currentFolder { get; private set; } = null;
-        public static void CommandMode(User user, IFolderService _folderService, Folder parrentFolder, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService)
+        public static void CommandMode(User user, IFolderService _folderService, Folder parrentFolder, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, ISharedItemService _sharedItemService)
         {
             currentFolder = parrentFolder;
 
@@ -40,12 +43,12 @@ namespace Drive.Presentation.Actions
                 if (command == "povratak")
                     break;
 
-                CheckCommand(command, user, _folderService, _fileService, userFolders, _userService);
+                CheckCommand(command, user, _folderService, _fileService, userFolders, _userService, _sharedItemService);
                 userFolders = _userService.GetFoldersOrFiles<Folder>(user);
             }
         }
 
-        private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService)
+        private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, ISharedItemService _sharedItemService)
         {
             Console.Clear();
 
@@ -74,6 +77,10 @@ namespace Drive.Presentation.Actions
 
                 case "trenutni_direktorij":
                     Console.WriteLine($"Trenutno se nalazite u mapi: {currentFolder.Name}");
+                    break;
+
+                case "podijeli":
+                    StartSharing(parts, userFolders, _folderService, _fileService, _userService, _sharedItemService, user);
                     break;
 
                 default:
@@ -278,7 +285,7 @@ namespace Drive.Presentation.Actions
                     return;
                 }
 
-                DeleteFolderAndContents(folderToDelete, userFolders, _folderService, _fileService, _userService, user);
+                ProcessFolderAndContents(folderToDelete, userFolders, _folderService, _fileService, _userService, user, "izbrisi", null, null);
 
                 return;
             }
@@ -382,12 +389,72 @@ namespace Drive.Presentation.Actions
 
             return match.Success ? match.Groups[1].Value.Trim() : null;
         }
+        public static void StartSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService, User user)
+        {
+            if (parts.Length < 4 || (parts[1] != "mapu" && parts[1] != "datoteku") || parts[2] != "s")
+            {
+                Console.WriteLine("Ne ispravan oblik komande Podijeli. Za pomoc unesite help");
+                return;
+            }
 
+            var email = GetName(parts.Skip(3));
+            if (email == null) 
+            {
+                Console.WriteLine("Email ne moze biti prazan. Povratak...");
+                return;
+            }
+
+            if (!_userService.EmailExists(email))
+            {
+                Console.WriteLine("Uneseni email ne postoji.");
+                return;
+            }
+
+            var userToShare = _userService.GetUser(email);
+            if(userToShare == null)
+            {
+                Console.WriteLine("Uneseni korisnik nije pronaden");
+                return;
+            }
+
+            if (parts[1] == "mapu")
+            {
+                while (true)
+                {
+                    Console.WriteLine("Unesite ime mape koju zelite podijeliti");
+                    var folderName = Console.ReadLine();
+
+                    if (string.IsNullOrEmpty(folderName))
+                    {
+                        Console.WriteLine("Ime ne moze biti prazno. Povratak...");
+                        return;
+                    }
+
+                    var folder = _userService.GetFoldersOrFiles<Folder>(user).Where(f => f.Name == folderName).FirstOrDefault();
+
+                    if (folder == null)
+                    {
+                        Console.WriteLine("Nije pronaden zelejni folder. Pokusajte opet");
+                        continue;
+                    }
+
+                    ProcessFolderAndContents(folder, userFolders, _folderService, _fileService, _userService, user, "podijeli", _sharedItemService, userToShare);
+
+                    return;
+                }
+            }
+        }
 
         public static void Create<T>(string name, Folder folder, User user, IFolderService? _folderService, IFileService? _fileService)
         {
             if (typeof(T) == typeof(Folder))
             {
+                if (_folderService == null)
+                {
+                    Console.WriteLine("pogreska prilikom kreiranja foldera");
+                    return;
+                }
+
                 var creatingFolderStatus = _folderService.CreateFolder(name, user, folder);
                 if (creatingFolderStatus != Domain.Enums.Status.Success)
                 {
@@ -419,6 +486,11 @@ namespace Drive.Presentation.Actions
                     return;
                 }
 
+                if(_fileService == null)
+                {
+                    Console.WriteLine("Pogreska prilikom kreiranja filea");
+                    return;
+                }
 
                 var creatingFileStatus = _fileService.CreateFile(name, content, user, folder);
                 if (creatingFileStatus != Domain.Enums.Status.Success)
@@ -431,34 +503,65 @@ namespace Drive.Presentation.Actions
 
             }
         }
-        private static void DeleteFolderAndContents(Folder folderToDelete, IEnumerable<Folder> allFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, User user)
+        private static void ProcessFolderAndContents(Folder folder, IEnumerable<Folder> allFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, User user, 
+            string process, ISharedItemService? _sharedItemService, User? shareToUser)
         {
-            var subFolders = allFolders.Where(f => f.ParentFolderId == folderToDelete.Id).ToList();
+            var subFolders = allFolders.Where(f => f.ParentFolderId == folder.Id).ToList();
 
             foreach (var subFolder in subFolders)
-                DeleteFolderAndContents(subFolder, allFolders, _folderService, _fileService, _userService, user);
+                ProcessFolderAndContents(subFolder, allFolders, _folderService, _fileService, _userService, user, process, _sharedItemService, shareToUser);
 
-            var filesInFolder = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(file => file.FolderId == folderToDelete.Id).ToList();
+            var filesInFolder = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(file => file.FolderId == folder.Id).ToList();
 
             foreach (var file in filesInFolder)
             {
-                var deleteFileStatus = _fileService.DeleteFile(file);
-                if (deleteFileStatus != Domain.Enums.Status.Success)
+                if (process == "izbrisi")
                 {
-                    Console.WriteLine($"Pogreška prilikom brisanja datoteke: {file.Name}");
+                    var deleteFileStatus = _fileService.DeleteFile(file);
+                    if (deleteFileStatus != Domain.Enums.Status.Success)
+                    {
+                        Console.WriteLine($"Pogreska prilikom brisanja datoteke: {file.Name}");
+                        return;
+                    }
+
+                    Console.WriteLine($"Uspješno izbrisana datoteka: {file.Name} u mapi: {folder.Name}");
+                }
+                else if (process == "podijeli" && _sharedItemService != null && shareToUser != null)
+                {
+                    var shareFileStatus = _sharedItemService.Create(file.Id, DataType.File, user, shareToUser);
+
+                    if (shareFileStatus != Domain.Enums.Status.Success)
+                    {
+                        Console.WriteLine($"Pogreska prilikom dijeljenja datoteke: {file.Name}");
+                        continue;
+                    }
+
+                    Console.WriteLine($"Datoteka: {file.Name} uspjesno podijeljena s korisnikom: {shareToUser.Name + " " +  shareToUser.Email}");
+                }
+            }
+
+            if (process == "izbrisi")
+            {
+                var deleteFolderStatus = _folderService.DeleteFolder(folder);
+                if (deleteFolderStatus != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine($"Pogreska prilikom brisanja mape: {folder.Name}");
+                }
+
+                Console.WriteLine($"Uspjesno izbrisana mapa: {folder.Name}");
+            }
+            else if(process == "podijeli" && _sharedItemService != null && shareToUser != null)
+            {
+                var shareFolderStatus = _sharedItemService.Create(folder.Id, DataType.Folder, user, shareToUser);
+
+                if (shareFolderStatus != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine($"Pogreska prilikom dijeljenja mape: {folder.Name}");
                     return;
                 }
 
-                Console.WriteLine($"Uspješno izbrisana datoteka: {file.Name} u mapi: {folderToDelete.Name}");
+                Console.WriteLine($"Mapa: {folder.Name} uspjesno podijeljena s korisnikom: {shareToUser.Name + " " + shareToUser.Email}");
             }
-
-            var deleteFolderStatus = _folderService.DeleteFolder(folderToDelete);
-            if (deleteFolderStatus != Domain.Enums.Status.Success)
-            {
-                Console.WriteLine($"Pogreška prilikom brisanja mape: {folderToDelete.Name}");
-            }
-
-            Console.WriteLine($"Uspješno izbrisana mapa: {folderToDelete.Name}");
         }
     }
 }

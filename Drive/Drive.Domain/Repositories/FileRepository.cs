@@ -1,5 +1,5 @@
 ﻿using Drive.Data.Entities;
-using Drive.Domain.Interfaces;
+using Drive.Domain.Interfaces.Repositories;
 
 
 namespace Drive.Domain.Repositories

@@ -1,6 +1,7 @@
 ﻿using Drive.Domain.Enums;
-using Drive.Domain.Interfaces;
 using Drive.Data.Entities.Models;
+using Drive.Domain.Interfaces.Services;
+using Drive.Domain.Interfaces.Repositories;
 
 namespace Drive.Domain.Services
 {

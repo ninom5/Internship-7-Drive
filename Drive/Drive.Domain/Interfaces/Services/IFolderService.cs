@@ -1,7 +1,7 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Enums;
 
-namespace Drive.Domain.Interfaces
+namespace Drive.Domain.Interfaces.Services
 {
     public interface IFolderService
     {

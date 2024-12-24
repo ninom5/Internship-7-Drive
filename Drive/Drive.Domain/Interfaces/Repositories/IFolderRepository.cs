@@ -1,8 +1,6 @@
-﻿
+﻿using Drive.Data.Entities.Models;
 
-using Drive.Data.Entities.Models;
-
-namespace Drive.Domain.Interfaces
+namespace Drive.Domain.Interfaces.Repositories
 {
     public interface IFolderRepository
     {
