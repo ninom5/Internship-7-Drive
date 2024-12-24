@@ -64,5 +64,27 @@ namespace Drive.Presentation.Utilities
 
             return false;
         }
+        public static bool ConfirmPassword(string password)
+        {
+            while (true)
+            {
+                Console.WriteLine("Potvrdite lozinku:");
+                var confirmedPassword = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(confirmedPassword))
+                {
+                    Console.WriteLine("Odustali ste od potvrde lozinke. Povratak...");
+                    return false;
+                }
+
+                if (confirmedPassword != password)
+                {
+                    Console.WriteLine("Lozinke se ne podudaraju, pokušajte ponovno; za odustajanje ostavite prazno");
+                    continue;
+                }
+                
+                return true;
+            }
+        }
     }
 }

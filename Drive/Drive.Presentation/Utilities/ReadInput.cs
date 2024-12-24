@@ -68,31 +68,26 @@ namespace Drive.Presentation.Reader
 
         public static string ?RegisterPassword(string prompt, Func<string, bool> ?validate = null, string message = "Ne ispravan unos")
         {
-            Console.WriteLine(prompt);
-            var password = Console.ReadLine();
-
-
-            if(string.IsNullOrEmpty(password) && validate != null && !validate(password))
-                return null;
-
             while (true)
             {
-                Console.WriteLine("Potvrdite lozinku:");
-                var confirmedPassword = Console.ReadLine();
+                Console.WriteLine(prompt);
+                var password = Console.ReadLine();
 
-                if(string.IsNullOrEmpty(confirmedPassword))
-                {
-                    Console.WriteLine("Odustali ste od potvrde lozinke. Povratak...");
+                if (string.IsNullOrEmpty(password) || (validate != null && !validate(password)))
                     return null;
-                }
 
-                if (confirmedPassword == password)
+                if (password.Length < 8)
                 {
-                    return password;
+                    Console.WriteLine(message + ". Lozinka ne moze biti kraca od 8 znakova");
+                    continue;
                 }
-                Console.WriteLine("Lozinke se ne podudaraju, pokušajte ponovno; za odustajanje ostavite prazno");
-            }
 
+
+                if (!Helper.ConfirmPassword(password))
+                    return null;
+
+                return password;
+            }
         }
 
         public static bool CheckUserPassword(string email, IUserService userService)

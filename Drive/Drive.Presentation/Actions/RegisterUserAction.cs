@@ -73,7 +73,7 @@ namespace Drive.Presentation.Actions
             string? email = Helper.CollectMail(_userService);
             if (string.IsNullOrEmpty(email)) return ("", "", "", "");
 
-            string? password = ReadInput.RegisterPassword("Unesite sifru", input => !string.IsNullOrEmpty(input), "Lozinka ne moze biti prazna. Povratak...");
+            string? password = ReadInput.RegisterPassword("Unesite sifru", input => !string.IsNullOrEmpty(input));
             if (password == null) return ("", "", "", "");
 
             return (name, surname, email, password);

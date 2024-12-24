@@ -1,9 +1,7 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces;
-using Drive.Domain.Services;
 using Drive.Presentation.Actions;
 using Drive.Presentation.Interfaces;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Drive.Presentation.Menus.SubMenu
 {
@@ -16,7 +14,7 @@ namespace Drive.Presentation.Menus.SubMenu
             _userService = userService;
             _user = user;
             Options.Add(("Promjena emaila", new ChangeUserEmailAction(_userService, _user)));
-            //Options.Add("Promjena lozinke", new);
+            Options.Add(("Promjena lozinke", new ChangeUserPasswordAction(_userService, _user)));
         }
         public void Execute()
         {
