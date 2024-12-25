@@ -4,6 +4,7 @@ using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
 using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
+using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
 using System.IO;
 using System.Text;
@@ -108,10 +109,14 @@ namespace Drive.Presentation.Actions
             if (dataType == "mapu")
             {
                 Create<Folder>(name, currentFolder, user, _folderService, _fileService);
+                ReadInput.WaitForUser();
+
                 return;
             }
 
             Create<Drive.Data.Entities.Models.File>(name, currentFolder, user, _folderService, _fileService);
+
+            ReadInput.WaitForUser();
         }
         private static void ChangeWorkingDirectory(string[] parts, IEnumerable<Folder> userFolders)
         {
@@ -137,6 +142,8 @@ namespace Drive.Presentation.Actions
 
             currentFolder = folder;
             Console.WriteLine($"Trenutno unutar mape: {currentFolder.Name}");
+
+            ReadInput.WaitForUser();
         }
         private static void EditFile(string[] parts, User user, IEnumerable<Folder> userFolders, IFileService _fileService, IUserService _userService)
         {
@@ -251,7 +258,10 @@ namespace Drive.Presentation.Actions
                 {
                     Console.WriteLine(line);
                 }
+                ReadInput.WaitForUser();
             }
+
+            ReadInput.WaitForUser();
         }
         private static void DeleteFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService, IUserService _userService, IEnumerable<Folder> userFolders)
         {
@@ -287,6 +297,8 @@ namespace Drive.Presentation.Actions
 
                 ProcessFolderAndContents(folderToDelete, userFolders, _folderService, _fileService, _userService, user, "izbrisi", null, null);
 
+                ReadInput.WaitForUser();
+
                 return;
             }
 
@@ -306,11 +318,13 @@ namespace Drive.Presentation.Actions
             }
 
             Console.WriteLine($"Datoteka {fileToDelete.Name} s id: {fileToDelete.Id} uspjesno obrisana");
+
+            ReadInput.WaitForUser();
         }
 
         private static void RenameFolderFile(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, User user)
         {
-            if (parts.Length < 6 || (parts[2] != "mape" && parts[2] != "datoteke"))
+            if (parts.Length < 6 || parts[1] != "naziv" || (parts[2] != "mape" && parts[2] != "datoteke"))
             {
                 Console.WriteLine("Pogresna komanda. Za pomoc unesite help");
                 return;
@@ -359,6 +373,7 @@ namespace Drive.Presentation.Actions
                 }
 
                 Console.WriteLine($"Mapa: {currentName} uspjesno preimenovana u: {newName}");
+                ReadInput.WaitForUser();
 
                 return;
             }
@@ -377,7 +392,9 @@ namespace Drive.Presentation.Actions
                 Console.WriteLine("Pogreska prilikom mijenjanja imena");
                 return;
             }
+
             Console.WriteLine($"Uspjesno promijenjen naziv datoteke: {currentName} u: {newName}");
+            ReadInput.WaitForUser();
         }
 
         private static string? GetName(IEnumerable<string> parts)
@@ -440,6 +457,8 @@ namespace Drive.Presentation.Actions
 
                     ProcessFolderAndContents(folder, userFolders, _folderService, _fileService, _userService, user, "podijeli", _sharedItemService, userToShare);
 
+                    ReadInput.WaitForUser();
+
                     return;
                 }
             }
@@ -479,6 +498,9 @@ namespace Drive.Presentation.Actions
                 }
 
                 Console.WriteLine($"Datoteka: {file.Name} uspjesno podijeljena s korisnikom: {userToShare.Name + " " + userToShare.Email}");
+
+                ReadInput.WaitForUser();
+
                 return;
             }
         }

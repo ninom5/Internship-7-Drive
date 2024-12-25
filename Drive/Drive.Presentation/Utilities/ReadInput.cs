@@ -103,6 +103,13 @@ namespace Drive.Presentation.Reader
             return userService.PasswordsMatch(email, hashedPassword);            
         }
 
+        public static void WaitForUser()
+        {
+            Console.WriteLine("Pritisnite tipku za nastavak");
+            Console.ReadKey();
+
+            Console.Clear();
+        }
         public static bool ConfirmAction(string prompt)
         {
             Console.WriteLine(prompt + "y/n");
