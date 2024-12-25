@@ -1,6 +1,8 @@
 ﻿using Drive.Data.Entities;
 using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Drive.Domain.Repositories
 {
@@ -13,6 +15,10 @@ namespace Drive.Domain.Repositories
         {
             _dbContext.Add(sharedItem);
             _dbContext.SaveChanges();
+        }
+        public bool DoesExist(int id, int sharedWithId, int sharedById, Data.Enums.DataType dataType)
+        {
+            return _dbContext.SharedItems.AsNoTracking().Any(item => item.ItemId == id && item.SharedWithId == sharedWithId && item.ItemType == dataType && item.SharedById == sharedById);
         }
     }
 }

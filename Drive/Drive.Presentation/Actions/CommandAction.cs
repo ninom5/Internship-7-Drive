@@ -443,6 +443,44 @@ namespace Drive.Presentation.Actions
                     return;
                 }
             }
+            
+            while(true)
+            {
+                Console.WriteLine("Unesite ime datoteke koju zelite podijeliti (prazno za odustat)");
+
+                var fileName = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    Console.WriteLine("Ime ne moze biti prazno. Povratak...");
+                    return;
+                }
+
+                var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == fileName).FirstOrDefault();
+
+                if (file == null)
+                {
+                    Console.WriteLine("Nije pronaden zelejni file. Pokusajte opet");
+                    continue;
+                }
+
+                if (_sharedItemService.AlreadyShared(file.Id, userToShare.Id, user.Id, DataType.File))
+                {
+                    Console.WriteLine($"ova datoteka je vec podijeljena s korisnikom: {userToShare.Name}");
+                    continue;
+                }
+
+                var status = _sharedItemService.Create(file.Id, DataType.File, user, userToShare);
+
+                if (status == Domain.Enums.Status.Failed)
+                {
+                    Console.WriteLine($"Pogreska prilikom dijeljenja datoteke: {file.Name}");
+                    return;
+                }
+
+                Console.WriteLine($"Datoteka: {file.Name} uspjesno podijeljena s korisnikom: {userToShare.Name + " " + userToShare.Email}");
+                return;
+            }
         }
 
         public static void Create<T>(string name, Folder folder, User user, IFolderService? _folderService, IFileService? _fileService)

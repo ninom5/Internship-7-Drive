@@ -2,7 +2,7 @@
 using Drive.Domain.Enums;
 using Drive.Domain.Interfaces.Repositories;
 using Drive.Domain.Interfaces.Services;
-
+using Drive.Data.Enums;
 
 namespace Drive.Domain.Services
 {
@@ -37,6 +37,10 @@ namespace Drive.Domain.Services
             {
                 return Status.Failed;
             }
+        }
+        public bool AlreadyShared(int id, int sharedWithId, int sharedById, DataType dataType)
+        {
+            return _sharedRepository.DoesExist(id, sharedWithId, sharedById, dataType);
         }
     }
 }
