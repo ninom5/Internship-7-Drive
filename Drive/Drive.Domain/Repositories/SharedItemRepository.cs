@@ -34,9 +34,12 @@ namespace Drive.Domain.Repositories
         {
             return _dbContext.SharedItems
                 .Where(item => item.SharedWithId == shareToUser.Id && item.ItemType == dataType)
-                .Include(item => item.Folder) // Load folders for shared folders
-                .Include(item => item.File)   // Load files for shared files
-                .AsNoTracking()               // Avoid caching for fresh data
+                .Include(item => item.Folder) 
+                .Include(item => item.File) 
+                .Include(item => item.Folder.Owner)
+                .Include(item => item.File.Owner)
+                .Include(item => item.File.Folder)
+                .AsNoTracking()
                 .ToList();
         }
     }

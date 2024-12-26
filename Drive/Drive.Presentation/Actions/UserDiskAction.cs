@@ -52,7 +52,8 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            CommandAction.CommandMode(_user, _folderService, rootFolder, _fileService, userFolders, _userService, _sharedItemService);
+            CommandAction commandAction = new CommandAction();
+            commandAction.CommandMode(_user, _folderService, rootFolder, _fileService, userFolders, _userService, _sharedItemService);
         }
     }
 }

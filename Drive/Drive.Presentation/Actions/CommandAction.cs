@@ -9,6 +9,7 @@ using Drive.Presentation.Utilities;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
 namespace Drive.Presentation.Actions
@@ -16,7 +17,7 @@ namespace Drive.Presentation.Actions
     public class CommandAction
     {
         public static Folder currentFolder { get; private set; } = null;
-        public static void CommandMode(User user, IFolderService _folderService, Folder parrentFolder, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, ISharedItemService _sharedItemService)
+        public void CommandMode(User user, IFolderService _folderService, Folder parrentFolder, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, ISharedItemService _sharedItemService)
         {
             currentFolder = parrentFolder;
 
@@ -48,7 +49,94 @@ namespace Drive.Presentation.Actions
                 userFolders = _userService.GetFoldersOrFiles<Folder>(user);
             }
         }
+        public void SharedFilesCommandMode(ISharedItemService sharedItemService, User sharedToUser, IEnumerable<Folder> userFolders, IEnumerable<Drive.Data.Entities.Models.File> userFiles)
+        {
+            Console.Write("Unesite komandu za upravljanje datotekama i fileovima. Za pomoc unesite ");
 
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("help");
+
+            Console.ResetColor();
+
+            while (true)
+            {
+                Console.WriteLine("\n>");
+                var command = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(command))
+                    continue;
+
+                if (command == "help")
+                {
+                    HelpMenu.DisplaySharedFilesHelp();
+                    continue;
+                }
+
+                if (command == "povratak")
+                    break;
+
+                CheckSharedFilesCommand(command, sharedItemService, userFolders, userFiles, sharedToUser);
+            }
+        }
+        private static void CheckSharedFilesCommand(string command, ISharedItemService sharedItemService, IEnumerable<Folder> folders, IEnumerable<Data.Entities.Models.File> files, User sharedToUser)
+        {
+            Console.Clear();
+
+            string[] parts = command.Split(" ");
+            switch (parts[0])
+            {
+                case "izbrisi":
+                    if (parts[1] == "mapu")
+                    {
+                        var name = GetName(parts.Skip(2));
+                        if(name == null)
+                        {
+                            Console.WriteLine("ne ispravan oblik komande. Unesite help za pomoc");
+                            break;
+                        }
+
+                        var folder = FolderRepository.GetFolder(folders, name);
+
+                        
+
+                    }
+                    else if(parts[1] == "datoteku")
+                    {
+                        var name = GetName(parts.Skip(2));
+                        if (name == null)
+                        {
+                            Console.WriteLine("ne ispravan oblik komande. Unesite help za pomoc");
+                            break;
+                        }
+
+                        var fileToRemove = files.FirstOrDefault(f => f.Name == name);
+                        var sharedItemToRemove = sharedItemService.GetSharedItem(fileToRemove.Id, fileToRemove.Owner, sharedToUser, DataType.File);
+
+                        var status = sharedItemService.Remove(sharedItemToRemove);
+                        if(status != Domain.Enums.Status.Success)
+                        {
+                            Console.WriteLine($"Pogreska prilikom brisanje datoteke: {name} iz podijeljenih datoteka s vama");
+                            return;
+                        }
+
+                        Console.WriteLine($"Uspjesno izbrisana datoteka: {name} iz mape podiljenih datoteka s vama");
+                    }
+                    else
+                    {
+                        Console.WriteLine("ne ispravan oblik komande. Unesite help za pomoc");
+                    }
+                    break;
+
+                //case "uredi":
+                //    EditFile(parts, user, userFolders, _fileService, _userService);
+                //    break;
+
+                default:
+                    Console.WriteLine("ne ispravna komanda. Za pomoc unesite help");
+                    break;
+
+            }
+        }
         private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, ISharedItemService _sharedItemService)
         {
             Console.Clear();

@@ -10,5 +10,11 @@ namespace Drive.Presentation.Menus.SubMenu
                 " - trenutni_direktorij: Prikaz imena trenutnog direktorija u kojem se nalazite \n - podijeli mapu/datoteku s 'email' \n - prestani dijeliti mapu/datoteku s ‘email’" +
                 "\n - povratak: Povratak na user menu i izlazak iz komandnog moda");
         }
+        public static void DisplaySharedFilesHelp()
+        {
+            Console.WriteLine("Dostupne komande: \n - izbrisi mapu/datoteku 'ime mape/datoteke' : brise se samo kod vas \n " +
+                "- uredi datoteku 'ime datoteke' : promjene unutar datoteke se dogadaju kod vas i kod vlasnika te datoteke" +
+                "\n - povratak: povratak na user menu ");
+        }
     }
 }
