@@ -10,6 +10,6 @@ namespace Drive.Domain.Interfaces.Services
         bool AlreadyShared(int id, int sharedWithId, int sharedById, DataType dataType);
         Status Remove(SharedItem sharedItem);
         SharedItem GetSharedItem(int id, User user, User shareToUser, DataType dataType);
-        IEnumerable<SharedItem> GetAllSharedWithUser(User shareToUser);
+        IEnumerable<SharedItem> GetAllSharedWithUser(User shareToUser, DataType dataType);
     }
 }

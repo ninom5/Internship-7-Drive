@@ -50,9 +50,9 @@ namespace Drive.Domain.Services
         {
             return _sharedRepository.GetSharedItem(id, user, shareToUser, dataType);
         }
-        public IEnumerable<SharedItem> GetAllSharedWithUser(User shareToUser)
+        public IEnumerable<SharedItem> GetAllSharedWithUser(User shareToUser, DataType dataType)
         {
-            return _sharedRepository.GetAllShared(shareToUser);
+            return _sharedRepository.GetAllShared(shareToUser, dataType);
         }
         public bool AlreadyShared(int id, int sharedWithId, int sharedById, DataType dataType)
         {
