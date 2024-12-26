@@ -70,6 +70,19 @@ namespace Drive.Data.Entities
                 .HasForeignKey(s => s.SharedWithId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<SharedItem>()
+                .HasOne(s => s.Folder)
+                .WithMany()
+                .HasForeignKey(s => s.ItemId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(false);
+
+            modelBuilder.Entity<SharedItem>()
+                .HasOne(s => s.File)
+                .WithMany()
+                .HasForeignKey(s => s.ItemId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(false);
 
             modelBuilder.Entity<Comment>()
                 .HasKey(c => c.Id);

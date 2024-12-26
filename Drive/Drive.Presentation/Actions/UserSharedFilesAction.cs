@@ -7,11 +7,13 @@ namespace Drive.Presentation.Actions
     public class UserSharedFilesAction : IAction
     {
         private readonly IUserService _userService;
+        private readonly ISharedItemService _sharedItemService;
         private readonly User _LoggedUser;
 
-        public UserSharedFilesAction(IUserService userService, User user)
+        public UserSharedFilesAction(IUserService userService, ISharedItemService sharedItemService, User user)
         {
             _userService = userService;
+            _sharedItemService = sharedItemService;
             _LoggedUser = user;
         }
 

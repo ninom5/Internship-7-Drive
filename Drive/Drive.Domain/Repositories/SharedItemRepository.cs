@@ -1,6 +1,7 @@
 ﻿using Drive.Data.Entities;
 using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Drive.Domain.Repositories
@@ -27,6 +28,10 @@ namespace Drive.Domain.Repositories
         public SharedItem GetSharedItem(int id, User user, User shareToUser, Drive.Data.Enums.DataType dataType)
         {
             return _dbContext.SharedItems.FirstOrDefault(item => item.ItemId == id && item.SharedWithId == shareToUser.Id && item.ItemType == dataType && item.SharedById == user.Id);
+        }
+        public IEnumerable<SharedItem> GetAllShared(User shareToUser)
+        {
+            return _dbContext.SharedItems.Where(item => item.SharedWithId == shareToUser.Id);
         }
 
     }

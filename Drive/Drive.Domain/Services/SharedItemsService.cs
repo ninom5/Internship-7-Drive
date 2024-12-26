@@ -14,7 +14,7 @@ namespace Drive.Domain.Services
         {
             _sharedRepository = sharedRepository;
         }
-        public Status Create(int itemId, Data.Enums.DataType itemType, User sharedBy, User sharedWith)
+        public Status Create(int itemId, Data.Enums.DataType itemType, User sharedBy, User sharedWith, Folder? folder, Drive.Data.Entities.Models.File? file)
         {
             try
             {
@@ -27,6 +27,8 @@ namespace Drive.Domain.Services
                     SharedAt = DateTime.UtcNow,
                     SharedWith = sharedWith,
                     SharedBy = sharedBy,
+                    Folder = folder,
+                    File = file
                 };
 
                 _sharedRepository.Add(newSharedItem);
@@ -47,6 +49,10 @@ namespace Drive.Domain.Services
         public SharedItem GetSharedItem(int id, User user, User shareToUser, DataType dataType)
         {
             return _sharedRepository.GetSharedItem(id, user, shareToUser, dataType);
+        }
+        public IEnumerable<SharedItem> GetAllSharedWithUser(User shareToUser)
+        {
+            return _sharedRepository.GetAllShared(shareToUser);
         }
         public bool AlreadyShared(int id, int sharedWithId, int sharedById, DataType dataType)
         {

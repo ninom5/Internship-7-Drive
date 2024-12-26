@@ -493,7 +493,7 @@ namespace Drive.Presentation.Actions
                     continue;
                 }
 
-                var status = _sharedItemService.Create(file.Id, DataType.File, user, userToShare);
+                var status = _sharedItemService.Create(file.Id, DataType.File, user, userToShare, null, file);
 
                 if (status == Domain.Enums.Status.Failed)
                 {
@@ -694,7 +694,7 @@ namespace Drive.Presentation.Actions
                 }
                 else if (process == "podijeli" && _sharedItemService != null && shareToUser != null)
                 {
-                    var shareFileStatus = _sharedItemService.Create(file.Id, DataType.File, user, shareToUser);
+                    var shareFileStatus = _sharedItemService.Create(file.Id, DataType.File, user, shareToUser, null, file);
 
                     if (shareFileStatus != Domain.Enums.Status.Success)
                     {
@@ -736,7 +736,7 @@ namespace Drive.Presentation.Actions
             }
             else if(process == "podijeli" && _sharedItemService != null && shareToUser != null)
             {
-                var shareFolderStatus = _sharedItemService.Create(folder.Id, DataType.Folder, user, shareToUser);
+                var shareFolderStatus = _sharedItemService.Create(folder.Id, DataType.Folder, user, shareToUser, folder, null);
 
                 if (shareFolderStatus != Domain.Enums.Status.Success)
                 {
