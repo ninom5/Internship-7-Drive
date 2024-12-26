@@ -8,5 +8,7 @@ namespace Drive.Domain.Interfaces.Services
     {
         Status Create(int itemId, Data.Enums.DataType itemType, User sharedBy, User sharedWith);
         bool AlreadyShared(int id, int sharedWithId, int sharedById, DataType dataType);
+        Status Remove(SharedItem sharedItem);
+        SharedItem GetSharedItem(int id, User user, User shareToUser, DataType dataType);
     }
 }

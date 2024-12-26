@@ -19,5 +19,15 @@ namespace Drive.Domain.Repositories
         {
             return _dbContext.SharedItems.Any(item => item.ItemId == id && item.SharedWithId == sharedWithId && item.ItemType == dataType && item.SharedById == sharedById);
         }
+        public void Delete(SharedItem sharedItem)
+        {
+            _dbContext.Remove(sharedItem);
+            _dbContext.SaveChanges();
+        }
+        public SharedItem GetSharedItem(int id, User user, User shareToUser, Drive.Data.Enums.DataType dataType)
+        {
+            return _dbContext.SharedItems.FirstOrDefault(item => item.ItemId == id && item.SharedWithId == shareToUser.Id && item.ItemType == dataType && item.SharedById == user.Id);
+        }
+
     }
 }

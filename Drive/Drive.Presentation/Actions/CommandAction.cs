@@ -84,6 +84,10 @@ namespace Drive.Presentation.Actions
                     StartSharing(parts, userFolders, _folderService, _fileService, _userService, _sharedItemService, user);
                     break;
 
+                case "prestani":
+                    StopSharing(parts, userFolders, _folderService, _fileService, _userService, _sharedItemService, user);
+                    break;
+
                 default:
                     Console.WriteLine("Pogresna komanda. Za pomoc unesite help");
                     break;
@@ -505,6 +509,108 @@ namespace Drive.Presentation.Actions
             }
         }
 
+        public static void StopSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService, User user)
+        {
+            if (parts.Length < 4 || parts[1] != "dijeliti" || (parts[2] != "mapu" && parts[2] != "datoteku") || parts[3] != "s")
+            {
+                Console.WriteLine("Ne ispravan oblik komande Podijeli. Za pomoc unesite help");
+                return;
+            }
+
+            //ovo moze odvojena funkcija
+            var email = GetName(parts.Skip(3));
+            if (email == null)
+            {
+                Console.WriteLine("Email ne moze biti prazan. Povratak...");
+                return;
+            }
+
+            if (!_userService.EmailExists(email))
+            {
+                Console.WriteLine("Uneseni email ne postoji.");
+                return;
+            }
+
+            var userToShare = _userService.GetUser(email);
+            if (userToShare == null)
+            {
+                Console.WriteLine("Uneseni korisnik nije pronaden");
+                return;
+            }
+            //------------------------------------------
+
+            if (parts[2] == "mapu")
+            {
+                while (true)
+                {
+                    Console.WriteLine("Unesite ime mape koju zelite podijeliti");
+                    var folderName = Console.ReadLine();
+
+                    if (string.IsNullOrEmpty(folderName))
+                    {
+                        Console.WriteLine("Ime ne moze biti prazno. Povratak...");
+                        return;
+                    }
+
+                    var folder = _userService.GetFoldersOrFiles<Folder>(user).Where(f => f.Name == folderName).FirstOrDefault();
+
+                    if (folder == null)
+                    {
+                        Console.WriteLine("Nije pronaden zelejni folder. Pokusajte opet");
+                        continue;
+                    }
+
+                    ProcessFolderAndContents(folder, userFolders, _folderService, _fileService, _userService, user, "prestani dijeliti", _sharedItemService, userToShare);
+
+                    ReadInput.WaitForUser();
+
+                    return;
+                }
+            }
+
+            while (true)
+            {
+                Console.WriteLine("Unesite ime datoteke koju zelite podijeliti (prazno za odustat)");
+
+                var fileName = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    Console.WriteLine("Ime ne moze biti prazno. Povratak...");
+                    return;
+                }
+
+                var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == fileName).FirstOrDefault();
+
+                if (file == null)
+                {
+                    Console.WriteLine("Nije pronaden zelejni file. Pokusajte opet");
+                    continue;
+                }
+
+                if (!_sharedItemService.AlreadyShared(file.Id, userToShare.Id, user.Id, DataType.File))
+                {
+                    Console.WriteLine($"ova datoteka nije ni podijeljena s korisnikom: {userToShare.Name}");
+                    continue;
+                }
+
+                var sharedItem = _sharedItemService.GetSharedItem(file.Id, user, userToShare, DataType.File);
+
+                var status = _sharedItemService.Remove(sharedItem);
+
+                if (status == Domain.Enums.Status.Failed)
+                {
+                    Console.WriteLine($"Pogreska prilikom prestanka dijeljenja datoteke: {file.Name}");
+                    return;
+                }
+
+                Console.WriteLine($"Uspjesno prekinuto dijeljenje datoteke: {file.Name} s korisnikom: {userToShare.Name + " " + userToShare.Email}");
+
+                ReadInput.WaitForUser();
+
+                return;
+            }
+        }
         public static void Create<T>(string name, Folder folder, User user, IFolderService? _folderService, IFileService? _fileService)
         {
             if (typeof(T) == typeof(Folder))
@@ -598,6 +704,24 @@ namespace Drive.Presentation.Actions
 
                     Console.WriteLine($"Datoteka: {file.Name} uspjesno podijeljena s korisnikom: {shareToUser.Name + " " +  shareToUser.Email}");
                 }
+                else if(process == "prestani dijeliti")
+                {
+                    if (!_sharedItemService.AlreadyShared(file.Id, shareToUser.Id, user.Id, DataType.File)) {
+                        Console.WriteLine($"Ova datoteka nije ni podijeljena s korisnikom: {shareToUser.Name}");
+                        continue;
+                    }
+
+                    var sharedItem = _sharedItemService.GetSharedItem(file.Id, user, shareToUser, DataType.File);
+
+                    var removeShareStatus = _sharedItemService.Remove(sharedItem);
+                    if (removeShareStatus != Domain.Enums.Status.Success)
+                    {
+                        Console.WriteLine($"Pogreska prilikom prestanka dijeljenja datoteke: {file.Name}");
+                        continue;
+                    }
+
+                    Console.WriteLine($"Uspjesno prekinuto dijeljenje datoteke: {file.Name} s korisnikom: {shareToUser.Name + " " + shareToUser.Email}");
+                }
             }
 
             if (process == "izbrisi")
@@ -621,6 +745,20 @@ namespace Drive.Presentation.Actions
                 }
 
                 Console.WriteLine($"Mapa: {folder.Name} uspjesno podijeljena s korisnikom: {shareToUser.Name + " " + shareToUser.Email}");
+            }
+            else if(process == "prestani dijeliti")
+            {
+                var sharedFolder = _sharedItemService.GetSharedItem(folder.Id, user, shareToUser, DataType.Folder);
+
+                var removeShareStatus = _sharedItemService.Remove(sharedFolder);
+
+                if (removeShareStatus != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine($"Pogreska prilikom prestanka dijeljenja foldera: {folder.Name}");
+                    return;
+                }
+
+                Console.WriteLine($"Uspjesno prekinuto dijeljenje mape: {folder.Name} s korisnikom {shareToUser.Name}");
             }
         }
     }

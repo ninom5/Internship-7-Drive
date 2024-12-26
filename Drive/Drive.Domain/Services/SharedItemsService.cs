@@ -38,6 +38,16 @@ namespace Drive.Domain.Services
                 return Status.Failed;
             }
         }
+        public Status Remove(SharedItem sharedItem)
+        {
+            _sharedRepository.Delete(sharedItem);
+
+            return Status.Success;
+        }
+        public SharedItem GetSharedItem(int id, User user, User shareToUser, DataType dataType)
+        {
+            return _sharedRepository.GetSharedItem(id, user, shareToUser, dataType);
+        }
         public bool AlreadyShared(int id, int sharedWithId, int sharedById, DataType dataType)
         {
             return _sharedRepository.DoesExist(id, sharedWithId, sharedById, dataType);
