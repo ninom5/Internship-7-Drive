@@ -37,8 +37,8 @@ namespace Drive.Presentation.Actions
 
             foreach (var folder in userFolders.OrderBy(folder => folder.Name))
             {
-                Helper.DisplayFolder(folder);
-                Helper.DisplayFilesForFolder(userFiles, folder.Id);
+                FolderProcessesHelper.DisplayFolder(folder);
+                FileProcessesHelper.DisplayFilesForFolder(userFiles, folder.Id);
                 Console.WriteLine();
             }
 
