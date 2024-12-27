@@ -10,13 +10,15 @@ namespace Drive.Presentation.Actions
     {
         private readonly IUserService _userService;
         private readonly ISharedItemService _sharedItemService;
+        private readonly IFileService _fileService;
         private readonly User _LoggedUser;
 
-        public UserSharedFilesAction(IUserService userService, User user, ISharedItemService sharedItemService)
+        public UserSharedFilesAction(IUserService userService, User user, ISharedItemService sharedItemService, IFileService fileService)
         {
             _userService = userService;
             _sharedItemService = sharedItemService;
             _LoggedUser = user;
+            _fileService = fileService;
         }
 
         public void Execute()
@@ -55,13 +57,24 @@ namespace Drive.Presentation.Actions
                 else
                 {
                     Console.WriteLine("\tNema datoteka podijeljenih s vama");
+                    break;
                 }
             }
+            
+
             Console.WriteLine();
             ReadInput.WaitForUser();
 
+            if (!(folders.Any() && files.Any()))
+            {
+                Console.WriteLine("nema podijeljenih mapa i datoteka s vama, pa ne mozete upravljati. Povratak na user menu...");
+                Thread.Sleep(1000);
+
+                return;
+            }
+
             CommandAction commandAction = new CommandAction();
-            commandAction.SharedFilesCommandMode(_sharedItemService, _LoggedUser, folders, files);
+            commandAction.SharedFilesCommandMode(_sharedItemService, _LoggedUser, folders, files, _fileService);
         }
     }
 }

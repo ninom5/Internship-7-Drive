@@ -16,7 +16,6 @@ public class Program
         var dbContext = new DriveDbContext(options);
 
         var userRepository = new UserRepository(dbContext);
-
         var userService = new UserService(userRepository);
 
         var folderRepository = new FolderRepository(dbContext);
@@ -28,7 +27,10 @@ public class Program
         var sharedItemRepository = new SharedItemRepository(dbContext);
         var sharedItemService = new SharedItemsService(sharedItemRepository);
 
-        MenuFactory.Initialize(userService, folderService, fileService, sharedItemService);
+        var commentRepository = new CommentRepository(dbContext);
+        var commentService = new CommentService(commentRepository);
+
+        MenuFactory.Initialize(userService, folderService, fileService, sharedItemService, commentService);
 
         IMenu mainMenu = MenuFactory.CreateMenu("MainMenu");
 

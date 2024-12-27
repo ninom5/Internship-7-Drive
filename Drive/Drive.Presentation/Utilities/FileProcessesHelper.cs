@@ -1,6 +1,8 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
 using Drive.Data.Enums;
+using Drive.Domain.Services;
+using Drive.Presentation.Reader;
 
 namespace Drive.Presentation.Utilities
 {
@@ -68,6 +70,100 @@ namespace Drive.Presentation.Utilities
 
             Console.WriteLine($"Uspjesno prekinuto dijeljenje datoteke: {file.Name} s korisnikom: {shareToUser.Name + " " + shareToUser.Email}");
         }
+        public static void ReadAndWriteFileContent(Drive.Data.Entities.Models.File file, IFileService _fileService)
+        {
+            Console.WriteLine($"----------Trenutni sadrzaj datoteke----------\n{file.Content}" +
+               $"\n---------------------------------------------");
 
+            List<string> newContent = new List<string>();
+            var currentLine = "";
+            bool isSaved = false;
+
+            while (true)
+            {
+                var key = Console.ReadKey(intercept: true);
+
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    if (currentLine.StartsWith(":"))
+                    {
+                        currentLine = currentLine.Substring(1, currentLine.Length - 1).Trim();
+
+                        if (currentLine == "spremanje i izlaz")
+                        {
+                            Console.WriteLine("\nSpremanje promjena...\nIzlaz...");
+                            file.Content = string.Join(Environment.NewLine, newContent);
+                            file.LastModifiedAt = DateTime.UtcNow;
+
+                            _fileService.UpdateFileContent(file);
+
+                            isSaved = true;
+
+                            break;
+                        }
+                        else if (currentLine == "izlaz bez spremanja")
+                        {
+                            Console.WriteLine("\nNece se spremiti nista.\nIzlaz...");
+                            break;
+                        }
+                        else if (currentLine == "help")
+                        {
+                            Console.WriteLine("\n\t- :spremanje i izlaz spremanje promjena i izlaz \n\t- :izlaz bez spremanja odbacivanje promjena i izlaz\n");
+                            currentLine = "";
+                            continue;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nNe ispravna komanda. Unesite help za pomoc\n");
+                            currentLine = "";
+                            continue;
+                        }
+                    }
+
+                    newContent.Add(currentLine);
+                    Console.WriteLine();
+                    currentLine = "";
+                }
+                else if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (currentLine.Length > 0)
+                    {
+                        currentLine = currentLine.Substring(0, currentLine.Length - 1);
+                        Console.Write("\b \b");
+                    }
+                    else if (newContent.Count > 0)
+                    {
+                        currentLine = newContent[^1];
+                        newContent.RemoveAt(newContent.Count - 1);
+
+                        Console.CursorTop--;
+                        Console.CursorLeft = 0;
+                        Console.Write(new string(' ', Console.WindowWidth));
+                        Console.CursorLeft = 0;
+                        Console.Write(currentLine);
+                    }
+                }
+                else if (key.Key == ConsoleKey.Z && key.Modifiers == ConsoleModifiers.Control)
+                {
+                    Console.WriteLine();
+                    break;
+                }
+                else
+                {
+                    currentLine += key.KeyChar;
+                    Console.Write(key.KeyChar);
+                }
+            }
+
+            if (isSaved)
+            {
+                Console.WriteLine("Novi sadrzaj: ");
+                foreach (var line in newContent)
+                {
+                    Console.WriteLine(line);
+                }
+                ReadInput.WaitForUser();
+            }
+        }
     }
 }

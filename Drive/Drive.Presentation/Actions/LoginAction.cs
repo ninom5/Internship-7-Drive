@@ -11,15 +11,17 @@ namespace Drive.Presentation.Actions
         private readonly IFolderService _folderService;
         private readonly IFileService _fileService;
         private readonly ISharedItemService _sharedItemService;
+        private readonly ICommentService _commentService;
 
         private static int failedPasswordCountdown = 30;
         private static Timer timer;
-        public LoginAction(IUserService userService, IFolderService folderService, IFileService fileService, ISharedItemService sharedItemService)
+        public LoginAction(IUserService userService, IFolderService folderService, IFileService fileService, ISharedItemService sharedItemService, ICommentService commentService)
         {
             _userService = userService;
             _folderService = folderService;
             _fileService = fileService;
             _sharedItemService = sharedItemService;
+            _commentService = commentService;
         }
         public void Execute()
         {
@@ -64,7 +66,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var loginMenu = new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService);
+            var loginMenu = new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService, _commentService);
             loginMenu.Execute();
         }
 
