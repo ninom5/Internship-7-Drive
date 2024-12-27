@@ -64,5 +64,22 @@ namespace Drive.Presentation.Utilities
                 return true;
             }
         }
+        public static void ShowUserFoldersAndFiles(User user, IUserService _userService, IEnumerable<Folder> userFolders, IEnumerable<Drive.Data.Entities.Models.File> userFiles)
+        {
+            
+
+            if (!userFolders.Any() && !userFiles.Any())
+                Console.WriteLine("Nemate kreiranih mapa i datoteka");
+
+
+            Console.WriteLine("Vase datoteke: ");
+
+            foreach (var folder in userFolders.OrderBy(folder => folder.Name))
+            {
+                FolderProcessesHelper.DisplayFolder(folder);
+                FileProcessesHelper.DisplayFilesForFolder(userFiles, folder.Id);
+                Console.WriteLine();
+            }
+        }
     }
 }

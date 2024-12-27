@@ -2,11 +2,13 @@
 using Drive.Data.Enums;
 using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
+using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
 using System.Text;
 using System.Text.RegularExpressions;
+using File = Drive.Data.Entities.Models.File;
 
 
 namespace Drive.Presentation.Actions
@@ -14,7 +16,8 @@ namespace Drive.Presentation.Actions
     public class CommandAction
     {
         public static Folder currentFolder { get; private set; } = null;
-        public void CommandMode(User user, IFolderService _folderService, Folder parrentFolder, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, ISharedItemService _sharedItemService)
+        public void CommandMode(User user, Folder parrentFolder, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService, 
+            IEnumerable<Folder> userFolders, IEnumerable<File> userFiles)
         {
             currentFolder = parrentFolder;
 
@@ -42,11 +45,11 @@ namespace Drive.Presentation.Actions
                 if (command == "povratak")
                     break;
 
-                CheckCommand(command, user, _folderService, _fileService, userFolders, _userService, _sharedItemService);
+                CheckCommand(command, user, _folderService, _fileService, userFolders, _userService, _sharedItemService, userFiles);
                 userFolders = _userService.GetFoldersOrFiles<Folder>(user);
             }
         }
-        public void SharedFilesCommandMode(ISharedItemService sharedItemService, User sharedToUser, IEnumerable<Folder> userFolders, IEnumerable<Drive.Data.Entities.Models.File> userFiles, IFileService _fileService)
+        public void SharedFilesCommandMode(ISharedItemService sharedItemService, User sharedToUser, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IFileService _fileService)
         {
             Console.Write("Unesite komandu za upravljanje podijeljenim mapama i datotekama. Za pomoc unesite ");
 
@@ -172,7 +175,8 @@ namespace Drive.Presentation.Actions
 
             }
         }
-        private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, ISharedItemService _sharedItemService)
+        private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, 
+            ISharedItemService _sharedItemService, IEnumerable<File> userFiles)
         {
             Console.Clear();
 
@@ -201,6 +205,11 @@ namespace Drive.Presentation.Actions
 
                 case "trenutni_direktorij":
                     Console.WriteLine($"Trenutno se nalazite u mapi: {currentFolder.Name}");
+                    break;
+
+                case "ls":
+                    Helper.ShowUserFoldersAndFiles(user, _userService, userFolders, userFiles);
+                    ReadInput.WaitForUser();
                     break;
 
                 case "podijeli":
@@ -241,7 +250,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            Create<Drive.Data.Entities.Models.File>(name, currentFolder, user, _folderService, _fileService);
+            Create<File>(name, currentFolder, user, _folderService, _fileService);
 
             ReadInput.WaitForUser();
         }
@@ -275,7 +284,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var files = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user);
+            var files = _userService.GetFoldersOrFiles<File>(user);
             var file = FileRepository.GetFile(files, name);
 
             if(file != null)
@@ -320,7 +329,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).FirstOrDefault(f => f.Name == name);
+            var file = _userService.GetFoldersOrFiles<File>(user).FirstOrDefault(f => f.Name == name);
             if (file == null)
             {
                 Console.WriteLine("Datoteka s unesenim imenom nije pronađena.");
@@ -371,7 +380,7 @@ namespace Drive.Presentation.Actions
             }
 
 
-            var fileToDelete = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).FirstOrDefault(f => f.Name == name);
+            var fileToDelete = _userService.GetFoldersOrFiles<File>(user).FirstOrDefault(f => f.Name == name);
             if (fileToDelete == null)
             {
                 Console.WriteLine("Nije pronaden zeljeni file");
@@ -446,7 +455,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var fileToRename = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == currentName).FirstOrDefault();
+            var fileToRename = _userService.GetFoldersOrFiles<File>(user).Where(f => f.Name == currentName).FirstOrDefault();
             if (fileToRename == null)
             {
                 Console.WriteLine("Nije pronaden zeljeni file");
@@ -543,7 +552,7 @@ namespace Drive.Presentation.Actions
                     return;
                 }
 
-                var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == fileName).FirstOrDefault();
+                var file = _userService.GetFoldersOrFiles<File>(user).Where(f => f.Name == fileName).FirstOrDefault();
 
                 if (file == null)
                 {
@@ -644,7 +653,7 @@ namespace Drive.Presentation.Actions
                     return;
                 }
 
-                var file = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(f => f.Name == fileName).FirstOrDefault();
+                var file = _userService.GetFoldersOrFiles<File>(user).Where(f => f.Name == fileName).FirstOrDefault();
 
                 if (file == null)
                 {
@@ -741,7 +750,7 @@ namespace Drive.Presentation.Actions
             foreach (var subFolder in subFolders)
                 ProcessFolderAndContents(subFolder, allFolders, _folderService, _fileService, _userService, user, process, _sharedItemService, shareToUser);
 
-            var filesInFolder = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user).Where(file => file.FolderId == folder.Id).ToList();
+            var filesInFolder = _userService.GetFoldersOrFiles<File>(user).Where(file => file.FolderId == folder.Id).ToList();
 
             foreach (var file in filesInFolder)
             {

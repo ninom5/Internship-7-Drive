@@ -29,18 +29,7 @@ namespace Drive.Presentation.Actions
             var userFolders = _userService.GetFoldersOrFiles<Folder>(_user);
             var userFiles = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(_user);
 
-            if (!userFolders.Any() && !userFiles.Any())
-                Console.WriteLine("Nemate kreiranih mapa i datoteka");
-
-
-            Console.WriteLine("Vase datoteke: ");
-
-            foreach (var folder in userFolders.OrderBy(folder => folder.Name))
-            {
-                FolderProcessesHelper.DisplayFolder(folder);
-                FileProcessesHelper.DisplayFilesForFolder(userFiles, folder.Id);
-                Console.WriteLine();
-            }
+            Helper.ShowUserFoldersAndFiles(_user, _userService, userFolders, userFiles);
 
             Console.WriteLine("Za ulazak u komandni nacin pritisnite bilo koju tipku");
             Console.ReadKey();
@@ -53,7 +42,7 @@ namespace Drive.Presentation.Actions
             }
 
             CommandAction commandAction = new CommandAction();
-            commandAction.CommandMode(_user, _folderService, rootFolder, _fileService, userFolders, _userService, _sharedItemService);
+            commandAction.CommandMode(_user, rootFolder, _folderService, _fileService, _userService, _sharedItemService, userFolders, userFiles);
         }
     }
 }
