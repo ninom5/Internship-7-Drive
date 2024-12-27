@@ -6,6 +6,8 @@ using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -78,7 +80,7 @@ namespace Drive.Presentation.Actions
                 CheckSharedFilesCommand(command, sharedItemService, userFolders, userFiles, sharedToUser);
             }
         }
-        private static void CheckSharedFilesCommand(string command, ISharedItemService sharedItemService, IEnumerable<Folder> folders, IEnumerable<Data.Entities.Models.File> files, User sharedToUser)
+        private void CheckSharedFilesCommand(string command, ISharedItemService sharedItemService, IEnumerable<Folder> folders, IEnumerable<Data.Entities.Models.File> files, User sharedToUser)
         {
             Console.Clear();
 
@@ -96,9 +98,7 @@ namespace Drive.Presentation.Actions
                         }
 
                         var folder = FolderRepository.GetFolder(folders, name);
-
-                        
-
+                        //RemoveFolderAndContentsFromShared(folder, folders, sharedItemService, sharedToUser);
                     }
                     else if(parts[1] == "datoteku")
                     {
@@ -137,6 +137,13 @@ namespace Drive.Presentation.Actions
 
             }
         }
+        //private void RemoveFolderAndContentsFromShared(Folder folder, IEnumerable<Folder> allFolders, ISharedItemService sharedItemService, User sharedToUser)
+        //{
+        //    var subFolders = allFolders.Where(f => f.ParentFolderId == folder.Id).ToList();
+
+        //    foreach (var subFolder in subFolders)
+        //        RemoveFolderAndContentsFromShared(subFolder, allFolders, sharedItemService, sharedToUser);
+        //}
         private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, ISharedItemService _sharedItemService)
         {
             Console.Clear();
