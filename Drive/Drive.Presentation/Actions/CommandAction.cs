@@ -2,7 +2,6 @@
 using Drive.Data.Enums;
 using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
-using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
@@ -148,12 +147,6 @@ namespace Drive.Presentation.Actions
                         return;
                     }
 
-                    var fileName = GetName(parts.Skip(2));
-                    var fileToEdit = files.Where(f => f.Name == fileName).FirstOrDefault();
-                    User user = fileToEdit.Owner;
-
-                    
-                    //EditFile(parts, files, files, fileService, userService);
                     break;
 
                 default:
@@ -162,13 +155,6 @@ namespace Drive.Presentation.Actions
 
             }
         }
-        //private void RemoveFolderAndContentsFromShared(Folder folder, IEnumerable<Folder> allFolders, ISharedItemService sharedItemService, User sharedToUser)
-        //{
-        //    var subFolders = allFolders.Where(f => f.ParentFolderId == folder.Id).ToList();
-
-        //    foreach (var subFolder in subFolders)
-        //        RemoveFolderAndContentsFromShared(subFolder, allFolders, sharedItemService, sharedToUser);
-        //}
         private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, ISharedItemService _sharedItemService)
         {
             Console.Clear();
@@ -181,7 +167,7 @@ namespace Drive.Presentation.Actions
                     break;
 
                 case "udi":
-                    ChangeWorkingDirectory(parts, userFolders);
+                    ChangeWorkingDirectory(parts, userFolders, _userService, user);
                     break;
 
                 case "uredi":
@@ -242,32 +228,65 @@ namespace Drive.Presentation.Actions
 
             ReadInput.WaitForUser();
         }
-        private static void ChangeWorkingDirectory(string[] parts, IEnumerable<Folder> userFolders)
+        private static void ChangeWorkingDirectory(string[] parts, IEnumerable<Folder> userFolders, IUserService _userService, User user)
         {
-            if (parts.Length < 4 || parts[1] != "u" || parts[2] != "mapu")
+            if (parts.Length < 4 || parts[1] != "u" || (parts[2] != "mapu" && parts[2] != "datoteku"))
             {
                 Console.WriteLine("Pogresan oblik komande za promjenu trenutne mape. Za pomoc unesite help");
                 return;
             }
 
-            string name = GetName(parts.Skip(3));
+
+            var name = GetName(parts.Skip(3));
             if (string.IsNullOrEmpty(name))
             {
                 Console.WriteLine("Ime ne moze biti prazno");
                 return;
             }
-
-            var folder = FolderRepository.GetFolder(userFolders, name);
-            if (folder == null)
+            if (parts[2] == "mapu")
             {
-                Console.WriteLine("Nije pronaden folder s unesenim imenom");
+                var folder = FolderRepository.GetFolder(userFolders, name);
+                if (folder == null)
+                {
+                    Console.WriteLine("Nije pronaden folder s unesenim imenom");
+                    return;
+                }
+
+                currentFolder = folder;
+                Console.WriteLine($"Trenutno unutar mape: {currentFolder.Name}");
+                ReadInput.WaitForUser();
                 return;
             }
 
-            currentFolder = folder;
-            Console.WriteLine($"Trenutno unutar mape: {currentFolder.Name}");
+            var files = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(user);
+            var file = FileRepository.GetFile(files, name);
 
-            ReadInput.WaitForUser();
+            if(file != null)
+            {
+                Console.WriteLine("Datoteka nije pronadena");
+                return;
+            }
+
+            while (true)
+            {
+                Console.WriteLine($"Trenutni sadrzaj datoteke: \n {file.Content} \n-------------------------------------------------------------------------------- \n" +
+                    $"za upravljanje komentarima unesite jednu od komandi: dodaj komentar, uredi komentar, izbrisi komentar ili za vratiti se na prijasnji izbornik ostavite prazno");
+             
+                var command = Console.ReadLine();
+                if(string.IsNullOrEmpty(command))
+                {
+                    Console.WriteLine("Ne moze biti prazno. Povratak...");
+                    return;
+                }
+
+                switch (command)
+                {
+                    case "dodaj komentar":
+
+                        break;
+                }
+
+            }
         }
         private static void EditFile(string[] parts, User user, IFileService _fileService, IUserService _userService)
         {

@@ -48,7 +48,7 @@ namespace Drive.Presentation.Utilities
         {
             if (!sharedItemService.AlreadyShared(file.Id, shareToUser.Id, user.Id, DataType.File))
             {
-                Console.WriteLine($"Datoteka '{file.Name}' nije ni podijeljena s korisnikom: {shareToUser.Name}");
+                Console.WriteLine($"Datoteka: {file.Name} nije ni podijeljena s korisnikom: {shareToUser.Name}");
                 return;
             }
 

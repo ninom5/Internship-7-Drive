@@ -20,7 +20,7 @@ namespace Drive.Domain.Repositories
             _dbContext.Remove(file);
             _dbContext.SaveChanges();
         }
-        public Drive.Data.Entities.Models.File ?GetFile(IEnumerable<Drive.Data.Entities.Models.File> userFiles, string name)
+        public static Drive.Data.Entities.Models.File ?GetFile(IEnumerable<Drive.Data.Entities.Models.File> userFiles, string name)
         {
             return userFiles.Where(f => f.Name == name).FirstOrDefault();
         }
