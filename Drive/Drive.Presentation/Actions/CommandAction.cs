@@ -17,7 +17,7 @@ namespace Drive.Presentation.Actions
     {
         public static Folder currentFolder { get; private set; } = null;
         public void CommandMode(User user, Folder parrentFolder, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService, 
-            IEnumerable<Folder> userFolders, IEnumerable<File> userFiles)
+            IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, ICommentService _commentService)
         {
             currentFolder = parrentFolder;
 
@@ -45,11 +45,11 @@ namespace Drive.Presentation.Actions
                 if (command == "povratak")
                     break;
 
-                CheckCommand(command, user, _folderService, _fileService, userFolders, _userService, _sharedItemService, userFiles);
+                CheckCommand(command, user, _folderService, _fileService, userFolders, _userService, _sharedItemService, userFiles, _commentService);
                 userFolders = _userService.GetFoldersOrFiles<Folder>(user);
             }
         }
-        public void SharedFilesCommandMode(ISharedItemService sharedItemService, User sharedToUser, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IFileService _fileService)
+        public static void SharedFilesCommandMode(ISharedItemService sharedItemService, User sharedToUser, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IFileService _fileService, ICommentService _commentService)
         {
             Console.Write("Unesite komandu za upravljanje podijeljenim mapama i datotekama. Za pomoc unesite ");
 
@@ -75,10 +75,10 @@ namespace Drive.Presentation.Actions
                 if (command == "povratak")
                     break;
 
-                CheckSharedFilesCommand(command, sharedItemService, userFolders, userFiles, sharedToUser, _fileService);
+                CheckSharedFilesCommand(command, sharedItemService, userFolders, userFiles, sharedToUser, _fileService, _commentService);
             }
         }
-        private void CheckSharedFilesCommand(string command, ISharedItemService sharedItemService, IEnumerable<Folder> folders, IEnumerable<Data.Entities.Models.File> files, User sharedToUser, IFileService _fileService)
+        private static void CheckSharedFilesCommand(string command, ISharedItemService sharedItemService, IEnumerable<Folder> folders, IEnumerable<Data.Entities.Models.File> files, User sharedToUser, IFileService _fileService, ICommentService _commentService)
         {
             Console.Clear();
 
@@ -169,14 +169,102 @@ namespace Drive.Presentation.Actions
 
                     break;
 
+                //case "udi":
+                //    if(parts[1] != "u" || parts[2] != "datoteku" || parts.Length < 4)
+                //    {
+                //        Console.WriteLine("Ne ispravan oblik komande. Unesite help za pomoc");
+                //        return;
+                //    }
+
+                //    var fileNameToShow = GetName(parts.Skip(3));
+                //    if (fileNameToShow == null)
+                //    {
+                //        Console.WriteLine("Pogreska prilikom dohvacanja imena");
+                //        return;
+                //    }
+
+                //    var file = files.FirstOrDefault(f => f.Name == fileNameToShow);
+                //    if(file == null)
+                //    {
+                //        Console.WriteLine($"Datoteka: {fileNameToShow} nije pronadena medu datotekama podijeljenima s vama");
+                //        return;
+                //    }
+
+                //    Console.WriteLine($"----------Trenutni sadrzaj datoteke----------\n{file.Content}" +
+                //        $"\n---------------------------------------------" +
+                //        $"\nZa prikaz komentara upisite otvori komentare nakon cega mozetet upravljati s njima. Za odustajanje ostavite prazno");
+
+                //    while (true)
+                //    {
+
+                //        Console.WriteLine(">");
+                //        var commentCommand = Console.ReadLine();
+
+                //        if(string.IsNullOrEmpty(commentCommand))
+                //        {
+                //            Console.WriteLine("Povratak...");
+                //            return;
+                //        }
+
+                //        if(commentCommand != "otvori komentare")
+                //        {
+                //            Console.WriteLine("pogresna komanda. Unesite opet");
+                //            continue;
+                //        }
+
+                //        ManageComments(sharedToUser, file, sharedItemService, _fileService, _commentService);
+                //        break;
+                //    }
+
+                //    break;
+
                 default:
                     Console.WriteLine("ne ispravna komanda. Za pomoc unesite help");
                     break;
-
             }
         }
+        //private static void ManageComments(User user, File file, ISharedItemService _sharedItemService, IFileService _fileService, ICommentService _commentService)
+        //{
+        //    CommentAction.ShowComments(file, _commentService);
+        //    while (true)
+        //    {
+             
+        //        Console.WriteLine("Unesite komandu za upravljanje komentarima. Za pommoc unesite help\n >");
+
+        //        var command = Console.ReadLine();
+
+        //        if (command == "povratak")
+        //            return;
+        //        if(command == "help")
+        //        {
+        //            HelpMenu.DisplayCommentHelp();
+        //            continue;
+        //        }
+
+        //        switch (command)
+        //        {
+        //            case "dodaj komentar":
+        //                CommentAction.CreateComment(file, user, _commentService);
+        //                break;
+
+        //            case "izbrisi komentar":
+        //                CommentAction.ShowComments(file, _commentService);
+        //                CommentAction.DeleteComment(file.Id, _commentService);
+        //                break;
+
+        //            case "uredi komentar":
+        //                CommentAction.ShowComments(file, _commentService);
+        //                CommentAction.EditComment(file, _commentService);
+        //                break;
+
+        //            default:
+        //                Console.WriteLine("Pogresna komanda. Unesite help za pomoc");
+        //                break;
+        //        }
+        //    }
+        //}
         private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, 
-            ISharedItemService _sharedItemService, IEnumerable<File> userFiles)
+            ISharedItemService _sharedItemService, IEnumerable<File> userFiles, ICommentService _commentService)
         {
             Console.Clear();
 
@@ -188,7 +276,7 @@ namespace Drive.Presentation.Actions
                     break;
 
                 case "udi":
-                    ChangeWorkingDirectory(parts, userFolders, _userService, user);
+                    ChangeWorkingDirectory(parts, userFolders, _userService, user, _commentService);
                     break;
 
                 case "uredi":
@@ -254,7 +342,7 @@ namespace Drive.Presentation.Actions
 
             ReadInput.WaitForUser();
         }
-        private static void ChangeWorkingDirectory(string[] parts, IEnumerable<Folder> userFolders, IUserService _userService, User user)
+        private static void ChangeWorkingDirectory(string[] parts, IEnumerable<Folder> userFolders, IUserService _userService, User user, ICommentService _commentService)
         {
             if (parts.Length < 4 || parts[1] != "u" || (parts[2] != "mapu" && parts[2] != "datoteku"))
             {
@@ -285,9 +373,9 @@ namespace Drive.Presentation.Actions
             }
 
             var files = _userService.GetFoldersOrFiles<File>(user);
-            var file = FileRepository.GetFile(files, name);
+            var file = _userService.GetFoldersOrFiles<File>(user).FirstOrDefault(f => f.Name == name);
 
-            if(file != null)
+            if (file == null)
             {
                 Console.WriteLine("Datoteka nije pronadena");
                 return;
@@ -308,7 +396,7 @@ namespace Drive.Presentation.Actions
                 switch (command)
                 {
                     case "dodaj komentar":
-
+                        CommentAction.CreateComment(file, user, _commentService);
                         break;
                 }
 

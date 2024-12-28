@@ -1,5 +1,6 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
+using Drive.Domain.Services;
 using Drive.Presentation.Reader;
 
 namespace Drive.Presentation.Utilities
@@ -80,6 +81,46 @@ namespace Drive.Presentation.Utilities
                 FileProcessesHelper.DisplayFilesForFolder(userFiles, folder.Id);
                 Console.WriteLine();
             }
+        }
+        public static (IEnumerable<Folder>, IEnumerable<Data.Entities.Models.File>) ShowSharedDataWithUser(ISharedItemService _sharedItemService, User _loggedUser)
+        {
+            var sharedFolders = _sharedItemService.GetAllSharedWithUser(_loggedUser, Data.Enums.DataType.Folder).OrderBy(f => f.Folder.Name);
+            var sharedFiles = _sharedItemService.GetAllSharedWithUser(_loggedUser, Data.Enums.DataType.File).OrderBy(f => f.File.LastModifiedAt);
+            var folders = new List<Folder>();
+            var files = new List<Drive.Data.Entities.Models.File>();
+
+            Console.WriteLine(" Podijeljene mape s vama: ");
+            foreach (var folder in sharedFolders)
+            {
+                if (folder != null)
+                {
+                    Console.WriteLine($"\t-Mapa: {folder.Folder.Name} id mape: {folder.Folder.Id} podijeljena od korisnika: {folder.Folder.Owner.Name}");
+                    folders.Add(folder.Folder);
+                }
+                else
+                {
+                    Console.WriteLine("\tNema mapa podijeljenih s vama");
+                    break;
+                }
+            }
+
+            Console.WriteLine("\n Podijeljene datoteke s vama: ");
+
+            foreach (var file in sharedFiles)
+            {
+                if (file != null)
+                {
+                    Console.WriteLine($"\t-Datoteka: {file.File.Name} podijeljena od korisnika: {file.File.Owner.Name} unutar mape: {file.File.Folder.Name}, zadnji put promijenjena: {file.File.LastModifiedAt}");
+                    files.Add(file.File);
+                }
+                else
+                {
+                    Console.WriteLine("\tNema datoteka podijeljenih s vama");
+                    break;
+                }
+            }
+
+            return(folders, files);
         }
     }
 }

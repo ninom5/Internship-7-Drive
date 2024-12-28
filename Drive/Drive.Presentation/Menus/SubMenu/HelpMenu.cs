@@ -14,7 +14,12 @@ namespace Drive.Presentation.Menus.SubMenu
         {
             Console.WriteLine("Dostupne komande: \n - izbrisi mapu/datoteku 'ime mape/datoteke' : brise se samo kod vas \n " +
                 "- uredi datoteku 'ime datoteke' : promjene unutar datoteke se dogadaju kod vas i kod vlasnika te datoteke" +
+                "\n - udi u datoteku 'ime datoteke' : prikazuje se sadrzaj dokumenta i komentari, te se otvara komandni mod za upravljanje komentarima" +
                 "\n - povratak: povratak na user menu ");
+        }
+        public static void DisplayCommentHelp()
+        {
+            Console.WriteLine("Dostupne komande: \n - dodaj komentar \n - izbrisi komentar \n - uredi komentar \n - povratak");
         }
     }
 }

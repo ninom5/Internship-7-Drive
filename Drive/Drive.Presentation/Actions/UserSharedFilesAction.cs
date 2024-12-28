@@ -2,6 +2,7 @@
 using Drive.Domain.Interfaces.Services;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Reader;
+using Drive.Presentation.Utilities;
 
 
 namespace Drive.Presentation.Actions
@@ -11,61 +12,32 @@ namespace Drive.Presentation.Actions
         private readonly IUserService _userService;
         private readonly ISharedItemService _sharedItemService;
         private readonly IFileService _fileService;
+        private readonly ICommentService _commentService;
         private readonly User _LoggedUser;
 
-        public UserSharedFilesAction(IUserService userService, User user, ISharedItemService sharedItemService, IFileService fileService)
+        public UserSharedFilesAction(IUserService userService, User user, ISharedItemService sharedItemService, IFileService fileService, ICommentService commentService)
         {
             _userService = userService;
             _sharedItemService = sharedItemService;
             _LoggedUser = user;
             _fileService = fileService;
+            _commentService = commentService;
         }
 
         public void Execute()
         {
             Console.Clear();
 
-            var sharedfolders = _sharedItemService.GetAllSharedWithUser(_LoggedUser, Data.Enums.DataType.Folder).OrderBy(f => f.Folder.Name);
-            var sharedFiles = _sharedItemService.GetAllSharedWithUser(_LoggedUser, Data.Enums.DataType.File).OrderBy(f => f.File.LastModifiedAt);
-            var folders = new List<Folder>();
-            var files = new List<Drive.Data.Entities.Models.File>();
+            IEnumerable<Folder> folders;
+            IEnumerable<Data.Entities.Models.File> files;
 
-            Console.WriteLine(" Podijeljene mape s vama: ");
-            foreach (var folder in sharedfolders)
-            {
-                if (folder != null)
-                {
-                    Console.WriteLine($"\t-Mapa: {folder.Folder.Name} id mape: {folder.Folder.Id} podijeljena od korisnika: {folder.Folder.Owner.Name}");
-                    folders.Add(folder.Folder);
-                }
-                else
-                {
-                    Console.WriteLine("\tNema mapa podijeljenih s vama");
-                    break;
-                }
-            }
-
-            Console.WriteLine("\n Podijeljene datoteke s vama: ");
-
-            foreach (var file in sharedFiles)
-            {
-                if (file != null)
-                {
-                    Console.WriteLine($"\t-Datoteka: {file.File.Name} podijeljena od korisnika: {file.File.Owner.Name} unutar mape: {file.File.Folder.Name}, zadnji put promijenjena: {file.File.LastModifiedAt}");
-                    files.Add(file.File);
-                }
-                else
-                {
-                    Console.WriteLine("\tNema datoteka podijeljenih s vama");
-                    break;
-                }
-            }
-            
+            (folders, files) = Helper.ShowSharedDataWithUser(_sharedItemService, _LoggedUser);
 
             Console.WriteLine();
             ReadInput.WaitForUser();
 
-            if (!(folders.Any() && files.Any()))
+
+            if (!folders.Any() && !files.Any())
             {
                 Console.WriteLine("nema podijeljenih mapa i datoteka s vama, pa ne mozete upravljati. Povratak na user menu...");
                 Thread.Sleep(1000);
@@ -73,8 +45,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            CommandAction commandAction = new CommandAction();
-            commandAction.SharedFilesCommandMode(_sharedItemService, _LoggedUser, folders, files, _fileService);
+            CommandAction.SharedFilesCommandMode(_sharedItemService, _LoggedUser, folders, files, _fileService, _commentService);
         }
     }
 }

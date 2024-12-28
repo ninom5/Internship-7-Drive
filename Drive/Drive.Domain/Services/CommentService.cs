@@ -5,6 +5,7 @@ using Drive.Domain.Enums;
 using Drive.Domain.Interfaces.Repositories;
 using Drive.Domain.Interfaces.Services;
 using System.Runtime.CompilerServices;
+using File = Drive.Data.Entities.Models.File;
 
 
 namespace Drive.Domain.Services
@@ -20,6 +21,7 @@ namespace Drive.Domain.Services
         {
             try
             {
+                Console.WriteLine($"DEBUG: Attempting to add comment. FileId: {fileId}, UserId: {user.Id}, name: {user.Name}");
                 var newComment = new Comment()
                 {
                     FileId = fileId,
@@ -38,6 +40,11 @@ namespace Drive.Domain.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Pogreska prilikom kreiranja komentara: {ex.Message}");
+
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"DEBUG: Inner exception: {ex.InnerException.Message}");
+                }
 
                 return Status.Failed;
             }
@@ -62,6 +69,7 @@ namespace Drive.Domain.Services
             try
             {
                 comment.Content = newContent;
+                comment.LastModifiedAt = DateTime.UtcNow;
                 _commentRepository.UpdateComment(comment);
 
                 return Status.Success;
@@ -72,6 +80,14 @@ namespace Drive.Domain.Services
 
                 return Status.Failed;
             }
+        }
+        public Comment GetComment(int commentId, int fileId)
+        {
+            return _commentRepository.GetCommentById(commentId, fileId);
+        }
+        public IEnumerable<Comment> GetCommentsByFile(File file)
+        {
+            return _commentRepository.GetAllFileComments(file);
         }
     }
 }

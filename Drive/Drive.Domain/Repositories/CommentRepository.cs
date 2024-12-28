@@ -25,5 +25,13 @@ namespace Drive.Domain.Repositories
             _dbContext.Comments.Update(comment);
             _dbContext.SaveChanges();
         }
+        public Comment GetCommentById(int commentId, int fileId)
+        {
+            return _dbContext.Comments.Where(item => item.Id == commentId && item.FileId == fileId).FirstOrDefault();
+        }
+        public IEnumerable<Comment> GetAllFileComments(Drive.Data.Entities.Models.File file)
+        {
+            return _dbContext.Comments.Where(item => item.File == file);
+        }
     }
 }
