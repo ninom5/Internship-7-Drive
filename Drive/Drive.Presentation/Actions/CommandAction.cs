@@ -49,7 +49,7 @@ namespace Drive.Presentation.Actions
                 userFolders = _userService.GetFoldersOrFiles<Folder>(user);
             }
         }
-        public static void SharedFilesCommandMode(ISharedItemService sharedItemService, User sharedToUser, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IFileService _fileService, ICommentService _commentService)
+        public static void  SharedFilesCommandMode(ISharedItemService sharedItemService, User sharedToUser, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IFileService _fileService, ICommentService _commentService)
         {
             Console.Write("Unesite komandu za upravljanje podijeljenim mapama i datotekama. Za pomoc unesite ");
 
@@ -169,100 +169,100 @@ namespace Drive.Presentation.Actions
 
                     break;
 
-                //case "udi":
-                //    if(parts[1] != "u" || parts[2] != "datoteku" || parts.Length < 4)
-                //    {
-                //        Console.WriteLine("Ne ispravan oblik komande. Unesite help za pomoc");
-                //        return;
-                //    }
+                case "udi":
+                    if (parts[1] != "u" || parts[2] != "datoteku" || parts.Length < 4)
+                    {
+                        Console.WriteLine("Ne ispravan oblik komande. Unesite help za pomoc");
+                        return;
+                    }
 
-                //    var fileNameToShow = GetName(parts.Skip(3));
-                //    if (fileNameToShow == null)
-                //    {
-                //        Console.WriteLine("Pogreska prilikom dohvacanja imena");
-                //        return;
-                //    }
+                    var fileNameToShow = GetName(parts.Skip(3));
+                    if (fileNameToShow == null)
+                    {
+                        Console.WriteLine("Pogreska prilikom dohvacanja imena");
+                        return;
+                    }
 
-                //    var file = files.FirstOrDefault(f => f.Name == fileNameToShow);
-                //    if(file == null)
-                //    {
-                //        Console.WriteLine($"Datoteka: {fileNameToShow} nije pronadena medu datotekama podijeljenima s vama");
-                //        return;
-                //    }
+                    var file = files.FirstOrDefault(f => f.Name == fileNameToShow);
+                    if (file == null)
+                    {
+                        Console.WriteLine($"Datoteka: {fileNameToShow} nije pronadena medu datotekama podijeljenima s vama");
+                        return;
+                    }
 
-                //    Console.WriteLine($"----------Trenutni sadrzaj datoteke----------\n{file.Content}" +
-                //        $"\n---------------------------------------------" +
-                //        $"\nZa prikaz komentara upisite otvori komentare nakon cega mozetet upravljati s njima. Za odustajanje ostavite prazno");
+                    Console.WriteLine($"----------Trenutni sadrzaj datoteke----------\n{file.Content}" +
+                        $"\n---------------------------------------------" +
+                        $"\nZa prikaz komentara upisite otvori komentare nakon cega mozetet upravljati s njima. Za odustajanje ostavite prazno");
 
-                //    while (true)
-                //    {
+                    while (true)
+                    {
 
-                //        Console.WriteLine(">");
-                //        var commentCommand = Console.ReadLine();
+                        Console.WriteLine(">");
+                        var commentCommand = Console.ReadLine();
 
-                //        if(string.IsNullOrEmpty(commentCommand))
-                //        {
-                //            Console.WriteLine("Povratak...");
-                //            return;
-                //        }
+                        if (string.IsNullOrEmpty(commentCommand))
+                        {
+                            Console.WriteLine("Povratak...");
+                            return;
+                        }
 
-                //        if(commentCommand != "otvori komentare")
-                //        {
-                //            Console.WriteLine("pogresna komanda. Unesite opet");
-                //            continue;
-                //        }
+                        if (commentCommand != "otvori komentare")
+                        {
+                            Console.WriteLine("pogresna komanda. Unesite opet");
+                            continue;
+                        }
 
-                //        ManageComments(sharedToUser, file, sharedItemService, _fileService, _commentService);
-                //        break;
-                //    }
+                        ManageComments(sharedToUser, file, sharedItemService, _fileService, _commentService);
+                        break;
+                    }
 
-                //    break;
+                    break;
 
                 default:
                     Console.WriteLine("ne ispravna komanda. Za pomoc unesite help");
                     break;
             }
         }
-        //private static void ManageComments(User user, File file, ISharedItemService _sharedItemService, IFileService _fileService, ICommentService _commentService)
-        //{
-        //    CommentAction.ShowComments(file, _commentService);
-        //    while (true)
-        //    {
-             
-        //        Console.WriteLine("Unesite komandu za upravljanje komentarima. Za pommoc unesite help\n >");
+        private static void ManageComments(User user, File file, ISharedItemService _sharedItemService, IFileService _fileService, ICommentService _commentService)
+        {
+            CommentAction.ShowComments(file, _commentService);
+            while (true)
+            {
 
-        //        var command = Console.ReadLine();
+                Console.WriteLine("Unesite komandu za upravljanje komentarima. Za pommoc unesite help\n >");
 
-        //        if (command == "povratak")
-        //            return;
-        //        if(command == "help")
-        //        {
-        //            HelpMenu.DisplayCommentHelp();
-        //            continue;
-        //        }
+                var command = Console.ReadLine();
 
-        //        switch (command)
-        //        {
-        //            case "dodaj komentar":
-        //                CommentAction.CreateComment(file, user, _commentService);
-        //                break;
+                if (command == "povratak")
+                    return;
+                if (command == "help")
+                {
+                    HelpMenu.DisplayCommentHelp();
+                    continue;
+                }
 
-        //            case "izbrisi komentar":
-        //                CommentAction.ShowComments(file, _commentService);
-        //                CommentAction.DeleteComment(file.Id, _commentService);
-        //                break;
+                switch (command)
+                {
+                    case "dodaj komentar":
+                        CommentAction.CreateComment(file, user, _commentService);
+                        break;
 
-        //            case "uredi komentar":
-        //                CommentAction.ShowComments(file, _commentService);
-        //                CommentAction.EditComment(file, _commentService);
-        //                break;
+                    case "izbrisi komentar":
+                        CommentAction.ShowComments(file, _commentService);
+                        CommentAction.DeleteComment(file.Id, _commentService);
+                        break;
 
-        //            default:
-        //                Console.WriteLine("Pogresna komanda. Unesite help za pomoc");
-        //                break;
-        //        }
-        //    }
-        //}
+                    case "uredi komentar":
+                        CommentAction.ShowComments(file, _commentService);
+                        CommentAction.EditComment(file, _commentService);
+                        break;
+
+                    default:
+                        Console.WriteLine("Pogresna komanda. Unesite help za pomoc");
+                        break;
+                }
+            }
+        }
         private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, 
             ISharedItemService _sharedItemService, IEnumerable<File> userFiles, ICommentService _commentService)
         {

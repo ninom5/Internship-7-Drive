@@ -94,8 +94,11 @@ namespace Drive.Presentation.Actions
             Console.WriteLine("Id - Email - Datum (zadnje promjene) - sadrzaj");
             foreach (var comment in commentsForFile)
             {
-                Console.WriteLine($"ID: {comment.Id} - Email: {comment.User.Email} - Datum: {comment.LastModifiedAt} \n" +
-                    $"Sadrzaj: {comment.Content}");
+                if (comment.User != null)
+                {
+                    Console.WriteLine($"ID: {comment.Id} - Email: {comment.User.Email} - Datum: {comment.LastModifiedAt} \n" +
+                        $"Sadrzaj: {comment.Content}");
+                }
             }
         }
     }
