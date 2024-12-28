@@ -34,17 +34,5 @@ namespace Drive.Domain.Repositories
         {
             return _dbContext.Comments.Where(item => item.File == file).Include(item => item.User).ToList();
         }
-
-
-        public void TrackedUser(User user)
-        {
-            var existingUser = _dbContext.Users.Local.FirstOrDefault(u => u.Id == user.Id);
-            if (existingUser != null)
-            {
-                // Detach the existing user instance
-                _dbContext.Entry(existingUser).State = EntityState.Detached;
-            }
-            _dbContext.Attach(user);
-        }
     }
 }
