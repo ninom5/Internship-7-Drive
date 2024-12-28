@@ -84,18 +84,19 @@ namespace Drive.Data.Entities
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(false);
 
+
             modelBuilder.Entity<Comment>()
                 .HasKey(c => c.Id);
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.File)
-                .WithMany()
+                .WithMany(f => f.Comments)
                 .HasForeignKey(c => c.FileId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.User)
-                .WithMany()
+                .WithMany(u => u.Comments)
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 

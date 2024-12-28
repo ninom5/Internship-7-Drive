@@ -22,6 +22,9 @@ namespace Drive.Domain.Services
             try
             {
                 Console.WriteLine($"DEBUG: Attempting to add comment. FileId: {fileId}, UserId: {user.Id}, name: {user.Name}");
+
+                _commentRepository.TrackedUser(user);
+
                 var newComment = new Comment()
                 {
                     FileId = fileId,
@@ -30,7 +33,7 @@ namespace Drive.Domain.Services
                     CreatedAt = DateTime.UtcNow,
                     LastModifiedAt = DateTime.UtcNow,
                     File = file,
-                    User = user
+                    //User = user
                 };
 
                 _commentRepository.AddComment(newComment);

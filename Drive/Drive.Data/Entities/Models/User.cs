@@ -9,5 +9,6 @@
         public string? Password { get; set; }
         public byte[] HashedPassword { get; set; }
         public DateTime CreatedAt { get; set; }
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

@@ -12,5 +12,6 @@
 
         public Folder Folder { get; set; } = null!;
         public User Owner { get; set; } = null!;
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

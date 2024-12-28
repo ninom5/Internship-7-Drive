@@ -12,6 +12,7 @@ public class Program
 
         var options = new DbContextOptionsBuilder<DriveDbContext>()
            .UseNpgsql("Host=127.0.0.1;Port=5432;Database=Drive;User Id=postgres;Password=rootuser")
+           .EnableSensitiveDataLogging()
            .Options;
         var dbContext = new DriveDbContext(options);
 

@@ -9,7 +9,7 @@
         public DateTime CreatedAt { get; set; }
         public DateTime? LastModifiedAt { get; set; }
 
-        public File File { get; set; }
-        public User User { get; set; }
+        public File File { get; set; } = null!;
+        public User User { get; set; } = null!;
     }
 }
