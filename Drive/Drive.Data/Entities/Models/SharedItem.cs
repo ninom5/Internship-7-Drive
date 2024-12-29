@@ -1,4 +1,6 @@
-﻿namespace Drive.Data.Entities.Models
+﻿using File = Drive.Data.Entities.Models.File;
+
+namespace Drive.Data.Entities.Models
 {
     public class SharedItem
     {
@@ -9,7 +11,7 @@
         public int SharedById { get; set; }
         public DateTime SharedAt { get; set; }
         public Folder? Folder { get; set; }
-        public Drive.Data.Entities.Models.File? File { get; set; }
+        public File? File { get; set; }
         public User SharedWith { get; set; } = null!;
         public User SharedBy { get; set; } = null!;
     }

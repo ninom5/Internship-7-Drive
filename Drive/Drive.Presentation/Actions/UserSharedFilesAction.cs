@@ -45,7 +45,8 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            CommandAction.SharedFilesCommandMode(_sharedItemService, _LoggedUser, folders, files, _fileService, _commentService);
+            CommandSharedAction commandSharedAction = new CommandSharedAction();
+            commandSharedAction.SharedFilesCommandMode(_sharedItemService, _LoggedUser, folders, files, _fileService, _commentService);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Drive.Domain.Services
         {
             try
             {
-                var newFile = new Drive.Data.Entities.Models.File
+                var newFile = new File
                 {
                     Name = name,
                     Content = content,
@@ -39,7 +39,7 @@ namespace Drive.Domain.Services
                 return Status.Failed;
             }
         }
-        public Status DeleteFile(Drive.Data.Entities.Models.File file)
+        public Status DeleteFile(File file)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace Drive.Domain.Services
                 return Status.Failed;
             }
         }
-        public Status UpdateFile(Drive.Data.Entities.Models.File file, string newName)
+        public Status UpdateFile(File file, string newName)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace Drive.Domain.Services
                 return Status.Failed;
             }
         }
-        public Status UpdateFileContent(Drive.Data.Entities.Models.File file)
+        public Status UpdateFileContent(File file)
         { 
             try
             {

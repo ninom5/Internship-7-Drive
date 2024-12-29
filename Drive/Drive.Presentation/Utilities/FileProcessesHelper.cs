@@ -9,7 +9,7 @@ namespace Drive.Presentation.Utilities
 {
     public class FileProcessesHelper
     {
-        public static void DisplayFilesForFolder(IEnumerable<Drive.Data.Entities.Models.File> files, int folderId)
+        public static void DisplayFilesForFolder(IEnumerable<File> files, int folderId)
         {
             var folderFiles = files
                 .Where(file => file.FolderId == folderId)
@@ -20,7 +20,7 @@ namespace Drive.Presentation.Utilities
                 Console.WriteLine($"\t\tFile: {file.Name}, id mape: {file.FolderId}, zadnji put promijenjeno: {file.LastModifiedAt}");
             }
         }
-        public static void DeleteFile(Drive.Data.Entities.Models.File file, Folder folder, IFileService fileService)
+        public static void DeleteFile(File file, Folder folder, IFileService fileService)
         {
             var deleteFileStatus = fileService.DeleteFile(file);
             if (deleteFileStatus != Domain.Enums.Status.Success)
@@ -30,7 +30,7 @@ namespace Drive.Presentation.Utilities
             }
             Console.WriteLine($"Uspjesno izbrisana datoteka: {file.Name} u mapi: {folder.Name}");
         }
-        public static void ShareFile(Drive.Data.Entities.Models.File file, User user, User shareToUser, ISharedItemService sharedItemService)
+        public static void ShareFile(File file, User user, User shareToUser, ISharedItemService sharedItemService)
         {
             if (sharedItemService.AlreadyShared(file.Id, shareToUser.Id, user.Id, DataType.File))
             {
@@ -47,7 +47,7 @@ namespace Drive.Presentation.Utilities
             Console.WriteLine($"Datoteka: {file.Name} uspjesno podijeljena s korisnikom: {shareToUser.Name}");
         }
 
-        public static void StopSharingFile(Drive.Data.Entities.Models.File file, User user, User shareToUser, ISharedItemService sharedItemService)
+        public static void StopSharingFile(File file, User user, User shareToUser, ISharedItemService sharedItemService)
         {
             if (!sharedItemService.AlreadyShared(file.Id, shareToUser.Id, user.Id, DataType.File))
             {
@@ -111,7 +111,7 @@ namespace Drive.Presentation.Utilities
             Console.WriteLine($"Uspjesno promijenjen naziv datoteke: {currentName} u: {newName}");
             ReadInput.WaitForUser();
         }
-        public static void ReadAndWriteFileContent(Drive.Data.Entities.Models.File file, IFileService _fileService)
+        public static void ReadAndWriteFileContent(File file, IFileService _fileService)
         {
             Console.WriteLine($"----------Trenutni sadrzaj datoteke----------\n{file.Content}" +
                $"\n---------------------------------------------");

@@ -1,22 +1,36 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Enums;
 using Drive.Domain.Interfaces.Services;
-using Drive.Domain.Services;
 using Drive.Presentation.Reader;
+using System.Text;
 using File = Drive.Data.Entities.Models.File;
 
 namespace Drive.Presentation.Actions
 {
     public class CommentAction
     {
-        public static void CreateComment(Drive.Data.Entities.Models.File file, User user, ICommentService commentService)
+        public static void CreateComment(File file, User user, ICommentService commentService)
         {
-            Console.WriteLine("Unesite sadrzaj komentara. Prazno za odustajanje");
-            var commentContent = Console.ReadLine();
+            Console.Clear();
+
+            Console.WriteLine("Unesite sadrzaj komentara. Prazna linija za spremanje. Prazan prvi red za odustajanje");
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while (true)
+            {
+                var lineOfContent = Console.ReadLine();
+                if (string.IsNullOrEmpty(lineOfContent))
+                    break;
+
+                stringBuilder.AppendLine(lineOfContent);
+            }
+
+            var commentContent = stringBuilder.ToString();
 
             if (string.IsNullOrEmpty(commentContent))
             {
-                Console.WriteLine("Povratak");
+                Console.WriteLine("Sadrzaj ne moze biti prazan. Povratak...");
                 return;
             }
 
@@ -44,7 +58,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            Console.WriteLine($"Uspjesno izbrisan komentar: {comment.Id} za datoteku: {comment.File.Name}");
+            Console.WriteLine($"Uspjesno izbrisan komentar: {comment.Id}");
         }
         public static void EditComment(File file, ICommentService commentService)
         {
@@ -93,22 +107,70 @@ namespace Drive.Presentation.Actions
             Console.Clear();
 
             var commentsForFile = commentService.GetCommentsByFile(file);
-            if(!commentsForFile.Any())
+            if (!commentsForFile.Any())
             {
                 Console.WriteLine("Nema komentara za odabrani file");
                 return;
             }
 
-            Console.WriteLine("Id - Email - Datum (zadnje promjene) - sadrzaj");
+            string header = string.Format("{0,-5} | {1,-30} | {2,-20}", "ID", "Email", "Datum");
+            string separator = new string('-', header.Length);
+
+            Console.WriteLine(header);
+            Console.WriteLine(separator);
+
             foreach (var comment in commentsForFile)
             {
                 if (comment.User != null)
                 {
-                    Console.WriteLine($"ID: {comment.Id} - Email: {comment.User.Email} - Datum: {comment.LastModifiedAt} \n" +
-                        $"Sadrzaj: {comment.Content}");
+                    string formattedDate = comment.LastModifiedAt.HasValue
+                        ? comment.LastModifiedAt.Value.ToString("dd.MM.yyyy HH:mm")
+                        : "problem s dohvacanjem datuma";
+
+                    Console.WriteLine(string.Format("{0,-5} | {1,-30} | {2,-20}",
+                        comment.Id,
+                        comment.User.Email,
+                        formattedDate));
+
+
+                    Console.WriteLine("Sadržaj:");
+                    string content = comment.Content;
+                    int lineLength = 1000;//80 
+
+                    for (int i = 0; i < content.Length; i += lineLength)
+                    {
+                        string line = content.Substring(i, Math.Min(lineLength, content.Length - i));
+                        Console.WriteLine(line);
+                    }
+
+                    Console.WriteLine("\n" + separator);
                 }
             }
         }
+
+
+
+        //public static void ShowComments(File file, ICommentService commentService)
+        //{
+        //    Console.Clear();
+
+        //    var commentsForFile = commentService.GetCommentsByFile(file);
+        //    if(!commentsForFile.Any())
+        //    {
+        //        Console.WriteLine("Nema komentara za odabrani file");
+        //        return;
+        //    }
+
+        //    Console.WriteLine("Id - Email - Datum (zadnje promjene) - sadrzaj\n");
+        //    foreach (var comment in commentsForFile)
+        //    {
+        //        if (comment.User != null)
+        //        {
+        //            Console.WriteLine($"\nID: {comment.Id} - Email: {comment.User.Email} - Datum: {comment.LastModifiedAt} \n" +
+        //                $"Sadrzaj: {comment.Content}");
+        //        }
+        //    }
+        //}
 
         public static void CommentCommands(File file, User user, ICommentService _commentService)
         {

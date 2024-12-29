@@ -1,7 +1,9 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
-using Drive.Domain.Services;
 using Drive.Presentation.Reader;
+using System.Text;
+using System.Text.RegularExpressions;
+using File = Drive.Data.Entities.Models.File;
 
 namespace Drive.Presentation.Utilities
 {
@@ -65,7 +67,7 @@ namespace Drive.Presentation.Utilities
                 return true;
             }
         }
-        public static void ShowUserFoldersAndFiles(User user, IUserService _userService, IEnumerable<Folder> userFolders, IEnumerable<Drive.Data.Entities.Models.File> userFiles)
+        public static void ShowUserFoldersAndFiles(User user, IUserService _userService, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles)
         {
             
 
@@ -82,12 +84,12 @@ namespace Drive.Presentation.Utilities
                 Console.WriteLine();
             }
         }
-        public static (IEnumerable<Folder>, IEnumerable<Data.Entities.Models.File>) ShowSharedDataWithUser(ISharedItemService _sharedItemService, User _loggedUser)
+        public static (IEnumerable<Folder>, IEnumerable<File>) ShowSharedDataWithUser(ISharedItemService _sharedItemService, User _loggedUser)
         {
             var sharedFolders = _sharedItemService.GetAllSharedWithUser(_loggedUser, Data.Enums.DataType.Folder).OrderBy(f => f.Folder.Name);
             var sharedFiles = _sharedItemService.GetAllSharedWithUser(_loggedUser, Data.Enums.DataType.File).OrderBy(f => f.File.LastModifiedAt);
             var folders = new List<Folder>();
-            var files = new List<Drive.Data.Entities.Models.File>();
+            var files = new List<File>();
 
             Console.WriteLine(" Podijeljene mape s vama: ");
             foreach (var folder in sharedFolders)
@@ -121,6 +123,233 @@ namespace Drive.Presentation.Utilities
             }
 
             return(folders, files);
+        }
+
+        public static User? ValidStartShareingCommandAndUser(string[] parts, IUserService _userService, User user)
+        {
+            if (parts.Length < 4 || (parts[1] != "mapu" && parts[1] != "datoteku") || parts[2] != "s")
+            {
+                Console.WriteLine("Ne ispravan oblik komande Podijeli. Za pomoc unesite help");
+                return null;
+            }
+
+            var email = GetName(parts.Skip(3));
+            if (email == null)
+            {
+                Console.WriteLine("Email ne moze biti prazan. Povratak...");
+                return null;
+            }
+
+            if (email == user.Email)
+            {
+                Console.WriteLine("Ne mozete dijeliti datoteku ili mapu sa samim sobom");
+                return null;
+            }
+
+            if (!_userService.EmailExists(email))
+            {
+                Console.WriteLine("Uneseni email ne postoji.");
+                return null;
+            }
+
+            var userToShare = _userService.GetUser(email);
+            if (userToShare == null)
+            {
+                Console.WriteLine("uneseni korisnik nije pronaden");
+                return null;
+            }
+
+            return userToShare;
+        }
+
+        public static void ProcessFolderAndContents(Folder folder, IEnumerable<Folder> allFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, User user,
+            string process, ISharedItemService? _sharedItemService, User? shareToUser)
+        {
+            Console.Clear();
+
+            var subFolders = allFolders.Where(f => f.ParentFolderId == folder.Id).ToList();
+
+            foreach (var subFolder in subFolders)
+                ProcessFolderAndContents(subFolder, allFolders, _folderService, _fileService, _userService, user, process, _sharedItemService, shareToUser);
+
+            var filesInFolder = _userService.GetFoldersOrFiles<File>(user).Where(file => file.FolderId == folder.Id).ToList();
+
+            foreach (var file in filesInFolder)
+            {
+                switch (process)
+                {
+                    case "izbrisi":
+                        FileProcessesHelper.DeleteFile(file, folder, _fileService);
+                        break;
+
+                    case "podijeli":
+                        if (shareToUser != null && _sharedItemService != null)
+                            FileProcessesHelper.ShareFile(file, user, shareToUser, _sharedItemService);
+                        break;
+
+                    case "prestani dijeliti":
+                        if (shareToUser != null && _sharedItemService != null)
+                            FileProcessesHelper.StopSharingFile(file, user, shareToUser, _sharedItemService);
+                        break;
+
+                    default:
+                        Console.WriteLine("Pogreska od strane aplikacije");
+                        break;
+                }
+
+            }
+
+            switch (process)
+            {
+                case "izbrisi":
+                    FolderProcessesHelper.DeleteFolder(folder, _folderService);
+                    break;
+
+                case "podijeli":
+                    if (shareToUser != null && _sharedItemService != null)
+                        FolderProcessesHelper.ShareFolder(folder, user, shareToUser, _sharedItemService);
+                    break;
+
+                case "prestani dijeliti":
+                    if (shareToUser != null && _sharedItemService != null)
+                        FolderProcessesHelper.StopSharingFolder(folder, user, shareToUser, _sharedItemService);
+                    break;
+
+                default:
+                    Console.WriteLine($"Pogreska od strane aplikacije");
+                    break;
+            }
+        }
+        public static User? EmailUserValid(string[] parts, IUserService _userService)
+        {
+            var email = Helper.GetName(parts.Skip(3));
+            if (email == null)
+            {
+                Console.WriteLine("Email ne moze biti prazan. Povratak...");
+                return null;
+            }
+
+            while (true)
+            {
+                if (!_userService.EmailExists(email))
+                {
+                    Console.WriteLine("Uneseni email ne postoji. Unesite novi email ili ostavite prazno za odustat");
+                    email = Console.ReadLine()?.Trim();
+
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        Console.WriteLine("Odustali ste od unosa emaila.");
+                        return null;
+                    }
+
+                    continue;
+                }
+
+                var userToShare = _userService.GetUser(email);
+
+                if (userToShare == null)
+                {
+                    Console.WriteLine("Uneseni korisnik nije pronaden. Unesite novi email ili ostavite prazno za odustat");
+                    email = Console.ReadLine()?.Trim();
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        Console.WriteLine("Odustali ste od unosa emaila.");
+                        return null;
+                    }
+
+                    continue;
+                }
+
+                return userToShare;
+            }
+        }
+
+        public static (string, string) CheckRenameCommand(string[] parts)
+        {
+            if (parts.Length < 6 || parts[1] != "naziv" || (parts[2] != "mape" && parts[2] != "datoteke"))
+            {
+                Console.WriteLine("Pogresna komanda. Za pomoc unesite help");
+                return ("", "");
+            }
+
+            string pattern = @"'([^']*)' u '([^']*)'";
+            string fullName = string.Join(" ", parts.Skip(2));
+
+            Match match = Regex.Match(fullName, pattern);
+            if (!match.Success)
+            {
+                Console.WriteLine("pogreska prilikom dohvacanja imena. Za pomoc unesite help");
+                return ("", "");
+            }
+
+            return (match.Groups[1].Value.Trim(), match.Groups[2].Value.Trim());
+        }
+
+        public static void Create<T>(string name, Folder folder, User user, IFolderService _folderService, IFileService _fileService)
+        {
+            if (typeof(T) == typeof(Folder))
+            {
+                if (!ReadInput.ConfirmAction($"Zelite li napraviti novi {typeof(T).Name} "))
+                {
+                    Console.WriteLine("Odustali ste od kreiranja");
+                    return;
+                }
+
+                var creatingFolderStatus = _folderService.CreateFolder(name, user, folder);
+                if (creatingFolderStatus != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine("Pogreska prilikom kreiranja foldera");
+                    return;
+                }
+
+                Console.WriteLine($"Folder: {name} uspjesno kreiran unutar mape: {folder.Name}");
+
+            }
+            else if (typeof(T) == typeof(File))
+            {
+                Console.WriteLine("Unesite sadrzaj datoteke");
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while (true)
+                {
+                    var lineOfContent = Console.ReadLine();
+                    if (string.IsNullOrEmpty(lineOfContent))
+                        break;
+
+                    stringBuilder.AppendLine(lineOfContent);
+                }
+
+                var content = stringBuilder.ToString();
+                if (string.IsNullOrEmpty(content))
+                {
+                    Console.WriteLine("Sadrzaj ne moze biti prazan. Povratak...");
+                    return;
+                }
+
+                if (!ReadInput.ConfirmAction($"Zelite li napraviti novi {typeof(T).Name} "))
+                {
+                    Console.WriteLine("Odustali ste od kreiranja");
+                    return;
+                }
+
+                var creatingFileStatus = _fileService.CreateFile(name, content, user, folder);
+                if (creatingFileStatus != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine("Pogreska prilikom kreiranja datoteke");
+                    return;
+                }
+
+                Console.WriteLine($"Datoteka: {name} uspjesno kreirana unutar mape: {folder.Name}");
+            }
+        }
+        public static string? GetName(IEnumerable<string> parts)
+        {
+            string fullInput = string.Join(" ", parts);
+            string pattern = @"'([^']*)'";
+
+            Match match = Regex.Match(fullInput, pattern);
+
+            return match.Success ? match.Groups[1].Value.Trim() : null;
         }
         public static bool IsValidCommandStopSharing(string[] parts)
         {
