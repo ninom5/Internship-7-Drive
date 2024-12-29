@@ -42,5 +42,9 @@ namespace Drive.Domain.Repositories
                 .AsNoTracking()
                 .ToList();
         }
+        public IEnumerable<SharedItem> GetAllUserShared(User user)
+        {
+            return _dbContext.SharedItems.Where(item => item.SharedById == user.Id);
+        }
     }
 }

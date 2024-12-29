@@ -11,5 +11,6 @@ namespace Drive.Domain.Interfaces.Repositories
         void Delete(SharedItem sharedItem);
         SharedItem GetSharedItem(int id, User user, User shareToUser, Drive.Data.Enums.DataType dataType);
         IEnumerable<SharedItem> GetAllShared(User shareToUser, Drive.Data.Enums.DataType dataType);
+        public IEnumerable<SharedItem> GetAllUserShared(User user);
     }
 }

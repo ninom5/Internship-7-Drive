@@ -42,9 +42,17 @@ namespace Drive.Domain.Services
         }
         public Status Remove(SharedItem sharedItem)
         {
-            _sharedRepository.Delete(sharedItem);
+            try
+            {
+                _sharedRepository.Delete(sharedItem);
 
-            return Status.Success;
+                return Status.Success;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Pogreska: {ex.Message}");
+                return Status.Failed;
+            }
         }
         public SharedItem GetSharedItem(int id, User user, User shareToUser, DataType dataType)
         {
@@ -57,6 +65,10 @@ namespace Drive.Domain.Services
         public bool AlreadyShared(int id, int sharedWithId, int sharedById, DataType dataType)
         {
             return _sharedRepository.DoesExist(id, sharedWithId, sharedById, dataType);
+        }
+        public IEnumerable<SharedItem> GetAllUserShared(User user)
+        {
+            return _sharedRepository.GetAllUserShared(user);
         }
     }
 }

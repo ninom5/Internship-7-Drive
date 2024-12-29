@@ -1,5 +1,4 @@
 ﻿using Drive.Data.Entities;
-using Drive.Domain.Enums;
 
 namespace Drive.Domain.Repositories
 {

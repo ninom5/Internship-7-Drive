@@ -11,5 +11,6 @@ namespace Drive.Domain.Interfaces.Services
         Status Remove(SharedItem sharedItem);
         SharedItem GetSharedItem(int id, User user, User shareToUser, DataType dataType);
         IEnumerable<SharedItem> GetAllSharedWithUser(User shareToUser, DataType dataType);
+        public IEnumerable<SharedItem> GetAllUserShared(User user);
     }
 }

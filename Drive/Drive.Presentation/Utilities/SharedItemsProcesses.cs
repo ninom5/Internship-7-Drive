@@ -9,7 +9,7 @@ namespace Drive.Presentation.Utilities
 {
     public class SharedItemsProcesses
     {
-        public static void StartSharingFolder(User user, User userToShare, IFolderService _folderService, ISharedItemService _sharedItemService, IUserService _userService, IFileService _fileService, IEnumerable<Folder> userFolders)
+        public static void StartSharingFolder(User user, User userToShare, IFolderService _folderService, ISharedItemService _sharedItemService, IUserService _userService, IFileService _fileService, IEnumerable<Folder> userFolders, ICommentService _commentService)
         {
             while (true)
             {
@@ -92,7 +92,7 @@ namespace Drive.Presentation.Utilities
                 return;
             }
         }
-        public static void HandleStopSharingFolder(User user, User userToShare, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService)
+        public static void HandleStopSharingFolder(User user, User userToShare, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService, ICommentService _commentService)
         {
             while (true)
             {

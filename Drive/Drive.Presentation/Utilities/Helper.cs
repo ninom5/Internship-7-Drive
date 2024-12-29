@@ -87,7 +87,7 @@ namespace Drive.Presentation.Utilities
         public static (IEnumerable<Folder>, IEnumerable<File>) ShowSharedDataWithUser(ISharedItemService _sharedItemService, User _loggedUser)
         {
             var sharedFolders = _sharedItemService.GetAllSharedWithUser(_loggedUser, Data.Enums.DataType.Folder).OrderBy(f => f.Folder.Name);
-            var sharedFiles = _sharedItemService.GetAllSharedWithUser(_loggedUser, Data.Enums.DataType.File).OrderBy(f => f.File.LastModifiedAt);
+            var sharedFiles = _sharedItemService.GetAllSharedWithUser(_loggedUser, Data.Enums.DataType.File)/*.OrderBy(f => f.File.LastModifiedAt)*/;
             var folders = new List<Folder>();
             var files = new List<File>();
 
@@ -112,7 +112,7 @@ namespace Drive.Presentation.Utilities
             {
                 if (file != null)
                 {
-                    Console.WriteLine($"\t-Datoteka: {file.File.Name} podijeljena od korisnika: {file.File.Owner.Name} unutar mape: {file.File.Folder.Name}, zadnji put promijenjena: {file.File.LastModifiedAt}");
+                    Console.WriteLine($"\t-Datoteka: {file.File.Name} podijeljena od korisnika: {file.File.Owner.Name} unutar mape: {file.File.Folder.Name}, zadnji put promijenjena: ");
                     files.Add(file.File);
                 }
                 else
