@@ -434,6 +434,16 @@ namespace Drive.Presentation.Actions
                     case "dodaj komentar":
                         CommentAction.CreateComment(file, user, _commentService);
                         break;
+
+                    case "izbrisi komentar": //provjerit
+                        CommentAction.ShowComments(file, _commentService);
+                        CommentAction.DeleteComment(file.Id, _commentService);
+                        break;
+
+                    case "uredi komentar": //provjerit
+                        CommentAction.ShowComments(file, _commentService);
+                        CommentAction.EditComment(file, _commentService);
+                        break;
                 }
 
             }
