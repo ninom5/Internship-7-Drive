@@ -1,6 +1,7 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
+using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
@@ -74,7 +75,7 @@ namespace Drive.Presentation.Actions
                     break;
 
                 case "izbrisi":
-                    DeleteFolderFile(parts, user, _folderService, _fileService, _userService, userFolders);
+                    DeleteFolderFile(parts, user, _folderService, _fileService, _userService, userFolders, _commentService);
                     break;
 
                 case "promijeni":
@@ -95,7 +96,7 @@ namespace Drive.Presentation.Actions
                     break;
 
                 case "prestani":
-                    StopSharing(parts, userFolders, _folderService, _fileService, _userService, _sharedItemService, user);
+                    StopSharing(parts, userFolders, _folderService, _fileService, _userService, _sharedItemService, user, _commentService);
                     break;
 
                 default:
@@ -236,7 +237,7 @@ namespace Drive.Presentation.Actions
 
             ReadInput.WaitForUser();
         }
-        private static void DeleteFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService, IUserService _userService, IEnumerable<Folder> userFolders)
+        private static void DeleteFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService, IUserService _userService, IEnumerable<Folder> userFolders, ICommentService _commentService)
         {
             if (parts.Length < 3 || (parts[1] != "mapu" && parts[1] != "datoteku"))
             {
@@ -283,14 +284,31 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var deleteFileStatus = _fileService.DeleteFile(fileToDelete);
-            if (deleteFileStatus != Domain.Enums.Status.Success)
+            if (!ReadInput.ConfirmAction("Zelite li stvarno izbrisati datoteku iz podijeljenih datoteka s vama "))
             {
-                Console.WriteLine("pogreska prilikom brisanja filea");
+                Console.WriteLine("odustali ste od brisanja");
                 return;
             }
 
-            Console.WriteLine($"Datoteka {fileToDelete.Name} s id: {fileToDelete.Id} uspjesno obrisana");
+
+            var listOfUserComments = _commentService.GetCommentsByFile(fileToDelete).Where(item => item.UserId == user.Id);
+            foreach (var comment in listOfUserComments)
+            {
+                if (_commentService.RemoveComment(comment) == Domain.Enums.Status.Failed)
+                    Console.WriteLine($"Pogreska prilikom brisanja komentara: {comment.Id} vasih komentara za odabrani file");
+                else
+                    Console.WriteLine($"uspjesno brisanja komentara: {comment.Id} za odabrani file");
+            }
+
+
+            var deleteFileStatus = _fileService.DeleteFile(fileToDelete);
+            if (deleteFileStatus != Domain.Enums.Status.Success)
+            {
+                Console.WriteLine($"\npogreska prilikom brisanja filea: {fileToDelete.Name}");
+                return;
+            }
+
+            Console.WriteLine($"\nDatoteka {fileToDelete.Name} s id: {fileToDelete.Id} uspjesno obrisana");
 
             ReadInput.WaitForUser();
         }
@@ -342,7 +360,8 @@ namespace Drive.Presentation.Actions
             SharedItemsProcesses.StartSharingFile(user, userToShare, _sharedItemService, _userService);
         }
         
-        public static void StopSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService, User user)
+        public static void StopSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, 
+            ISharedItemService _sharedItemService, User user, ICommentService _commentService)
         {
             if(!Helper.IsValidCommandStopSharing(parts))
             {
@@ -361,7 +380,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            SharedItemsProcesses.HandleStopSharingFile(user, userToShare, _fileService, _sharedItemService);
+            SharedItemsProcesses.HandleStopSharingFile(user, userToShare, _fileService, _sharedItemService, _commentService);
             
         }
         

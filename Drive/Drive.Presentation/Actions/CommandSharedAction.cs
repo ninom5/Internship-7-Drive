@@ -5,8 +5,8 @@ using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Utilities;
 using Drive.Data.Enums;
 using File = Drive.Data.Entities.Models.File;
-using System.Security.Principal;
-using static System.Net.Mime.MediaTypeNames;
+using Drive.Presentation.Reader;
+
 
 namespace Drive.Presentation.Actions
 {
@@ -64,7 +64,7 @@ namespace Drive.Presentation.Actions
                     if (parts[1] == "mapu")
                         DeleteSharedFolder(parts, folders, sharedItemService, sharedToUser);
                     else if (parts[1] == "datoteku")
-                        DeleteSharedFile(parts, files, sharedItemService, sharedToUser);
+                        DeleteSharedFile(parts, files, sharedItemService, sharedToUser, _commentService);
                     else
                         Console.WriteLine("ne ispravan oblik komande. Unesite help za pomoc");
 
@@ -135,7 +135,7 @@ namespace Drive.Presentation.Actions
 
                     while (true)
                     {
-
+                         
                         Console.WriteLine(">");
                         var commentCommand = Console.ReadLine()?.Trim();
 
@@ -191,13 +191,13 @@ namespace Drive.Presentation.Actions
                     case "izbrisi komentar":
                         Console.Clear();
                         CommentAction.ShowComments(file, _commentService);
-                        CommentAction.DeleteComment(file.Id, _commentService);
+                        CommentAction.DeleteComment(file.Id, _commentService, user);
                         break;
 
                     case "uredi komentar":
                         Console.Clear();
                         CommentAction.ShowComments(file, _commentService);
-                        CommentAction.EditComment(file, _commentService);
+                        CommentAction.EditComment(file, _commentService, user);
                         break;
 
                     default:
@@ -230,7 +230,7 @@ namespace Drive.Presentation.Actions
 
             Console.WriteLine($"Uspjesno izbrisan folder: {folderToRemove.Name} iz podijeljenih mapa s vama");
         }
-        private static void DeleteSharedFile(string[] parts, IEnumerable<File> files, ISharedItemService sharedItemService, User sharedToUser)
+        private static void DeleteSharedFile(string[] parts, IEnumerable<File> files, ISharedItemService sharedItemService, User sharedToUser, ICommentService _commentService)
         {
             var name = Helper.GetName(parts.Skip(2));
             if (name == null)
@@ -248,14 +248,29 @@ namespace Drive.Presentation.Actions
 
             var sharedItemToRemove = sharedItemService.GetSharedItem(fileToRemove.Id, fileToRemove.Owner, sharedToUser, DataType.File);
 
-            var status = sharedItemService.Remove(sharedItemToRemove);
-            if (status != Domain.Enums.Status.Success)
+            if(!ReadInput.ConfirmAction("Zelite li stvarno izbrisati datoteku iz podijeljenih datoteka s vama "))
             {
-                Console.WriteLine($"Pogreska prilikom brisanje datoteke: {name} iz podijeljenih datoteka s vama");
+                Console.WriteLine("odustali ste od brisanja");
                 return;
             }
 
-            Console.WriteLine($"Uspjesno izbrisana datoteka: {name} iz mape podiljenih datoteka s vama");
+            var listOfUserComments = _commentService.GetCommentsByFile(fileToRemove).Where(item => item.UserId == sharedToUser.Id);
+            foreach (var comment in listOfUserComments)
+            {
+                if(_commentService.RemoveComment(comment) == Domain.Enums.Status.Failed)
+                    Console.WriteLine($"Pogreska prilikom brisanja komentara: {comment.Id} vasih komentara za odabrani file");
+                else
+                    Console.WriteLine($"uspjesno brisanja komentara: {comment.Id} za odabrani file");
+            }
+
+            var status = sharedItemService.Remove(sharedItemToRemove);
+            if (status != Domain.Enums.Status.Success)
+            {
+                Console.WriteLine($"\nPogreska prilikom brisanje datoteke: {name} iz podijeljenih datoteka s vama");
+                return;
+            }
+
+            Console.WriteLine($"\nUspjesno izbrisana datoteka: {name} iz mape podiljenih datoteka s vama");
         }
     }
 }

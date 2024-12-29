@@ -126,7 +126,7 @@ namespace Drive.Presentation.Utilities
                 return;
             }
         }
-        public static void HandleStopSharingFile(User user, User userToShare, IFileService _fileService, ISharedItemService _sharedItemService)
+        public static void HandleStopSharingFile(User user, User userToShare, IFileService _fileService, ISharedItemService _sharedItemService, ICommentService _commentService)
         {
             while (true)
             {
@@ -148,13 +148,13 @@ namespace Drive.Presentation.Utilities
                     continue;
                 }
 
-                RemoveFileIfShared(file, user, userToShare, _sharedItemService);
+                RemoveFileIfShared(file, user, userToShare, _sharedItemService, _commentService);
 
                 ReadInput.WaitForUser();
                 return;
             }
         }
-        public static void RemoveFileIfShared(File file, User user, User userToShare, ISharedItemService _sharedItemService)
+        public static void RemoveFileIfShared(File file, User user, User userToShare, ISharedItemService _sharedItemService, ICommentService commentService)
         {
             if (!_sharedItemService.AlreadyShared(file.Id, userToShare.Id, user.Id, DataType.File))
             {
@@ -164,6 +164,24 @@ namespace Drive.Presentation.Utilities
 
             var sharedItem = _sharedItemService.GetSharedItem(file.Id, user, userToShare, DataType.File);
 
+            if (!ReadInput.ConfirmAction($"zelite li prestati dijeliti datoteku s korisnikom: {userToShare.Name} "))
+            {
+                Console.WriteLine("odustali ste od akcije");
+                return;
+            }
+            
+            var commentsFromUserToShare = commentService.GetCommentsByFile(file).Where(item => item.UserId == userToShare.Id);
+            foreach ( var comment in commentsFromUserToShare )
+            {
+                var removeCommentStatus = commentService.RemoveComment(comment);
+                if(removeCommentStatus == Domain.Enums.Status.Failed)
+                {
+                    Console.WriteLine($"pogreska prilikom brisanja komentara: {comment.Id} korisnika {userToShare}");
+                }
+                else
+                    Console.WriteLine($"uspjesno brisanja komentara: {comment.Id} korisnika {userToShare}");
+            }
+
             var status = _sharedItemService.Remove(sharedItem);
 
             if (status == Domain.Enums.Status.Failed)
@@ -172,11 +190,6 @@ namespace Drive.Presentation.Utilities
                 return;
             }
 
-            if (!ReadInput.ConfirmAction($"zelite li prestati dijeliti datoteku s korisnikom: {userToShare.Name} "))
-            {
-                Console.WriteLine("odustali ste od akcije");
-                return;
-            }
 
             Console.WriteLine($"Uspjesno prekinuto dijeljenje datoteke: {file.Name} s korisnikom: {userToShare.Name + " " + userToShare.Email}");
             ReadInput.WaitForUser();

@@ -44,13 +44,25 @@ namespace Drive.Presentation.Actions
 
             Console.WriteLine("Uspjesno dodan komentar");
         }
-        public static void DeleteComment(int fileId, ICommentService commentService)
+        public static void DeleteComment(int fileId, ICommentService commentService, User user)
         {
             var comment = GetComment(fileId, commentService, "izbrisati");
             if (comment == null)
                 return;
 
             Console.Clear();
+
+            if(comment.UserId != user.Id)
+            {
+                Console.WriteLine("Ne mozete izbrisati komentar koji nije vas");
+                return;
+            }
+
+            if(!ReadInput.ConfirmAction("zelite li stvarno izbrisati komentar "))
+            {
+                Console.WriteLine("Odustali ste od brisanja komentara");
+                return;
+            }
 
             if (commentService.RemoveComment(comment) == Domain.Enums.Status.Failed)
             {
@@ -60,7 +72,7 @@ namespace Drive.Presentation.Actions
 
             Console.WriteLine($"Uspjesno izbrisan komentar: {comment.Id}");
         }
-        public static void EditComment(File file, ICommentService commentService)
+        public static void EditComment(File file, ICommentService commentService, User user)
         {
             var comment = GetComment(file.Id, commentService, "urediti");
             if (comment == null)
@@ -68,12 +80,24 @@ namespace Drive.Presentation.Actions
 
             Console.Clear();
 
+            if (comment.UserId != user.Id)
+            {
+                Console.WriteLine("Ne mozetet urediti komentar koji nije vas");
+                return;
+            }
+
             Console.WriteLine("Unesite novi sadrzaj: (prazno za ostavit isto)");
             
             var newContent = Console.ReadLine();
             if (string.IsNullOrEmpty(newContent))
             {
                 Console.WriteLine("nista nije promijenjeno");
+                return;
+            }
+
+            if(!ReadInput.ConfirmAction("Zelite li stvarno promijeniti sarzaj komentara "))
+            {
+                Console.WriteLine("Odustali ste od mijenjanja sadrzaja komentara");
                 return;
             }
 
@@ -199,14 +223,14 @@ namespace Drive.Presentation.Actions
                     case "izbrisi komentar":
 
                         ShowComments(file, _commentService);
-                        DeleteComment(file.Id, _commentService);
+                        DeleteComment(file.Id, _commentService, user);
                         ReadInput.WaitForUser();
 
                         break;
 
                     case "uredi komentar":
                         ShowComments(file, _commentService);
-                        EditComment(file, _commentService);
+                        EditComment(file, _commentService, user);
                         ReadInput.WaitForUser();
 
                         break;

@@ -2,6 +2,7 @@
 using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using File = Drive.Data.Entities.Models.File;
 
 namespace Drive.Domain.Repositories
 {
@@ -30,7 +31,7 @@ namespace Drive.Domain.Repositories
         {
             return _dbContext.Comments.Where(item => item.Id == commentId && item.FileId == fileId).FirstOrDefault();
         }
-        public IEnumerable<Comment> GetAllFileComments(Drive.Data.Entities.Models.File file)
+        public IEnumerable<Comment> GetAllFileComments(File file)
         {
             return _dbContext.Comments.Where(item => item.File == file).Include(item => item.User).ToList();
         }
