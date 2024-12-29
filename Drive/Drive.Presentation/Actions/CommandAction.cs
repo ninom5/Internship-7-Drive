@@ -28,9 +28,15 @@ namespace Drive.Presentation.Actions
 
             Console.ResetColor();
 
+            string text = "COMMAND MODE";
+            int totalDashes = Console.WindowWidth - text.Length - 2;
+            int leftDashes = totalDashes / 2;
+            int rightDashes = totalDashes - leftDashes;
+            string centeredText = new string('-', leftDashes) + " " + text + " " + new string('-', rightDashes);
+
             while (true)
             {
-                Console.WriteLine("\n--------------------COMMAND MODE--------------------" +
+                Console.WriteLine($"\n{centeredText}" +
                     "\n>");
                 var command = Console.ReadLine();
 
@@ -405,6 +411,7 @@ namespace Drive.Presentation.Actions
                 currentFolder = folder;
                 Console.WriteLine($"Trenutno unutar mape: {currentFolder.Name}");
                 ReadInput.WaitForUser();
+
                 return;
             }
 
@@ -419,8 +426,10 @@ namespace Drive.Presentation.Actions
 
             while (true)
             {
-                Console.WriteLine($"Trenutni sadrzaj datoteke: \n {file.Content} \n-------------------------------------------------------------------------------- \n" +
-                    $"za upravljanje komentarima unesite jednu od komandi: dodaj komentar, uredi komentar, izbrisi komentar ili za vratiti se na prijasnji izbornik ostavite prazno");
+                Console.Clear();
+
+                Console.WriteLine($"Trenutni sadrzaj datoteke: \n {file.Content} \n\n\n-------------------------------------------------------------------------------- \n\n\n" +
+                    $"za upravljanje komentarima unesite jednu od komandi: dodaj komentar, uredi komentar, izbrisi komentar ili za vratiti se na prijasnji izbornik ostavite prazno\n");
              
                 var command = Console.ReadLine();
                 if(string.IsNullOrEmpty(command))
@@ -433,16 +442,27 @@ namespace Drive.Presentation.Actions
                 {
                     case "dodaj komentar":
                         CommentAction.CreateComment(file, user, _commentService);
+                        ReadInput.WaitForUser();
+
                         break;
 
-                    case "izbrisi komentar": //provjerit
+                    case "izbrisi komentar":
+                        
                         CommentAction.ShowComments(file, _commentService);
                         CommentAction.DeleteComment(file.Id, _commentService);
+                        ReadInput.WaitForUser();
+
                         break;
 
-                    case "uredi komentar": //provjerit
+                    case "uredi komentar":
                         CommentAction.ShowComments(file, _commentService);
                         CommentAction.EditComment(file, _commentService);
+                        ReadInput.WaitForUser();
+
+                        break;
+
+                    default:
+                        Console.WriteLine("Ne ispravna komanda. Unesite help za pomoc");
                         break;
                 }
 

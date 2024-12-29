@@ -21,7 +21,9 @@ namespace Drive.Domain.Services
         {
             try
             {
-                Console.WriteLine($"DEBUG: Attempting to add comment. FileId: {fileId}, UserId: {user.Id}, name: {user.Name}");
+                Console.Clear();
+
+                Console.WriteLine($"Dodavanje komentara za datoteku ID: {fileId + ": " + file.Name}, UserId: {user.Id}, name: {user.Name}");
 
 
                 var newComment = new Comment()
@@ -45,7 +47,7 @@ namespace Drive.Domain.Services
 
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine($"DEBUG: Inner exception: {ex.InnerException.Message}");
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
                 }
 
                 return Status.Failed;

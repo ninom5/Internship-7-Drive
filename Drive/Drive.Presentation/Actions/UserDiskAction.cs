@@ -31,11 +31,8 @@ namespace Drive.Presentation.Actions
             var userFolders = _userService.GetFoldersOrFiles<Folder>(_user);
             var userFiles = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(_user);
 
-            Console.WriteLine("vase datoteke: ");
             Helper.ShowUserFoldersAndFiles(_user, _userService, userFolders, userFiles);
 
-            Console.WriteLine("datoteke podijeljene s vama: ");
-            Helper.ShowSharedDataWithUser(_sharedItemService, _user);
 
             Console.WriteLine("Za ulazak u komandni nacin pritisnite bilo koju tipku");
             Console.ReadKey();

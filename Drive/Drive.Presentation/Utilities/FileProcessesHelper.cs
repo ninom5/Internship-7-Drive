@@ -16,7 +16,7 @@ namespace Drive.Presentation.Utilities
 
             foreach (var file in folderFiles)
             {
-                Console.WriteLine($"\tFile: {file.Name}, id mape: {file.FolderId}, zadnji put promijenjeno: {file.LastModifiedAt}");
+                Console.WriteLine($"\t\tFile: {file.Name}, id mape: {file.FolderId}, zadnji put promijenjeno: {file.LastModifiedAt}");
             }
         }
         public static void DeleteFile(Drive.Data.Entities.Models.File file, Folder folder, IFileService fileService)

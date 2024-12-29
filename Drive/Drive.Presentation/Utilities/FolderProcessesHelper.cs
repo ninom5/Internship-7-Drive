@@ -10,11 +10,11 @@ namespace Drive.Presentation.Utilities
         {
             if (folder.ParentFolder != null)
             {
-                Console.WriteLine($"Mapa: {folder.Name}, Id mape: {folder.Id}, Parent folder id: {folder.ParentFolderId}, naziv: {folder.ParentFolder.Name}");
+                Console.WriteLine($"\t- Mapa: {folder.Name}, Id mape: {folder.Id}, Parent folder id: {folder.ParentFolderId}, naziv: {folder.ParentFolder.Name}");
             }
             else
             {
-                Console.WriteLine($"Mapa: {folder.Name}, Id mape: {folder.Id}");
+                Console.WriteLine($"\t- Mapa: {folder.Name}, Id mape: {folder.Id}");
             }
         }
         public static void DeleteFolder(Folder folder, IFolderService folderService)

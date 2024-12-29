@@ -92,7 +92,7 @@ namespace Drive.Presentation.Reader
 
         public static bool CheckUserPassword(string email, IUserService userService)
         {
-            Console.WriteLine("Unesite vasu lozinku: ");
+            Console.WriteLine("\nUnesite vasu lozinku: ");
             var password = Console.ReadLine();
 
             if(string.IsNullOrEmpty(password) )

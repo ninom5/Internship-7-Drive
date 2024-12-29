@@ -57,7 +57,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            Console.WriteLine("Uspjesno ste prijavljeni\n Preusmjeravanje na vaš izbornik...");
+            Console.WriteLine("\nUspjesno ste prijavljeni\n Preusmjeravanje na vaš izbornik...");
 
             var user = _userService.GetUser(userEmail);
             if(user == null)

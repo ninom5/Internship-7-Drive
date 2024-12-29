@@ -35,6 +35,8 @@ namespace Drive.Presentation.Actions
             if (comment == null)
                 return;
 
+            Console.Clear();
+
             if (commentService.RemoveComment(comment) == Domain.Enums.Status.Failed)
             {
                 Console.WriteLine("Pogreska prilikom brisanja komentara");
@@ -48,6 +50,8 @@ namespace Drive.Presentation.Actions
             var comment = GetComment(file.Id, commentService, "urediti");
             if (comment == null)
                 return;
+
+            Console.Clear();
 
             Console.WriteLine("Unesite novi sadrzaj: (prazno za ostavit isto)");
             
@@ -68,6 +72,7 @@ namespace Drive.Presentation.Actions
         }
         private static Comment? GetComment(int fileId, ICommentService commentService, string message)
         {
+
             Console.WriteLine($"Unesite id komentara kojeg zelite {message}");
 
             int commentId;
@@ -84,6 +89,8 @@ namespace Drive.Presentation.Actions
         }
         public static void ShowComments(File file, ICommentService commentService)
         {
+            Console.Clear();
+
             var commentsForFile = commentService.GetCommentsByFile(file);
             if(!commentsForFile.Any())
             {
