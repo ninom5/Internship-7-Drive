@@ -1,6 +1,7 @@
 ﻿using Drive.Data.Entities;
+using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Repositories;
-
+using File = Drive.Data.Entities.Models.File;
 
 namespace Drive.Domain.Repositories
 {
@@ -28,6 +29,10 @@ namespace Drive.Domain.Repositories
         {
             _dbContext.Update(file);
             _dbContext.SaveChanges();
+        }
+        public File GetFileByName(string name, User user)
+        {
+            return _dbContext.Files.FirstOrDefault(item => item.Name == name && item.Owner == user);
         }
     }
 }

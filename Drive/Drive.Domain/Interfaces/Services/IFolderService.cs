@@ -8,5 +8,6 @@ namespace Drive.Domain.Interfaces.Services
         public Status CreateFolder(string folderName, User user, Folder? parentFolder);
         public Status DeleteFolder(Folder folder);
         public Status UpdateFolder(Folder folder, string name);
+        public Folder GetFolderByName(string name, User user);
     }
 }

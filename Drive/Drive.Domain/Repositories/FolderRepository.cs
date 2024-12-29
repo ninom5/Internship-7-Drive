@@ -35,5 +35,9 @@ namespace Drive.Domain.Repositories
             _dbContext.Folders.Update(folder);
             _dbContext.SaveChanges();
         }
+        public Folder GetFolderByName(string folderName, User user)
+        {
+            return _dbContext.Folders.FirstOrDefault(item => item.Name == folderName && item.Owner == user);
+        }
     }
 }

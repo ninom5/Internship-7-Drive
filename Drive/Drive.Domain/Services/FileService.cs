@@ -2,7 +2,7 @@
 using Drive.Domain.Enums;
 using Drive.Domain.Interfaces.Repositories;
 using Drive.Domain.Interfaces.Services;
-using Microsoft.EntityFrameworkCore;
+using File = Drive.Data.Entities.Models.File;
 
 namespace Drive.Domain.Services
 {
@@ -78,6 +78,9 @@ namespace Drive.Domain.Services
                 return Status.Failed;
             }
         }
-
+        public File GetFileByName(string name, User user)
+        {
+            return _fileRepository.GetFileByName(name, user);
+        }
     }
 }

@@ -7,5 +7,6 @@ namespace Drive.Domain.Interfaces.Repositories
         public void AddFolder(Folder folder);
         public void RemoveFolder(Folder folder);
         public void UpdateFolder(Folder folder, string name);
+        public Folder GetFolderByName(string folderName, User user);
     }
 }

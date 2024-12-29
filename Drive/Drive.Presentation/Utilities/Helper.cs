@@ -122,5 +122,9 @@ namespace Drive.Presentation.Utilities
 
             return(folders, files);
         }
+        public static bool IsValidCommandStopSharing(string[] parts)
+        {
+            return parts.Length == 5 && parts[1] == "dijeliti" && (parts[2] == "mapu" || parts[2] == "datoteku") && parts[3] == "s";
+        }
     }
 }

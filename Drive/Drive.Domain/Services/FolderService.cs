@@ -34,6 +34,7 @@ namespace Drive.Domain.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Pogreska prilikom kreiranja foldera: {ex.Message}");
                 return Status.Failed;
             }
         }
@@ -44,8 +45,9 @@ namespace Drive.Domain.Services
                 _folderRepository.RemoveFolder(folder);
                 return Status.Success;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"Pogreksa prilikom brisanja foldera: {ex.Message}");
                 return Status.Failed;
             }
         }
@@ -55,8 +57,15 @@ namespace Drive.Domain.Services
             {
                 _folderRepository.UpdateFolder(folder, name);
                 return Status.Success;
-            }catch
-            { return Status.Failed; }
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"Pogreksa prilikom azuriranja foldera: {ex.Message}");
+                return Status.Failed; 
+            }
+        }
+        public Folder GetFolderByName(string name, User user)
+        {
+            return _folderRepository.GetFolderByName(name, user);
         }
     }
 }
