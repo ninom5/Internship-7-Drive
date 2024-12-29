@@ -1,6 +1,8 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
 using Drive.Data.Enums;
+using Drive.Domain.Repositories;
+using Drive.Presentation.Reader;
 
 namespace Drive.Presentation.Utilities
 {
@@ -67,6 +69,42 @@ namespace Drive.Presentation.Utilities
             }
 
             Console.WriteLine($"Uspjesno prekinuto dijeljenje mape: {folder.Name} s korisnikom: {shareToUser.Name}");
+        }
+        public static void RenameFolder(string currentName, string newName, IEnumerable<Folder> userFolders, IFolderService _folderService, User user)
+        {
+            var folderToRename = FolderRepository.GetFolder(userFolders, currentName);
+            if (folderToRename == null)
+            {
+                Console.WriteLine("Folder s unesenim imenom nije pronaden");
+                return;
+            }
+
+            while (true)
+            {
+                if (_folderService.GetFolderByName(newName, user) != null)
+                {
+                    Console.WriteLine("Folder s unesenim imenom vec postoji. Unesite novo ime ili ostavite prazno za odustajanje");
+                    newName = Console.ReadLine()?.Trim();
+                    if (string.IsNullOrEmpty(newName))
+                    {
+                        Console.WriteLine("Odustajanje od preimenovanja mape.");
+                        return;
+                    }
+                    continue;
+                }
+
+                var status = _folderService.UpdateFolder(folderToRename, newName);
+                if (status != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine("Pogreska prilikom mijenjanja imena");
+                    return;
+                }
+
+                break;
+            }
+
+            Console.WriteLine($"Mapa: {currentName} uspjesno preimenovana u: {newName}");
+            ReadInput.WaitForUser();
         }
     }
 }

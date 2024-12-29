@@ -3,6 +3,7 @@ using Drive.Domain.Interfaces.Services;
 using Drive.Data.Enums;
 using Drive.Domain.Services;
 using Drive.Presentation.Reader;
+using File = Drive.Data.Entities.Models.File;
 
 namespace Drive.Presentation.Utilities
 {
@@ -69,6 +70,46 @@ namespace Drive.Presentation.Utilities
             }
 
             Console.WriteLine($"Uspjesno prekinuto dijeljenje datoteke: {file.Name} s korisnikom: {shareToUser.Name + " " + shareToUser.Email}");
+        }
+        public static void RenameFile(string currentName, string newName, IFileService _fileService, IUserService _userService, User user)
+        {
+            var fileToRename = _userService.GetFoldersOrFiles<File>(user).FirstOrDefault(f => f.Name == currentName);
+            if (fileToRename == null)
+            {
+                Console.WriteLine("Nije pronaden zeljeni file");
+                return;
+            }
+
+            bool valid = false;
+
+            while (!valid)
+            {
+                if (_fileService.GetFileByName(newName, user) != null)
+                {
+                    Console.WriteLine("Datoteka s unesenim imenom vec postoji. Unesite novo ime ili ostavite prazno za odustajanje:");
+                    newName = Console.ReadLine()?.Trim();
+
+                    if (string.IsNullOrEmpty(newName))
+                    {
+                        Console.WriteLine("Odustajanje od preimenovanja datoteke.");
+                        return;
+                    }
+                    continue;
+                }
+
+                var renameStatus = _fileService.UpdateFile(fileToRename, newName);
+
+                if (renameStatus != Domain.Enums.Status.Success)
+                {
+                    Console.WriteLine("Pogreska prilikom mijenjanja imena");
+                    return;
+                }
+
+                valid = true;
+            }
+
+            Console.WriteLine($"Uspjesno promijenjen naziv datoteke: {currentName} u: {newName}");
+            ReadInput.WaitForUser();
         }
         public static void ReadAndWriteFileContent(Drive.Data.Entities.Models.File file, IFileService _fileService)
         {

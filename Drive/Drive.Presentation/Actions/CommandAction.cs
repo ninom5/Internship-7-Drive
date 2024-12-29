@@ -2,7 +2,6 @@
 using Drive.Data.Enums;
 using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
-using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
@@ -424,49 +423,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            while (true)
-            {
-                Console.Clear();
-
-                Console.WriteLine($"Trenutni sadrzaj datoteke: \n {file.Content} \n\n\n-------------------------------------------------------------------------------- \n\n\n" +
-                    $"za upravljanje komentarima unesite jednu od komandi: dodaj komentar, uredi komentar, izbrisi komentar ili za vratiti se na prijasnji izbornik ostavite prazno\n");
-             
-                var command = Console.ReadLine();
-                if(string.IsNullOrEmpty(command))
-                {
-                    Console.WriteLine("Ne moze biti prazno. Povratak...");
-                    return;
-                }
-
-                switch (command)
-                {
-                    case "dodaj komentar":
-                        CommentAction.CreateComment(file, user, _commentService);
-                        ReadInput.WaitForUser();
-
-                        break;
-
-                    case "izbrisi komentar":
-                        
-                        CommentAction.ShowComments(file, _commentService);
-                        CommentAction.DeleteComment(file.Id, _commentService);
-                        ReadInput.WaitForUser();
-
-                        break;
-
-                    case "uredi komentar":
-                        CommentAction.ShowComments(file, _commentService);
-                        CommentAction.EditComment(file, _commentService);
-                        ReadInput.WaitForUser();
-
-                        break;
-
-                    default:
-                        Console.WriteLine("Ne ispravna komanda. Unesite help za pomoc");
-                        break;
-                }
-
-            }
+            CommentAction.CommentCommands(file, user, _commentService);
         }
         private static void EditFile(string[] parts, User user, IFileService _fileService, IUserService _userService)
         {
@@ -588,44 +545,11 @@ namespace Drive.Presentation.Actions
 
             if (parts[2] == "mape")
             {
-
-                var folderToRename = FolderRepository.GetFolder(userFolders, currentName);
-                if (folderToRename == null)
-                {
-                    Console.WriteLine("Folder s unesenim imenom nije pronaden");
-                    return;
-                }
-
-                var status = _folderService.UpdateFolder(folderToRename, newName);
-                if (status != Domain.Enums.Status.Success)
-                {
-                    Console.WriteLine("Pogreska prilikom mijenjanja imena");
-                    return;
-                }
-
-                Console.WriteLine($"Mapa: {currentName} uspjesno preimenovana u: {newName}");
-                ReadInput.WaitForUser();
-
+                FolderProcessesHelper.RenameFolder(currentName, newName, userFolders, _folderService, user);
                 return;
             }
 
-            var fileToRename = _userService.GetFoldersOrFiles<File>(user).Where(f => f.Name == currentName).FirstOrDefault();
-            if (fileToRename == null)
-            {
-                Console.WriteLine("Nije pronaden zeljeni file");
-                return;
-            }
-
-            var renameStatus = _fileService.UpdateFile(fileToRename, newName);
-
-            if (renameStatus != Domain.Enums.Status.Success)
-            {
-                Console.WriteLine("Pogreska prilikom mijenjanja imena");
-                return;
-            }
-
-            Console.WriteLine($"Uspjesno promijenjen naziv datoteke: {currentName} u: {newName}");
-            ReadInput.WaitForUser();
+            FileProcessesHelper.RenameFile(currentName, newName, _fileService, _userService, user);
         }
 
         private static string? GetName(IEnumerable<string> parts)

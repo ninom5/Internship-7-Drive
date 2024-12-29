@@ -2,6 +2,7 @@
 using Drive.Domain.Enums;
 using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Services;
+using Drive.Presentation.Reader;
 using File = Drive.Data.Entities.Models.File;
 
 namespace Drive.Presentation.Actions
@@ -105,6 +106,52 @@ namespace Drive.Presentation.Actions
                 {
                     Console.WriteLine($"ID: {comment.Id} - Email: {comment.User.Email} - Datum: {comment.LastModifiedAt} \n" +
                         $"Sadrzaj: {comment.Content}");
+                }
+            }
+        }
+
+        public static void CommentCommands(File file, User user, ICommentService _commentService)
+        {
+            while (true)
+            {
+                Console.Clear();
+
+                Console.WriteLine($"Trenutni sadrzaj datoteke: \n {file.Content} \n\n\n-------------------------------------------------------------------------------- \n\n\n" +
+                    $"za upravljanje komentarima unesite jednu od komandi: dodaj komentar, uredi komentar, izbrisi komentar ili za vratiti se na prijasnji izbornik ostavite prazno\n");
+
+                var command = Console.ReadLine();
+                if (string.IsNullOrEmpty(command))
+                {
+                    Console.WriteLine("Ne moze biti prazno. Povratak...");
+                    return;
+                }
+
+                switch (command)
+                {
+                    case "dodaj komentar":
+                        CreateComment(file, user, _commentService);
+                        ReadInput.WaitForUser();
+
+                        break;
+
+                    case "izbrisi komentar":
+
+                        ShowComments(file, _commentService);
+                        DeleteComment(file.Id, _commentService);
+                        ReadInput.WaitForUser();
+
+                        break;
+
+                    case "uredi komentar":
+                        ShowComments(file, _commentService);
+                        EditComment(file, _commentService);
+                        ReadInput.WaitForUser();
+
+                        break;
+
+                    default:
+                        Console.WriteLine("Ne ispravna komanda. Unesite help za pomoc");
+                        break;
                 }
             }
         }
