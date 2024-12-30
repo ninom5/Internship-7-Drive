@@ -1,6 +1,7 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
+using Drive.Domain.Services;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
@@ -12,16 +13,14 @@ namespace Drive.Presentation.Actions
     public class CommandAction
     {
         public static Folder currentFolder { get; private set; } = null;
-        public void CommandMode(User user, Folder parrentFolder, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService, 
-            IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, ICommentService _commentService)
+        public void CommandMode(User user, Folder parrentFolder, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService,
+    IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, ICommentService _commentService)
         {
             currentFolder = parrentFolder;
 
             Console.Write("Unesite komandu za upravljanje datotekama i fileovima. Za pomoc unesite ");
-
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("help");
-
             Console.ResetColor();
 
             string text = "COMMAND MODE";
@@ -48,11 +47,80 @@ namespace Drive.Presentation.Actions
                 if (command == "povratak")
                     break;
 
-                CheckCommand(command, user, _folderService, _fileService, userFolders, _userService, _sharedItemService, userFiles, _commentService);
-                userFolders = _userService.GetFoldersOrFiles<Folder>(user);
-                userFiles = _userService.GetFoldersOrFiles<File>(user);
+                if (command == "navigacija")
+                    NavigationMode(user, userFolders, userFiles, _userService, _fileService, _folderService, _commentService, _sharedItemService);
+                else
+                {
+                    CheckCommand(command, user, _folderService, _fileService, userFolders, _userService, _sharedItemService, userFiles, _commentService);
+                    userFolders = _userService.GetFoldersOrFiles<Folder>(user);
+                    userFiles = _userService.GetFoldersOrFiles<File>(user);
+                }
             }
         }
+        private void NavigationMode(User user, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IUserService _userService, IFileService _fileService, IFolderService _folderService, ICommentService _commentService, 
+            ISharedItemService _sharedItemService)
+        {
+            Console.Clear();
+            int selectedIndex = 0;
+
+            var actionFactory = new NavigationActionFactory();
+            var actions = actionFactory.GetActionNames();
+
+            while (true)
+            {
+                Console.Clear();
+                string text = "NAVIGATION MODE";
+
+                int totalDashes = Console.WindowWidth - text.Length - 2;
+                int leftDashes = totalDashes / 2;
+                int rightDashes = totalDashes - leftDashes;
+                
+                string centeredText = new string('-', leftDashes) + " " + text + " " + new string('-', rightDashes);
+                
+                Console.WriteLine($"\n{centeredText}\n");
+
+                for (int i = 0; i < actions.Count; i++)
+                {
+                    if (i == selectedIndex)
+                        Console.BackgroundColor = ConsoleColor.Cyan;
+                    else
+                        Console.BackgroundColor = ConsoleColor.Black;
+
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(actions[i]);
+                    Console.ResetColor();
+                }
+
+                var key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.UpArrow)
+                    selectedIndex = (selectedIndex == 0) ? actions.Count - 1 : selectedIndex - 1;
+                
+                else if (key.Key == ConsoleKey.DownArrow)
+                    selectedIndex = (selectedIndex == actions.Count - 1) ? 0 : selectedIndex + 1;
+
+                else if (key.Key == ConsoleKey.Enter)
+                {
+                    var selectedActionName = actions[selectedIndex];
+                    var selectedAction = actionFactory.GetAction(selectedActionName);
+
+                    if (selectedAction != null)
+                    {
+                        Console.Clear();
+                        selectedAction.Execute(user, userFolders, userFiles, _userService, _fileService, _folderService, _commentService, _sharedItemService);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Problem s odabirom akcije. Pokusajte ponovo");
+                    }
+                }
+                else if (key.Key == ConsoleKey.Escape)
+                {
+                    break;
+                }
+            }
+        }
+
 
         private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, 
             ISharedItemService _sharedItemService, IEnumerable<File> userFiles, ICommentService _commentService)
@@ -87,6 +155,8 @@ namespace Drive.Presentation.Actions
                     break;
 
                 case "ls":
+                    userFolders = _userService.GetFoldersOrFiles<Folder>(user);
+                    userFiles = _userService.GetFoldersOrFiles<File>(user);
                     Helper.ShowUserFoldersAndFiles(user, _userService, userFolders, userFiles);
                     ReadInput.WaitForUser();
                     break;
@@ -133,7 +203,7 @@ namespace Drive.Presentation.Actions
             CreateItem<File>(name, user, _folderService, _fileService);
             ReadInput.WaitForUser();
         }
-        private static void CreateItem<T>(string name, User user, IFolderService _folderService, IFileService _fileService) where T : class
+        public static void CreateItem<T>(string name, User user, IFolderService _folderService, IFileService _fileService) where T : class
         {
             bool nameAlreadyExist = false;
             if (typeof(T) == typeof(Folder))
@@ -155,9 +225,11 @@ namespace Drive.Presentation.Actions
                 }
 
                 if(typeof(T) == typeof(Folder))
-                    nameAlreadyExist = _folderService.GetFolderByName(newName, user) != null ? true : false;
+                    nameAlreadyExist = _folderService.GetFolderByName(newName, user) != null;
                 else if(typeof(T) == typeof(File))
-                    nameAlreadyExist = _fileService.GetFileByName(newName, user) != null ? true : false;
+                    nameAlreadyExist = _fileService.GetFileByName(newName, user) != null;
+
+                name = newName;
             }
 
             if (typeof(T) == typeof(Folder))
@@ -362,7 +434,7 @@ namespace Drive.Presentation.Actions
             SharedItemsProcesses.StartSharingFile(user, userToShare, _sharedItemService, _userService);
         }
         
-        public static void StopSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, 
+        private static void StopSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, 
             ISharedItemService _sharedItemService, User user, ICommentService _commentService)
         {
             if(!Helper.IsValidCommandStopSharing(parts))
@@ -385,6 +457,36 @@ namespace Drive.Presentation.Actions
             SharedItemsProcesses.HandleStopSharingFile(user, userToShare, _fileService, _sharedItemService, _commentService);
             
         }
-        
+        public static void GetDeleteFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService, IUserService _userService, IEnumerable<Folder> userFolders,
+            ICommentService _commentService, ISharedItemService _sharedItemService)
+        {
+            DeleteFolderFile(parts, user, _folderService, _fileService, _userService, userFolders, _commentService, _sharedItemService);
+        }
+        public static void GetChangeDirectory(string[] parts, IEnumerable<Folder> userFolders, IUserService _userService, User user, ICommentService _commentService)
+        {
+            ChangeWorkingDirectory(parts, userFolders, _userService, user, _commentService);
+        }
+        public static void GetEditFile(string[] parts, User user, IFileService _fileService, IUserService _userService)
+        {
+            EditFile(parts, user, _fileService, _userService);
+        }
+        public static void GetRename(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, User user)
+        {
+            RenameFolderFile(parts, userFolders, _folderService, _fileService, _userService, user);
+        }
+        public static string CurrentDirectory()
+        {
+            return currentFolder.Name;
+        }
+        public static void GetStartSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService, User user,
+            ICommentService _commentService)
+        {
+            StartSharing(parts, userFolders, _folderService, _fileService, _userService, _sharedItemService, user, _commentService);
+        }
+        public static void GetStopSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService,
+            ISharedItemService _sharedItemService, User user, ICommentService _commentService)
+        {
+            StopSharing(parts, userFolders, _folderService, _fileService, _userService, _sharedItemService, user, _commentService);
+        }
     }
 }

@@ -28,6 +28,19 @@ namespace Drive.Presentation.Utilities
             }
         }
         
+        public static string GetName(string prompt)
+        {
+            Console.WriteLine(prompt + ". Prazno za odustat");
+
+            var name = Console.ReadLine();
+            if(string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("ne moze biti prazno. Povratak...");
+                return "";
+            }
+
+            return name;
+        }
         public static bool IsAncestor(Folder currentFolder, string folderToDeleteName, IEnumerable<Folder> allFolders)
         {
             while (currentFolder.ParentFolderId != null)
