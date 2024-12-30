@@ -5,9 +5,8 @@ using Drive.Presentation.Utilities;
 using Drive.Presentation.Interfaces;
 using File = Drive.Data.Entities.Models.File;
 using Drive.Presentation.Actions;
-using Drive.Domain.Services;
 
-public class CreateFileAction : INavigationAction
+public class NavigationActions : INavigationAction
 {
     public string Name => "stvori datoteku";
 

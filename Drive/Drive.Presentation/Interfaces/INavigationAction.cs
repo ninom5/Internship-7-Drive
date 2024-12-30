@@ -8,13 +8,7 @@ namespace Drive.Presentation.Interfaces
     {
         string Name { get; }
 
-        void Execute(User user,
-                     IEnumerable<Folder> userFolders,
-                     IEnumerable<File> userFiles,
-                     IUserService userService,
-                     IFileService fileService,
-                     IFolderService folderService,
-                     ICommentService commentService,
-                     ISharedItemService sharedItemService);
+        void Execute(User user, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IUserService userService, IFileService fileService, IFolderService folderService, 
+            ICommentService commentService, ISharedItemService sharedItemService);
     }
 }

@@ -8,7 +8,7 @@ public class NavigationActionFactory
     {
         _actions = new List<INavigationAction>
         {
-            new CreateFileAction(),
+            new NavigationActions(),
             new CreateFolderAction(),
             new DeleteFolderAction(),
             new DeleteFileAction(),
