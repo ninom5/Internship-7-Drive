@@ -58,6 +58,8 @@ namespace Drive.Presentation.Actions
 
             Console.WriteLine("Root folder uspjesno dodan");
 
+            Program.CurrentUser = null;
+
             Thread.Sleep(2000);
         }
         private (string, string, string, string) CollectBaseUserData()

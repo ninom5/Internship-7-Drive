@@ -4,11 +4,12 @@ using Drive.Data.Entities;
 using Drive.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Drive.Domain.Repositories;
+using Drive.Data.Entities.Models;
 public class Program
 {
+    public static User? CurrentUser = null;
     public static void Main()
     {
-        Console.Title = "DUMP Drive";
 
         var options = new DbContextOptionsBuilder<DriveDbContext>()
            .UseNpgsql("Host=127.0.0.1;Port=5432;Database=Drive;User Id=postgres;Password=rootuser")
@@ -33,7 +34,7 @@ public class Program
 
         MenuFactory.Initialize(userService, folderService, fileService, sharedItemService, commentService);
 
-        IMenu mainMenu = MenuFactory.CreateMenu("MainMenu");
+        IMenu mainMenu = MenuFactory.CreateMenu("MainMenu", null);
 
         while (true)
         {

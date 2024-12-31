@@ -66,6 +66,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
+            Program.CurrentUser = user;
             var loginMenu = new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService, _commentService);
             loginMenu.Execute();
         }

@@ -89,6 +89,7 @@ public class ChangeWorkingDirectory : INavigationAction
         userFolders = userService.GetFoldersOrFiles<Folder>(user);
 
         CommandAction.GetChangeDirectory(parts.Split(" "), userFolders, userService, user, commentService);
+        ReadInput.WaitForUser();
     }
 }
 
@@ -108,6 +109,7 @@ public class EnterFile : INavigationAction
         userFiles = userService.GetFoldersOrFiles<File>(user);
 
         CommandAction.GetChangeDirectory(parts.Split(" "), userFolders, userService, user, commentService);
+        ReadInput.WaitForUser();
     }
 }
 

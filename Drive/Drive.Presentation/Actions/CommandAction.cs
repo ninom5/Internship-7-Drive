@@ -82,7 +82,7 @@ namespace Drive.Presentation.Actions
                 for (int i = 0; i < actions.Count; i++)
                 {
                     if (i == selectedIndex)
-                        Console.BackgroundColor = ConsoleColor.Cyan;
+                        Console.BackgroundColor = ConsoleColor.DarkBlue;
                     else
                         Console.BackgroundColor = ConsoleColor.Black;
 

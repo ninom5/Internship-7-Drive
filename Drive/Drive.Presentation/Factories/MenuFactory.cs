@@ -20,17 +20,17 @@ namespace Drive.Presentation.Factories
             _sharedItemService = sharedItemService;
             _commentService = commentService;
         }
-        public static IMenu CreateMenu(string menuType /*, User? user*/)
+        public static IMenu CreateMenu(string menuType , User? user)
         {
             return menuType switch
             {
                 "MainMenu" => new MainMenu(_userService, _folderService, _fileService, _sharedItemService, _commentService),
-                //"LoginMenu" => new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService, _commentService)
+                "LoginMenu" => new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService, _commentService)
             };
         }
-        public static IMenu CreateLoginMenu(User user)
-        {
-            return new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService, _commentService);
-        }
+        //public static IMenu CreateLoginMenu(User user)
+        //{
+        //    return new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService, _commentService);
+        //}
     }
 }

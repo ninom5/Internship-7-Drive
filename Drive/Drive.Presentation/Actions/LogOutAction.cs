@@ -1,4 +1,5 @@
 ﻿using Drive.Domain.Interfaces.Services;
+using Drive.Presentation.Factories;
 using Drive.Presentation.Interfaces;
 
 namespace Drive.Presentation.Actions
@@ -14,10 +15,15 @@ namespace Drive.Presentation.Actions
         }
         public void Execute()
         {
-            //Console.WriteLine("Odjava. Povratak na glavni izbornik...");
-            ////var mainMenu = new MainMenu(_userService, _folderService);
-            //mainMenu.Display();
-            //mainMenu.HandleInput();
+            Console.Clear();
+
+            Console.WriteLine("Odjava...");
+
+            Program.CurrentUser = null;
+
+            var mainMenu = MenuFactory.CreateMenu("MainMenu", null);
+            mainMenu.Display();
+            mainMenu.HandleInput();
         }
     }
 }

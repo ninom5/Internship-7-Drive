@@ -18,6 +18,7 @@ namespace Drive.Presentation.Menus
         
         public LoginMenu(IUserService userService, User user, IFolderService folderService, IFileService fileService, ISharedItemService sharedItemService, ICommentService commentService) : base("LoginMenu")
         {
+
             _userService = userService;
             _loggedUser = user;
             _folderService = folderService;
@@ -34,7 +35,8 @@ namespace Drive.Presentation.Menus
         }
         public void Execute()
         {
-            IMenu loginMenu = MenuFactory.CreateLoginMenu(_loggedUser);
+
+            IMenu loginMenu = Program.CurrentUser == null ? MenuFactory.CreateMenu("MainMenu", null) : MenuFactory.CreateMenu("LoginMenu", Program.CurrentUser);
             while(true)
             {
                 loginMenu.Display();

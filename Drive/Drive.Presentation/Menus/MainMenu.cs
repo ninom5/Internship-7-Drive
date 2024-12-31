@@ -12,6 +12,8 @@ namespace Drive.Presentation.Menus
         private readonly ICommentService _commentService;
         public MainMenu(IUserService userService, IFolderService folderService, IFileService fileService, ISharedItemService sharedItemService, ICommentService commentService) : base("Glavni Menu")
         {
+            Console.Title = "DUMP Drive";
+
             _userService = userService;
             _folderService = folderService;
             _fileService = fileService;
