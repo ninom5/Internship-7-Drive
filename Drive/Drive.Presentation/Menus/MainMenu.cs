@@ -1,6 +1,7 @@
 ﻿using Drive.Domain.Interfaces.Services;
 using Drive.Presentation.Actions;
 using Drive.Presentation.Actions.Authentication;
+using Drive.Presentation.Factories;
 
 namespace Drive.Presentation.Menus
 {
@@ -21,9 +22,10 @@ namespace Drive.Presentation.Menus
             _sharedItemService = sharedItemService;
             _commentService = commentService;
 
-            Options.Add(("Registracija novog korisnika", new RegisterUserAction(_userService, _folderService)));
-            Options.Add(("Prijava korisnika", new LoginAction(_userService, _folderService, _fileService, _sharedItemService, _commentService)));
+            Options.Add(("Registracija novog korisnika", AuthenticationFactory.CreateAction("RegisterUserAction", userService, folderService, fileService, sharedItemService, commentService)));
+            Options.Add(("Prijava korisnika", AuthenticationFactory.CreateAction("LoginAction", _userService, _folderService, _fileService, _sharedItemService, _commentService)));
             Options.Add(("Izlaz iz aplikacije", new ExitAction()));
         }
     }
+
 }

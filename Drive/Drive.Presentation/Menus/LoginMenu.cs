@@ -29,10 +29,10 @@ namespace Drive.Presentation.Menus
 
             Console.Title = $"Dobro dosli, {user.Name}";
 
-            Options.Add(("Moj disk", new UserDiskAction(_userService, _folderService, _loggedUser, _fileService, _sharedItemService, _commentService)));
-            Options.Add(("Dijeljeno sa mnom", new UserSharedFilesAction(_userService, _loggedUser, _sharedItemService, _fileService, _commentService)));
-            Options.Add(("Postavke Profila", new UserProfileMenu(_userService, _loggedUser)));
-            Options.Add(("Odjava iz profila", new LogOutAction(_userService, _folderService)));
+            Options.Add(("Moj disk", LoginMenuFactory.CreateAction("Moj disk", _userService, _loggedUser, _folderService, _fileService, _sharedItemService, _commentService)));
+            Options.Add(("Dijeljeno sa mnom", LoginMenuFactory.CreateAction("Dijeljeno sa mnom", _userService, _loggedUser, _folderService, _fileService, _sharedItemService, _commentService)));
+            Options.Add(("Postavke Profila", LoginMenuFactory.CreateAction("Postavke Profila", _userService, _loggedUser, _folderService, _fileService, _sharedItemService, _commentService)));
+            Options.Add(("Odjava iz profila", LoginMenuFactory.CreateAction("Odjava iz profila", _userService, _loggedUser, _folderService, _fileService, _sharedItemService, _commentService)));
         }
         public void Execute()
         {
