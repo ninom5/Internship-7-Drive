@@ -1,6 +1,5 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
-using Drive.Domain.Services;
 using Drive.Presentation.Utilities;
 using System.Text;
 
@@ -135,7 +134,7 @@ namespace Drive.Presentation.Reader
                 }
                 
 
-                return userInput;
+                return userInput?.Trim();
             }
         }
 
@@ -168,7 +167,7 @@ namespace Drive.Presentation.Reader
             while (true)
             {
                 Console.WriteLine(prompt);
-                var password = Console.ReadLine();
+                var password = Console.ReadLine()?.Trim();
 
                 if (string.IsNullOrEmpty(password) || (validate != null && !validate(password)))
                     return null;
@@ -180,7 +179,7 @@ namespace Drive.Presentation.Reader
                 }
 
 
-                if (!ReadInput.ConfirmPassword(password))
+                if (!ConfirmPassword(password))
                     return null;
 
                 return password;
@@ -190,7 +189,7 @@ namespace Drive.Presentation.Reader
         public static bool CheckUserPassword(string email, IUserService userService)
         {
             Console.WriteLine("\nUnesite vasu lozinku: ");
-            var password = Console.ReadLine();
+            var password = Console.ReadLine()?.Trim();
 
             if(string.IsNullOrEmpty(password) )
                 return false;

@@ -1,7 +1,6 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
-using Drive.Domain.Services;
 using Drive.Presentation.Actions.Disk;
 using Drive.Presentation.Actions.Navigation;
 using Drive.Presentation.Menus.SubMenu;
@@ -14,7 +13,7 @@ namespace Drive.Presentation.Actions.Command
 {
     public class CommandAction
     {
-        public static Folder currentFolder { get; private set; } = null;
+        public static Folder? currentFolder { get; private set; } = null;
         public void CommandMode(User user, Folder parrentFolder, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService,
     IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, ICommentService _commentService)
         {
@@ -61,7 +60,7 @@ namespace Drive.Presentation.Actions.Command
                 }
             }
         }
-       
+
 
 
         private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService,
@@ -149,10 +148,10 @@ namespace Drive.Presentation.Actions.Command
         {
             bool nameAlreadyExist = false;
             if (typeof(T) == typeof(Folder))
-                nameAlreadyExist = _folderService.GetFolderByName(name, user) != null ? true : false;
+                nameAlreadyExist = _folderService.GetFolderByName(name, user) != null;
 
             else if (typeof(T) == typeof(File))
-                nameAlreadyExist = _fileService.GetFileByName(name, user) != null ? true : false;
+                nameAlreadyExist = _fileService.GetFileByName(name, user) != null;
 
             while (nameAlreadyExist)
             {

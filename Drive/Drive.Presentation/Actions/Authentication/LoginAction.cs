@@ -35,7 +35,7 @@ namespace Drive.Presentation.Actions.Authentication
                 return;
             }
 
-            if (!_userService.EmailExists(userEmail))
+            if (!_userService.EmailExists(userEmail?.Trim()))
             {
                 Console.WriteLine("Korisnik s unesenim mailom nije registriran");
                 return;
