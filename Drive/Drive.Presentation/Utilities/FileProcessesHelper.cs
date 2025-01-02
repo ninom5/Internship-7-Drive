@@ -1,7 +1,6 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
 using Drive.Data.Enums;
-using Drive.Domain.Services;
 using Drive.Presentation.Reader;
 using File = Drive.Data.Entities.Models.File;
 
@@ -95,6 +94,12 @@ namespace Drive.Presentation.Utilities
                         return;
                     }
                     continue;
+                }
+
+                if (!ReadInput.ConfirmAction("Zelite li stvarno preimenovati datoteku "))
+                {
+                    Console.WriteLine("odustali ste od brisanja");
+                    return;
                 }
 
                 var renameStatus = _fileService.UpdateFile(fileToRename, newName);

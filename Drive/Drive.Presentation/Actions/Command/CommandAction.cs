@@ -283,6 +283,12 @@ namespace Drive.Presentation.Actions.Command
                     return;
                 }
 
+                if (!ReadInput.ConfirmAction("Zelite li stvarno izbrisati mapu "))
+                {
+                    Console.WriteLine("odustali ste od brisanja");
+                    return;
+                }
+
                 Helper.ProcessFolderAndContents(folderToDelete, userFolders, _folderService, _fileService, _userService, user, "izbrisi", null, null);
 
                 ReadInput.WaitForUser();
@@ -298,7 +304,7 @@ namespace Drive.Presentation.Actions.Command
                 return;
             }
 
-            if (!ReadInput.ConfirmAction("Zelite li stvarno izbrisati datoteku iz podijeljenih datoteka s vama "))
+            if (!ReadInput.ConfirmAction("Zelite li stvarno izbrisati datoteku "))
             {
                 Console.WriteLine("odustali ste od brisanja");
                 return;
@@ -348,6 +354,8 @@ namespace Drive.Presentation.Actions.Command
                 Console.WriteLine("Ime ne moze biti prazno");
                 return;
             }
+
+            userFolders = _userService.GetFoldersOrFiles<Folder> (user);
 
             if (parts[2] == "mape")
             {

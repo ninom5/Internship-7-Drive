@@ -93,6 +93,12 @@ namespace Drive.Presentation.Utilities
                     continue;
                 }
 
+                if (!ReadInput.ConfirmAction("Zelite li stvarno preimenovati mapu "))
+                {
+                    Console.WriteLine("odustali ste od preimenovanja");
+                    return;
+                }
+
                 var status = _folderService.UpdateFolder(folderToRename, newName);
                 if (status != Domain.Enums.Status.Success)
                 {
