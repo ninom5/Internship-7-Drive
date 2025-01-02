@@ -6,9 +6,10 @@ using Drive.Presentation.Utilities;
 using Drive.Data.Enums;
 using File = Drive.Data.Entities.Models.File;
 using Drive.Presentation.Reader;
+using Drive.Presentation.Actions.Disk;
 
 
-namespace Drive.Presentation.Actions
+namespace Drive.Presentation.Actions.Command
 {
     public class CommandSharedAction
     {
@@ -52,8 +53,8 @@ namespace Drive.Presentation.Actions
                 CheckSharedFilesCommand(command, sharedItemService, userFolders, userFiles, sharedToUser, _fileService, _commentService);
             }
         }
-       
-        private static void CheckSharedFilesCommand(string command, ISharedItemService sharedItemService, IEnumerable<Folder> folders, IEnumerable<Data.Entities.Models.File> files, User sharedToUser, IFileService _fileService, ICommentService _commentService)
+
+        private static void CheckSharedFilesCommand(string command, ISharedItemService sharedItemService, IEnumerable<Folder> folders, IEnumerable<File> files, User sharedToUser, IFileService _fileService, ICommentService _commentService)
         {
             string[] parts = command.Split(" ");
             switch (parts[0])
@@ -135,7 +136,7 @@ namespace Drive.Presentation.Actions
 
                     while (true)
                     {
-                         
+
                         Console.WriteLine(">");
                         var commentCommand = Console.ReadLine()?.Trim();
 
@@ -248,7 +249,7 @@ namespace Drive.Presentation.Actions
 
             var sharedItemToRemove = sharedItemService.GetSharedItem(fileToRemove.Id, fileToRemove.Owner, sharedToUser, DataType.File);
 
-            if(!ReadInput.ConfirmAction("Zelite li stvarno izbrisati datoteku iz podijeljenih datoteka s vama "))
+            if (!ReadInput.ConfirmAction("Zelite li stvarno izbrisati datoteku iz podijeljenih datoteka s vama "))
             {
                 Console.WriteLine("odustali ste od brisanja");
                 return;
@@ -257,7 +258,7 @@ namespace Drive.Presentation.Actions
             var listOfUserComments = _commentService.GetCommentsByFile(fileToRemove).Where(item => item.UserId == sharedToUser.Id);
             foreach (var comment in listOfUserComments)
             {
-                if(_commentService.RemoveComment(comment) == Domain.Enums.Status.Failed)
+                if (_commentService.RemoveComment(comment) == Domain.Enums.Status.Failed)
                     Console.WriteLine($"Pogreska prilikom brisanja komentara: {comment.Id} vasih komentara za odabrani file");
                 else
                     Console.WriteLine($"uspjesno brisanja komentara: {comment.Id} za odabrani file");

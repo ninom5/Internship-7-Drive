@@ -5,7 +5,7 @@ using Drive.Presentation.Interfaces;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
 
-namespace Drive.Presentation.Actions
+namespace Drive.Presentation.Actions.Profile
 {
     public class ChangeUserPasswordAction : IAction
     {

@@ -1,10 +1,11 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
+using Drive.Presentation.Actions.Command;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Utilities;
 
-namespace Drive.Presentation.Actions
+namespace Drive.Presentation.Actions.Disk
 {
     public class UserDiskAction : IAction
     {
@@ -29,7 +30,7 @@ namespace Drive.Presentation.Actions
             Console.Clear();
 
             var userFolders = _userService.GetFoldersOrFiles<Folder>(_user);
-            var userFiles = _userService.GetFoldersOrFiles<Drive.Data.Entities.Models.File>(_user);
+            var userFiles = _userService.GetFoldersOrFiles<Data.Entities.Models.File>(_user);
 
             Helper.ShowUserFoldersAndFiles(_user, _userService, userFolders, userFiles);
 

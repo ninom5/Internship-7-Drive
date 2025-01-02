@@ -5,7 +5,7 @@ using Drive.Presentation.Reader;
 using System.Text;
 using File = Drive.Data.Entities.Models.File;
 
-namespace Drive.Presentation.Actions
+namespace Drive.Presentation.Actions.Disk
 {
     public class CommentAction
     {
@@ -36,7 +36,7 @@ namespace Drive.Presentation.Actions
 
             var createCommentStatus = commentService.AddComment(file.Id, commentContent, file, user);
 
-            if(createCommentStatus == Domain.Enums.Status.Failed)
+            if (createCommentStatus == Status.Failed)
             {
                 Console.WriteLine("Pogreska prilikom dodavanja komentara");
                 return;
@@ -52,19 +52,19 @@ namespace Drive.Presentation.Actions
 
             Console.Clear();
 
-            if(comment.UserId != user.Id)
+            if (comment.UserId != user.Id)
             {
                 Console.WriteLine("Ne mozete izbrisati komentar koji nije vas");
                 return;
             }
 
-            if(!ReadInput.ConfirmAction("zelite li stvarno izbrisati komentar "))
+            if (!ReadInput.ConfirmAction("zelite li stvarno izbrisati komentar "))
             {
                 Console.WriteLine("Odustali ste od brisanja komentara");
                 return;
             }
 
-            if (commentService.RemoveComment(comment) == Domain.Enums.Status.Failed)
+            if (commentService.RemoveComment(comment) == Status.Failed)
             {
                 Console.WriteLine("Pogreska prilikom brisanja komentara");
                 return;
@@ -87,7 +87,7 @@ namespace Drive.Presentation.Actions
             }
 
             Console.WriteLine("Unesite novi sadrzaj: (prazno za ostavit isto)");
-            
+
             var newContent = Console.ReadLine();
             if (string.IsNullOrEmpty(newContent))
             {
@@ -95,13 +95,13 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            if(!ReadInput.ConfirmAction("Zelite li stvarno promijeniti sarzaj komentara "))
+            if (!ReadInput.ConfirmAction("Zelite li stvarno promijeniti sarzaj komentara "))
             {
                 Console.WriteLine("Odustali ste od mijenjanja sadrzaja komentara");
                 return;
             }
 
-            if(Status.Failed == commentService.UpdateComment(comment, newContent))
+            if (Status.Failed == commentService.UpdateComment(comment, newContent))
             {
                 Console.WriteLine("Pogreska priliko azuriranja komentara");
                 return;

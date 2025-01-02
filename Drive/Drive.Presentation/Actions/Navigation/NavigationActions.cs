@@ -4,7 +4,7 @@ using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
 using Drive.Presentation.Interfaces;
 using File = Drive.Data.Entities.Models.File;
-using Drive.Presentation.Actions;
+using Drive.Presentation.Actions.Command;
 
 public class NavigationActions : INavigationAction
 {
@@ -52,7 +52,7 @@ public class DeleteFolderAction : INavigationAction
         string parts = $"izbrisi mapu '{folderName}'";
 
         CommandAction.GetDeleteFolderFile(parts.Split(" "), user, folderService, fileService, userService, userFolders, commentService, sharedItemService);
-
+        ReadInput.WaitForUser();
     }
 }
 
@@ -70,7 +70,7 @@ public class DeleteFileAction : INavigationAction
         string parts = $"izbrisi datoteku '{fileName}'";
 
         CommandAction.GetDeleteFolderFile(parts.Split(" "), user, folderService, fileService, userService, userFolders, commentService, sharedItemService);
-
+        ReadInput.WaitForUser();
     }
 }
 
@@ -127,6 +127,7 @@ public class EditFile : INavigationAction
         string parts = $"uredi datoteku '{fileName}'";
 
         CommandAction.GetEditFile(parts.Split(" "), user, fileService, userService);
+        ReadInput.WaitForUser();
     }
 }
 
@@ -146,6 +147,7 @@ public class RenameFolder : INavigationAction
         string parts = $"promijeni naziv mape '{folderName}' u '{newFolderName}'";
 
         CommandAction.GetRename(parts.Split(" "), userFolders, folderService, fileService, userService, user);
+        ReadInput.WaitForUser();
     }
 }
 
@@ -167,6 +169,7 @@ public class RenameFile : INavigationAction
         string parts = $"promijeni naziv datoteke '{fileName}' u '{newFileName}'";
 
         CommandAction.GetRename(parts.Split(" "), userFolders, folderService, fileService, userService, user);
+        ReadInput.WaitForUser();
     }
 }
 
@@ -210,6 +213,7 @@ public class StartSharingFolderAction : INavigationAction
         string parts = $"podijeli mapu s '{email}'";
 
         CommandAction.GetStartSharing(parts.Split(" "), userFolders, folderService, fileService, userService, sharedItemService, user, commentService);
+        ReadInput.WaitForUser();
     }
 }
 
@@ -227,6 +231,7 @@ public class StartSharingFileAction : INavigationAction
         string parts = $"podijeli datoteku s '{email}'";
 
         CommandAction.GetStartSharing(parts.Split(" "), userFolders, folderService, fileService, userService, sharedItemService, user, commentService);
+        ReadInput.WaitForUser();
     }
 }
 public class StopSharingFolderAction : INavigationAction
@@ -243,6 +248,7 @@ public class StopSharingFolderAction : INavigationAction
         string parts = $"prestani dijeliti mapu s '{email}'";
 
         CommandAction.GetStopSharing(parts.Split(" "), userFolders, folderService, fileService, userService, sharedItemService, user, commentService);
+        ReadInput.WaitForUser();
     }
 }
 
@@ -260,5 +266,6 @@ public class StopSharingFileAction : INavigationAction
         string parts = $"prestani dijeliti datoteku s '{email}'";
 
         CommandAction.GetStopSharing(parts.Split(" "), userFolders, folderService, fileService, userService, sharedItemService, user, commentService);
+        ReadInput.WaitForUser();
     }
 }

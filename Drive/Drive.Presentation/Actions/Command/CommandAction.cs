@@ -2,13 +2,14 @@
 using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
 using Drive.Domain.Services;
+using Drive.Presentation.Actions.Disk;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
 using File = Drive.Data.Entities.Models.File;
 
 
-namespace Drive.Presentation.Actions
+namespace Drive.Presentation.Actions.Command
 {
     public class CommandAction
     {
@@ -57,7 +58,7 @@ namespace Drive.Presentation.Actions
                 }
             }
         }
-        private void NavigationMode(User user, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IUserService _userService, IFileService _fileService, IFolderService _folderService, ICommentService _commentService, 
+        private void NavigationMode(User user, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IUserService _userService, IFileService _fileService, IFolderService _folderService, ICommentService _commentService,
             ISharedItemService _sharedItemService)
         {
             Console.Clear();
@@ -74,9 +75,9 @@ namespace Drive.Presentation.Actions
                 int totalDashes = Console.WindowWidth - text.Length - 2;
                 int leftDashes = totalDashes / 2;
                 int rightDashes = totalDashes - leftDashes;
-                
+
                 string centeredText = new string('-', leftDashes) + " " + text + " " + new string('-', rightDashes);
-                
+
                 Console.WriteLine($"\n{centeredText}\n");
 
                 for (int i = 0; i < actions.Count; i++)
@@ -94,10 +95,10 @@ namespace Drive.Presentation.Actions
                 var key = Console.ReadKey(true);
 
                 if (key.Key == ConsoleKey.UpArrow)
-                    selectedIndex = (selectedIndex == 0) ? actions.Count - 1 : selectedIndex - 1;
-                
+                    selectedIndex = selectedIndex == 0 ? actions.Count - 1 : selectedIndex - 1;
+
                 else if (key.Key == ConsoleKey.DownArrow)
-                    selectedIndex = (selectedIndex == actions.Count - 1) ? 0 : selectedIndex + 1;
+                    selectedIndex = selectedIndex == actions.Count - 1 ? 0 : selectedIndex + 1;
 
                 else if (key.Key == ConsoleKey.Enter)
                 {
@@ -122,7 +123,7 @@ namespace Drive.Presentation.Actions
         }
 
 
-        private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService, 
+        private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService,
             ISharedItemService _sharedItemService, IEnumerable<File> userFiles, ICommentService _commentService)
         {
             Console.Clear();
@@ -176,7 +177,7 @@ namespace Drive.Presentation.Actions
         }
         private static void CreateFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService)
         {
-            if (parts.Length < 3 || (parts[1] != "mapu" && parts[1] != "datoteku"))
+            if (parts.Length < 3 || parts[1] != "mapu" && parts[1] != "datoteku")
             {
                 Console.WriteLine("Ne ispravna komanda za stvaranje nove mape  datoteke. Za pomoc unesite help");
                 return;
@@ -209,7 +210,7 @@ namespace Drive.Presentation.Actions
             if (typeof(T) == typeof(Folder))
                 nameAlreadyExist = _folderService.GetFolderByName(name, user) != null ? true : false;
 
-            else if(typeof(T) == typeof(File))
+            else if (typeof(T) == typeof(File))
                 nameAlreadyExist = _fileService.GetFileByName(name, user) != null ? true : false;
 
             while (nameAlreadyExist)
@@ -224,9 +225,9 @@ namespace Drive.Presentation.Actions
                     return;
                 }
 
-                if(typeof(T) == typeof(Folder))
+                if (typeof(T) == typeof(Folder))
                     nameAlreadyExist = _folderService.GetFolderByName(newName, user) != null;
-                else if(typeof(T) == typeof(File))
+                else if (typeof(T) == typeof(File))
                     nameAlreadyExist = _fileService.GetFileByName(newName, user) != null;
 
                 name = newName;
@@ -237,12 +238,12 @@ namespace Drive.Presentation.Actions
 
             else if (typeof(T) == typeof(File))
                 Helper.Create<File>(name, currentFolder, user, _folderService, _fileService);
-            
+
         }
 
         private static void ChangeWorkingDirectory(string[] parts, IEnumerable<Folder> userFolders, IUserService _userService, User user, ICommentService _commentService)
         {
-            if (parts.Length < 4 || parts[1] != "u" || (parts[2] != "mapu" && parts[2] != "datoteku"))
+            if (parts.Length < 4 || parts[1] != "u" || parts[2] != "mapu" && parts[2] != "datoteku")
             {
                 Console.WriteLine("Pogresan oblik komande za promjenu trenutne mape. Za pomoc unesite help");
                 return;
@@ -309,10 +310,10 @@ namespace Drive.Presentation.Actions
 
             ReadInput.WaitForUser();
         }
-        private static void DeleteFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService, IUserService _userService, IEnumerable<Folder> userFolders, 
+        private static void DeleteFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService, IUserService _userService, IEnumerable<Folder> userFolders,
             ICommentService _commentService, ISharedItemService _sharedItemService)
         {
-            if (parts.Length < 3 || (parts[1] != "mapu" && parts[1] != "datoteku"))
+            if (parts.Length < 3 || parts[1] != "mapu" && parts[1] != "datoteku")
             {
                 Console.WriteLine("Pogresan oblik komande za promjenu trenutne mape. Za pomoc unesite help");
                 return;
@@ -426,25 +427,25 @@ namespace Drive.Presentation.Actions
 
 
             if (parts[1] == "mapu")
-            {   
+            {
                 SharedItemsProcesses.StartSharingFolder(user, userToShare, _folderService, _sharedItemService, _userService, _fileService, userFolders, _commentService);
                 return;
             }
 
             SharedItemsProcesses.StartSharingFile(user, userToShare, _sharedItemService, _userService);
         }
-        
-        private static void StopSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, 
+
+        private static void StopSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService,
             ISharedItemService _sharedItemService, User user, ICommentService _commentService)
         {
-            if(!Helper.IsValidCommandStopSharing(parts))
+            if (!Helper.IsValidCommandStopSharing(parts))
             {
                 Console.WriteLine("Ne ispravan oblik komande 'Prestani dijeliti'. Za pomoc unesite help");
                 return;
             }
 
             var userToShare = Helper.EmailUserValid(parts, _userService);
-            if(userToShare == null)
+            if (userToShare == null)
                 return;
 
 
@@ -455,7 +456,7 @@ namespace Drive.Presentation.Actions
             }
 
             SharedItemsProcesses.HandleStopSharingFile(user, userToShare, _fileService, _sharedItemService, _commentService);
-            
+
         }
         public static void GetDeleteFolderFile(string[] parts, User user, IFolderService _folderService, IFileService _fileService, IUserService _userService, IEnumerable<Folder> userFolders,
             ICommentService _commentService, ISharedItemService _sharedItemService)

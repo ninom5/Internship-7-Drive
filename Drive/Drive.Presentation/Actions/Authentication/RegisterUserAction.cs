@@ -5,7 +5,7 @@ using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
 
 
-namespace Drive.Presentation.Actions
+namespace Drive.Presentation.Actions.Authentication
 {
     public class RegisterUserAction : IAction
     {

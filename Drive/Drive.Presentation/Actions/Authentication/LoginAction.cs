@@ -3,7 +3,7 @@ using Drive.Presentation.Interfaces;
 using Drive.Presentation.Menus;
 using Drive.Presentation.Reader;
 
-namespace Drive.Presentation.Actions
+namespace Drive.Presentation.Actions.Authentication
 {
     public class LoginAction : IAction
     {
@@ -35,13 +35,13 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            if(!_userService.EmailExists(userEmail))
+            if (!_userService.EmailExists(userEmail))
             {
-                Console.WriteLine("Korisnik s unesenim mailom nije registriran"); 
+                Console.WriteLine("Korisnik s unesenim mailom nije registriran");
                 return;
             }
 
-            if(!ReadInput.CheckUserPassword(userEmail, _userService))
+            if (!ReadInput.CheckUserPassword(userEmail, _userService))
             {
                 Console.WriteLine($"Unesena sifra nije ispravna. Povratak na glavni izbornik...");
 
@@ -60,7 +60,7 @@ namespace Drive.Presentation.Actions
             Console.WriteLine("\nUspjesno ste prijavljeni\n Preusmjeravanje na vaš izbornik...");
 
             var user = _userService.GetUser(userEmail);
-            if(user == null)
+            if (user == null)
             {
                 Console.WriteLine("Pogreska prilikom logiranja");
                 return;
@@ -77,7 +77,7 @@ namespace Drive.Presentation.Actions
         }
         private static void OnTimerElapsed(object state)
         {
-            if (failedPasswordCountdown > 0) 
+            if (failedPasswordCountdown > 0)
             {
                 failedPasswordCountdown--;
                 Console.Clear();

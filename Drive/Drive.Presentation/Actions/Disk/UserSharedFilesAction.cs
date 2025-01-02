@@ -1,11 +1,12 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
+using Drive.Presentation.Actions.Command;
 using Drive.Presentation.Interfaces;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
 
 
-namespace Drive.Presentation.Actions
+namespace Drive.Presentation.Actions.Disk
 {
     public class UserSharedFilesAction : IAction
     {
