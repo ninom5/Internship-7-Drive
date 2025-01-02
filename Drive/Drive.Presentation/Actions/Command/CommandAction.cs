@@ -24,7 +24,7 @@ namespace Drive.Presentation.Actions.Command
             Console.Write("help");
             Console.ResetColor();
 
-            Console.WriteLine("ili navigacija za upravljanje sa strelicama");
+            Console.WriteLine(" ili navigacija za upravljanje sa strelicama");
 
             string text = "COMMAND MODE";
             int totalDashes = Console.WindowWidth - text.Length - 2;

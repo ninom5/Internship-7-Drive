@@ -10,13 +10,5 @@ namespace Drive.Domain.Repositories
         {
             _dbContext = dbContext;
         }
-
-        //public Status Add(T entity)
-        //{
-        //    _dbContext.Set<T>().Add(entity);
-        //    _dbContext.SaveChanges();
-
-        //    return Status.Success;
-        //}
     }
 }

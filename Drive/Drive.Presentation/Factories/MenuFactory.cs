@@ -28,9 +28,5 @@ namespace Drive.Presentation.Factories
                 "LoginMenu" => new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService, _commentService)
             };
         }
-        //public static IMenu CreateLoginMenu(User user)
-        //{
-        //    return new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService, _commentService);
-        //}
     }
 }

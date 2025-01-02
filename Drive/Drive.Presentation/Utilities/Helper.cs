@@ -1,7 +1,6 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
 using Drive.Presentation.Reader;
-using System.Text;
 using System.Text.RegularExpressions;
 using File = Drive.Data.Entities.Models.File;
 

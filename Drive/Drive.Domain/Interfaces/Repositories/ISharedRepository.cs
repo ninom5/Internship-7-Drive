@@ -1,6 +1,4 @@
 ﻿using Drive.Data.Entities.Models;
-using Drive.Data.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace Drive.Domain.Interfaces.Repositories
 {
