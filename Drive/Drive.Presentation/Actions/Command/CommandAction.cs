@@ -3,6 +3,7 @@ using Drive.Domain.Interfaces.Services;
 using Drive.Domain.Repositories;
 using Drive.Domain.Services;
 using Drive.Presentation.Actions.Disk;
+using Drive.Presentation.Actions.Navigation;
 using Drive.Presentation.Menus.SubMenu;
 using Drive.Presentation.Reader;
 using Drive.Presentation.Utilities;
@@ -23,6 +24,8 @@ namespace Drive.Presentation.Actions.Command
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("help");
             Console.ResetColor();
+
+            Console.WriteLine("ili navigacija za upravljanje sa strelicama");
 
             string text = "COMMAND MODE";
             int totalDashes = Console.WindowWidth - text.Length - 2;
@@ -49,7 +52,7 @@ namespace Drive.Presentation.Actions.Command
                     break;
 
                 if (command == "navigacija")
-                    NavigationMode(user, userFolders, userFiles, _userService, _fileService, _folderService, _commentService, _sharedItemService);
+                    NavigationInput.NavigationMode(user, userFolders, userFiles, _userService, _fileService, _folderService, _commentService, _sharedItemService);
                 else
                 {
                     CheckCommand(command, user, _folderService, _fileService, userFolders, _userService, _sharedItemService, userFiles, _commentService);
@@ -58,69 +61,7 @@ namespace Drive.Presentation.Actions.Command
                 }
             }
         }
-        private void NavigationMode(User user, IEnumerable<Folder> userFolders, IEnumerable<File> userFiles, IUserService _userService, IFileService _fileService, IFolderService _folderService, ICommentService _commentService,
-            ISharedItemService _sharedItemService)
-        {
-            Console.Clear();
-            int selectedIndex = 0;
-
-            var actionFactory = new NavigationActionFactory();
-            var actions = actionFactory.GetActionNames();
-
-            while (true)
-            {
-                Console.Clear();
-                string text = "NAVIGATION MODE";
-
-                int totalDashes = Console.WindowWidth - text.Length - 2;
-                int leftDashes = totalDashes / 2;
-                int rightDashes = totalDashes - leftDashes;
-
-                string centeredText = new string('-', leftDashes) + " " + text + " " + new string('-', rightDashes);
-
-                Console.WriteLine($"\n{centeredText}\n");
-
-                for (int i = 0; i < actions.Count; i++)
-                {
-                    if (i == selectedIndex)
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
-                    else
-                        Console.BackgroundColor = ConsoleColor.Black;
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(actions[i]);
-                    Console.ResetColor();
-                }
-
-                var key = Console.ReadKey(true);
-
-                if (key.Key == ConsoleKey.UpArrow)
-                    selectedIndex = selectedIndex == 0 ? actions.Count - 1 : selectedIndex - 1;
-
-                else if (key.Key == ConsoleKey.DownArrow)
-                    selectedIndex = selectedIndex == actions.Count - 1 ? 0 : selectedIndex + 1;
-
-                else if (key.Key == ConsoleKey.Enter)
-                {
-                    var selectedActionName = actions[selectedIndex];
-                    var selectedAction = actionFactory.GetAction(selectedActionName);
-
-                    if (selectedAction != null)
-                    {
-                        Console.Clear();
-                        selectedAction.Execute(user, userFolders, userFiles, _userService, _fileService, _folderService, _commentService, _sharedItemService);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Problem s odabirom akcije. Pokusajte ponovo");
-                    }
-                }
-                else if (key.Key == ConsoleKey.Escape)
-                {
-                    break;
-                }
-            }
-        }
+       
 
 
         private static void CheckCommand(string command, User user, IFolderService _folderService, IFileService _fileService, IEnumerable<Folder> userFolders, IUserService _userService,
@@ -421,7 +362,7 @@ namespace Drive.Presentation.Actions.Command
         private static void StartSharing(string[] parts, IEnumerable<Folder> userFolders, IFolderService _folderService, IFileService _fileService, IUserService _userService, ISharedItemService _sharedItemService, User user,
             ICommentService _commentService)
         {
-            var userToShare = Helper.ValidStartShareingCommandAndUser(parts, _userService, user);
+            var userToShare = Helper.ValidStartSharingCommandAndUser(parts, _userService, user);
             if (userToShare == null)
                 return;
 

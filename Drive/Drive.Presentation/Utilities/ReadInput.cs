@@ -1,11 +1,107 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Interfaces.Services;
+using Drive.Domain.Services;
 using Drive.Presentation.Utilities;
+using System.Text;
 
 namespace Drive.Presentation.Reader
 {
     public static class ReadInput
     {
+        public static bool ConfirmPassword(string password)
+        {
+            while (true)
+            {
+                Console.WriteLine("Potvrdite lozinku:");
+                var confirmedPassword = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(confirmedPassword))
+                {
+                    Console.WriteLine("Odustali ste od potvrde lozinke. Povratak...");
+                    return false;
+                }
+
+                if (confirmedPassword != password)
+                {
+                    Console.WriteLine("Lozinke se ne podudaraju, pokušajte ponovno; za odustajanje ostavite prazno");
+                    continue;
+                }
+
+                return true;
+            }
+        }
+        public static string GetName(string prompt)
+        {
+            Console.WriteLine(prompt + ". Prazno za odustat");
+
+            var name = Console.ReadLine();
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("ne moze biti prazno. Povratak...");
+                return "";
+            }
+
+            return name;
+        }
+        public static User FindUser(IUserService _userService, string email)
+        {
+            while (true)
+            {
+                if (!_userService.EmailExists(email))
+                {
+                    Console.WriteLine("Uneseni email ne postoji. Unesite novi email ili ostavite prazno za odustat");
+                    email = Console.ReadLine()?.Trim();
+
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        Console.WriteLine("Odustali ste od unosa emaila.");
+                        return null;
+                    }
+
+                    continue;
+                }
+
+                var userToShare = _userService.GetUser(email);
+
+                if (userToShare == null)
+                {
+                    Console.WriteLine("Uneseni korisnik nije pronaden. Unesite novi email ili ostavite prazno za odustat");
+                    email = Console.ReadLine()?.Trim();
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        Console.WriteLine("Odustali ste od unosa emaila.");
+                        return null;
+                    }
+
+                    continue;
+                }
+
+                return userToShare;
+            }
+        }
+        public static string ReadFileContent()
+        {
+            Console.WriteLine("Unesite sadrzaj datoteke");
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while (true)
+            {
+                var lineOfContent = Console.ReadLine();
+                if (string.IsNullOrEmpty(lineOfContent))
+                    break;
+
+                stringBuilder.AppendLine(lineOfContent);
+            }
+
+            var content = stringBuilder.ToString();
+            if (string.IsNullOrEmpty(content))
+            {
+                Console.WriteLine("Sadrzaj ne moze biti prazan. Povratak...");
+                return "";
+            }
+
+            return content;
+        }
         public static int ReadNumberChoice(string prompt, int min, int max)
         {
             do
@@ -84,7 +180,7 @@ namespace Drive.Presentation.Reader
                 }
 
 
-                if (!Helper.ConfirmPassword(password))
+                if (!ReadInput.ConfirmPassword(password))
                     return null;
 
                 return password;

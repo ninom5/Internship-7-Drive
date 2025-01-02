@@ -20,6 +20,7 @@ namespace Drive.Data.Seed
                         Name = "Ante",
                         Surname = "Antic",
                         Email = "ante@gmail.com",
+                        Password = "ante123",
                         HashedPassword = Hash("ante123"),
                         CreatedAt = DateTime.UtcNow
                     },
@@ -29,6 +30,7 @@ namespace Drive.Data.Seed
                         Name = "Mate",
                         Surname = "Matic",
                         Email = "mate@gmail.com",
+                        Password = "mate123",
                         HashedPassword = Hash("mate123"),
                         CreatedAt = DateTime.UtcNow
                     },
@@ -38,6 +40,7 @@ namespace Drive.Data.Seed
                         Name = "Jon",
                         Surname = "Jones",
                         Email = "jonjones@gmail.com",
+                        Password = "jonjones123",
                         HashedPassword = Hash("jonjones123"),
                         CreatedAt = DateTime.UtcNow
                     },
@@ -47,9 +50,20 @@ namespace Drive.Data.Seed
                         Name = "Steph",
                         Surname = "Curry",
                         Email = "curry@gmail.com",
+                        Password = "curry123",
                         HashedPassword = Hash("curry123"),
                         CreatedAt = DateTime.UtcNow
-                    }
+                    },
+                     new User
+                    {
+                        Id = 5,
+                        Name = "Luka",
+                        Surname = "Dončić",
+                        Email = "luka@basketball.com",
+                        Password = "luka123",
+                        HashedPassword = Hash("luka123"),
+                        CreatedAt = DateTime.UtcNow
+                    },
                 });
 
 
@@ -136,6 +150,30 @@ namespace Drive.Data.Seed
                         OwnerId = 4,
                         ParentFolderId = 4,
                         CreatedAt = DateTime.UtcNow
+                    },
+                    new Folder
+                    {
+                        Id = 11,
+                        Name = "Root Folder",
+                        OwnerId = 5,
+                        ParentFolderId = null,
+                        CreatedAt = DateTime.UtcNow
+                    },
+                     new Folder
+                    {
+                        Id = 12,
+                        Name = "Research",
+                        OwnerId = 5,
+                        ParentFolderId = 11,
+                        CreatedAt = DateTime.UtcNow
+                    },
+                    new Folder
+                    {
+                        Id = 13,
+                        Name = "Personal",
+                        OwnerId = 5,
+                        ParentFolderId = 11,
+                        CreatedAt = DateTime.UtcNow
                     }
                 });
 
@@ -150,7 +188,8 @@ namespace Drive.Data.Seed
                         Content = "insert into Users(id) Values(1)",
                         FolderId = 1,
                         OwnerId = 1,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -159,7 +198,8 @@ namespace Drive.Data.Seed
                         Content = "public static class{\nint n = 1;\n}",
                         FolderId = 5,
                         OwnerId = 1,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -168,7 +208,8 @@ namespace Drive.Data.Seed
                         Content = "Create table",
                         FolderId = 6,
                         OwnerId = 1,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -177,7 +218,8 @@ namespace Drive.Data.Seed
                         Content = "Create table",
                         FolderId = 6,
                         OwnerId = 1,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -186,7 +228,8 @@ namespace Drive.Data.Seed
                         Content = "Bubble sort",
                         FolderId = 7,
                         OwnerId = 1,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -195,7 +238,8 @@ namespace Drive.Data.Seed
                         Content = "tree node",
                         FolderId = 8,
                         OwnerId = 2,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -204,7 +248,8 @@ namespace Drive.Data.Seed
                         Content = "Bench 3x15 - 100kg\n Deadlifts 2x10",
                         FolderId = 9,
                         OwnerId = 3,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     },
                     new File
                     {
@@ -213,7 +258,28 @@ namespace Drive.Data.Seed
                         Content = "30min",
                         FolderId = 9,
                         OwnerId = 3,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
+                    },
+                    new File
+                    {
+                        Id = 9,
+                        Name = "ResearchPapers.pdf",
+                        Content = "Research on AI and Data Structures",
+                        FolderId = 12,
+                        OwnerId = 5,
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
+                    },
+                    new File
+                    {
+                        Id = 10,
+                        Name = "PersonalNotes.txt",
+                        Content = "Important personal notes",
+                        FolderId = 13,
+                        OwnerId = 5,
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     }
                 });
 
@@ -238,7 +304,7 @@ namespace Drive.Data.Seed
                         SharedWithId = 2,
                         SharedById = 1,
                         SharedAt = DateTime.UtcNow
-                    }
+                    },
                 });
 
 
@@ -250,16 +316,36 @@ namespace Drive.Data.Seed
                         Id = 1,
                         FileId = 1,
                         UserId = 1,
-                        Content = "lose",
-                        CreatedAt = DateTime.UtcNow
+                        Content = "The SQL script looks great, but I think we could optimize it a bit for larger datasets",
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     },
                     new Comment
                     {
                         Id = 2,
                         FileId = 3,
                         UserId = 2,
-                        Content = "A?",
-                        CreatedAt = DateTime.UtcNow
+                        Content = "The database structure is good, but can you clarify the indexing strategy used here?",
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
+                    },
+                    new Comment
+                    {
+                        Id = 3,
+                        FileId = 9,
+                        UserId = 5,
+                        Content = "This is a great file!",
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
+                    },
+                    new Comment
+                    {
+                        Id = 4,
+                        FileId = 10,
+                        UserId = 5,
+                        Content = "I like the projections in this file.",
+                        CreatedAt = DateTime.UtcNow,
+                        LastModifiedAt = DateTime.UtcNow
                     }
                 });
         }

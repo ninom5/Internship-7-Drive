@@ -14,7 +14,7 @@ public class NavigationActions : INavigationAction
         ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var fileName = Helper.GetName("unesite naziv datoteke koju zelite stvoriti");
+        var fileName = ReadInput.GetName("unesite naziv datoteke koju zelite stvoriti");
         if (fileName == null) return;
 
         CommandAction.CreateItem<File>(fileName, user, folderService, fileService);
@@ -30,7 +30,7 @@ public class CreateFolderAction : INavigationAction
         ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var folderName = Helper.GetName("unesite naziv mape koju zelite stvoriti");
+        var folderName = ReadInput.GetName("unesite naziv mape koju zelite stvoriti");
         if (folderName == null) return;
 
         CommandAction.CreateItem<Folder>(folderName, user, folderService, fileService);
@@ -46,7 +46,7 @@ public class DeleteFolderAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var folderName = Helper.GetName("unesite naziv mape koju zelite izbrisati"); 
+        var folderName = ReadInput.GetName("unesite naziv mape koju zelite izbrisati"); 
         if (folderName == null) return;
 
         string parts = $"izbrisi mapu '{folderName}'";
@@ -64,7 +64,7 @@ public class DeleteFileAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var fileName = Helper.GetName("unesite naziv datoteke koju zelite izbrisati");
+        var fileName = ReadInput.GetName("unesite naziv datoteke koju zelite izbrisati");
         if (fileName == null) return;
 
         string parts = $"izbrisi datoteku '{fileName}'";
@@ -82,7 +82,7 @@ public class ChangeWorkingDirectory : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var folderName = Helper.GetName("Unesite naziv mape u koju zelite uci");
+        var folderName = ReadInput.GetName("Unesite naziv mape u koju zelite uci");
         if (folderName == null) return;
 
         string parts = $"udi u mapu '{folderName}'";
@@ -101,7 +101,7 @@ public class EnterFile : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var fileName = Helper.GetName("Unesite naziv datoteke u koju zelite uci");
+        var fileName = ReadInput.GetName("Unesite naziv datoteke u koju zelite uci");
         if (fileName == null) return;
 
         string parts = $"udi u datoteku '{fileName}'";
@@ -121,7 +121,7 @@ public class EditFile : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var fileName = Helper.GetName("Unesite naziv datoteke koju zelite preimenovati");
+        var fileName = ReadInput.GetName("Unesite naziv datoteke koju zelite preimenovati");
         if (fileName == null) return;
 
         string parts = $"uredi datoteku '{fileName}'";
@@ -139,10 +139,10 @@ public class RenameFolder : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var folderName = Helper.GetName("unesite naziv mape koje zelite preimenovat");
+        var folderName = ReadInput.GetName("unesite naziv mape koje zelite preimenovat");
         if (folderName == null) return;
 
-        var newFolderName = Helper.GetName("unesite naziv nove mape");
+        var newFolderName = ReadInput.GetName("unesite naziv nove mape");
 
         string parts = $"promijeni naziv mape '{folderName}' u '{newFolderName}'";
 
@@ -160,10 +160,10 @@ public class RenameFile : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var fileName = Helper.GetName("unesite naziv datoteke koju zelite preimenovat");
+        var fileName = ReadInput.GetName("unesite naziv datoteke koju zelite preimenovat");
         if (fileName == null) return;
 
-        var newFileName = Helper.GetName("unesite novi nazic datoteke");
+        var newFileName = ReadInput.GetName("unesite novi nazic datoteke");
         if(newFileName == null) return;
 
         string parts = $"promijeni naziv datoteke '{fileName}' u '{newFileName}'";
@@ -207,7 +207,7 @@ public class StartSharingFolderAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var email = Helper.GetName("unesite email korisnika s kojim zelite podijeliti mapu");
+        var email = ReadInput.GetName("unesite email korisnika s kojim zelite podijeliti mapu");
         if (email == null) return;
 
         string parts = $"podijeli mapu s '{email}'";
@@ -225,7 +225,7 @@ public class StartSharingFileAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var email = Helper.GetName("unesite email korisnika s kojim zelite podijeliti datoteku");
+        var email = ReadInput.GetName("unesite email korisnika s kojim zelite podijeliti datoteku");
         if (email == null) return;
 
         string parts = $"podijeli datoteku s '{email}'";
@@ -242,7 +242,7 @@ public class StopSharingFolderAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var email = Helper.GetName("unesite email korisnika s kojim zelite prestati dijeliti mapu");
+        var email = ReadInput.GetName("unesite email korisnika s kojim zelite prestati dijeliti mapu");
         if (email == null) return;
 
         string parts = $"prestani dijeliti mapu s '{email}'";
@@ -260,7 +260,7 @@ public class StopSharingFileAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
-        var email = Helper.GetName("unesite email korisnika s kojim zelite prestati dijeliti datoteku");
+        var email = ReadInput.GetName("unesite email korisnika s kojim zelite prestati dijeliti datoteku");
         if (email == null) return;
 
         string parts = $"prestani dijeliti datoteku s '{email}'";

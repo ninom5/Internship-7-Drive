@@ -10,8 +10,4 @@
     <ProjectReference Include="..\Drive.Data\Drive.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Factories\" />
-  </ItemGroup>
-
 </Project>
