@@ -2,6 +2,7 @@
 using Drive.Domain.Interfaces.Services;
 using Drive.Presentation.Utilities;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Drive.Presentation.Reader
 {
@@ -132,34 +133,9 @@ namespace Drive.Presentation.Reader
                     Console.WriteLine(message);
                     continue;
                 }
-                
 
                 return userInput?.Trim();
             }
-        }
-
-        public static bool IsValidEmail(string email)
-        {
-            if(string.IsNullOrEmpty(email)) return false;
-
-            var parts = email.Split('@');
-            if(parts.Length != 2) return false;
-
-            string part1 = parts[0];
-            string part2 = parts[1];
-
-            if(part1.Length < 1) return false;
-            
-            var dotParts = part2.Split('.');
-            if(dotParts.Length != 2) return false;
-
-            string beforeDot = dotParts[0];
-            string afterDot = dotParts[1];
-
-            if(beforeDot.Length < 2) return false;
-            if(afterDot.Length < 3) return false;
-
-            return true;
         }
 
         public static string ?RegisterPassword(string prompt, Func<string, bool> ?validate = null, string message = "Ne ispravan unos")

@@ -66,10 +66,12 @@ namespace Drive.Presentation.Actions.Authentication
         {
             Console.WriteLine("Unesite podatke za registraciju \nZa odustajanje i povratak na prethodni meni unesite praznu liniju\n");
 
-            string? name = ReadInput.ReadString("Unesite ime", input => input.Trim().Split(" ").Length < 2, "Ime ne moze biti dulje od 1 rijeci...");
+            string? name = ReadInput.ReadString("Unesite ime", input => !input.Any(char.IsDigit) && input.Trim().Split(" ").Length < 2,
+                "Ime ne moze biti dulje od 1 rijeci i ne smije sadrzavati brojeve.");
             if (name == null) return ("", "", "", "");
 
-            string? surname = ReadInput.ReadString("Unesite prezime", input => input.Trim().Split(" ").Length < 2, "Prezime ne moze biti dulje od 1 rijeci...");
+            string? surname = ReadInput.ReadString("Unesite prezime", input => !input.Any(char.IsDigit) && input.Trim().Split(" ").Length < 2,
+                "Prezime ne moze biti dulje od 1 rijeci i ne smije sadrzavati brojeve.");
             if (surname == null) return ("", "", "", "");
 
             string? email = Helper.CollectMail(_userService);

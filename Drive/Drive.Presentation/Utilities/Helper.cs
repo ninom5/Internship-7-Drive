@@ -12,7 +12,8 @@ namespace Drive.Presentation.Utilities
         {
             while (true)
             {
-                var email = ReadInput.ReadString("Unesite email: ", input => ReadInput.IsValidEmail(input), "Email mora biti u formatu [string min 1 chara]@[string min 2 chara].[string min 3 chara]\n");
+                var email = ReadInput.ReadString("Unesite email: ", input => IsValidEmail(input), "Email mora biti u formatu [string min 1 chara]@[string min 2 chara].[string min 3 chara].\n" +
+                    "Moze se sastojati samo od slova i brojeva(i po 1: @ .)");
 
                 if (email == null)
                 {
@@ -314,6 +315,14 @@ namespace Drive.Presentation.Utilities
             Match match = Regex.Match(fullInput, pattern);
 
             return match.Success ? match.Groups[1].Value.Trim() : null;
+        }
+        private static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email)) return false;
+
+            var emailRegex = new Regex(@"^[a-zA-Z0-9]+@[a-zA-Z0-9]{2,}\.[a-zA-Z]{3,}$");
+
+            return emailRegex.IsMatch(email);
         }
         public static bool IsValidCommandStopSharing(string[] parts)
         {
