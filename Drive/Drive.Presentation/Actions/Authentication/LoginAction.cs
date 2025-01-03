@@ -27,6 +27,7 @@ namespace Drive.Presentation.Actions.Authentication
         {
             Console.Clear();
             Console.WriteLine("Unesite podatke za prijavu \nUnesite vas email s kojim ste se registrirali");
+
             var userEmail = Console.ReadLine();
 
             if (string.IsNullOrEmpty(userEmail))
@@ -68,6 +69,7 @@ namespace Drive.Presentation.Actions.Authentication
 
             Program.CurrentUser = user;
             var loginMenu = new LoginMenu(_userService, user, _folderService, _fileService, _sharedItemService, _commentService);
+
             loginMenu.Execute();
         }
 
@@ -80,6 +82,7 @@ namespace Drive.Presentation.Actions.Authentication
             if (failedPasswordCountdown > 0)
             {
                 failedPasswordCountdown--;
+
                 Console.Clear();
                 Console.WriteLine($"Unesena sifra nije ispravna. Povratak na glavni izbornik za: {failedPasswordCountdown}");
             }

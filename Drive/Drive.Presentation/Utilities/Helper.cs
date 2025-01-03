@@ -57,6 +57,7 @@ namespace Drive.Presentation.Utilities
             {
                 FolderProcessesHelper.DisplayFolder(folder);
                 FileProcessesHelper.DisplayFilesForFolder(userFiles, folder.Id);
+
                 Console.WriteLine();
             }
         }

@@ -11,13 +11,9 @@ namespace Drive.Presentation.Utilities
         public static void DisplayFolder(Folder folder)
         {
             if (folder.ParentFolder != null)
-            {
                 Console.WriteLine($"\t- Mapa: {folder.Name}, Id mape: {folder.Id}, Parent folder id: {folder.ParentFolderId}, naziv: {folder.ParentFolder.Name}");
-            }
             else
-            {
                 Console.WriteLine($"\t- Mapa: {folder.Name}, Id mape: {folder.Id}");
-            }
         }
         public static void DeleteFolder(Folder folder, IFolderService folderService)
         {
@@ -44,6 +40,7 @@ namespace Drive.Presentation.Utilities
                 Console.WriteLine($"Pogreska prilikom dijeljenja mape: {folder.Name}");
                 return;
             }
+
             Console.WriteLine($"Mapa: {folder.Name} uspjesno podijeljena s korisnikom: {shareToUser.Name + " " + shareToUser.Email}");
         }
         public static void StopSharingFolder(Folder folder, User user, User shareToUser, ISharedItemService sharedItemService)

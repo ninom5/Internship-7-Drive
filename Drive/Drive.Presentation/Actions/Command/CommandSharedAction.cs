@@ -24,6 +24,7 @@ namespace Drive.Presentation.Actions.Command
             int leftDashes = dashes / 2;
             int rightDashes = dashes - leftDashes;
 
+
             Console.Write("Unesite komandu za upravljanje podijeljenim mapama i datotekama. Za pomoc unesite ");
 
             Console.ForegroundColor = ConsoleColor.Red;
@@ -33,13 +34,19 @@ namespace Drive.Presentation.Actions.Command
 
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(new string('-', leftDashes) + heading + new string('-', rightDashes));
 
                 Console.WriteLine("\n>");
+                Console.ResetColor();
+
                 var command = Console.ReadLine()?.Trim();
 
                 if (string.IsNullOrEmpty(command))
-                    continue;
+                {
+                    Console.Clear();
+                    continue; 
+                }
 
                 if (command == "help")
                 {
@@ -187,23 +194,27 @@ namespace Drive.Presentation.Actions.Command
                     case "dodaj komentar":
                         Console.Clear();
                         CommentAction.CreateComment(file, user, _commentService);
+
                         break;
 
                     case "izbrisi komentar":
                         Console.Clear();
                         CommentAction.ShowComments(file, _commentService);
                         CommentAction.DeleteComment(file.Id, _commentService, user);
+
                         break;
 
                     case "uredi komentar":
                         Console.Clear();
                         CommentAction.ShowComments(file, _commentService);
                         CommentAction.EditComment(file, _commentService, user);
+
                         break;
 
                     default:
                         Console.Clear();
                         Console.WriteLine("Pogresna komanda. Unesite help za pomoc");
+
                         break;
                 }
             }

@@ -22,6 +22,7 @@ namespace Drive.Presentation.Actions
             Program.CurrentUser = null;
 
             var mainMenu = MenuFactory.CreateMenu("MainMenu", null);
+
             mainMenu.Display();
             mainMenu.HandleInput();
         }

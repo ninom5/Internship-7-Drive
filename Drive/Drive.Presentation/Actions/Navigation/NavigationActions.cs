@@ -14,6 +14,7 @@ public class NavigationActions : INavigationAction
         ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+     
         var fileName = ReadInput.GetName("unesite naziv datoteke koju zelite stvoriti");
         if (fileName == null) return;
 
@@ -30,6 +31,7 @@ public class CreateFolderAction : INavigationAction
         ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var folderName = ReadInput.GetName("unesite naziv mape koju zelite stvoriti");
         if (folderName == null) return;
 
@@ -46,6 +48,7 @@ public class DeleteFolderAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var folderName = ReadInput.GetName("unesite naziv mape koju zelite izbrisati"); 
         if (folderName == null) return;
 
@@ -64,6 +67,7 @@ public class DeleteFileAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var fileName = ReadInput.GetName("unesite naziv datoteke koju zelite izbrisati");
         if (fileName == null) return;
 
@@ -82,6 +86,7 @@ public class ChangeWorkingDirectory : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var folderName = ReadInput.GetName("Unesite naziv mape u koju zelite uci");
         if (folderName == null) return;
 
@@ -101,6 +106,7 @@ public class EnterFile : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var fileName = ReadInput.GetName("Unesite naziv datoteke u koju zelite uci");
         if (fileName == null) return;
 
@@ -121,6 +127,7 @@ public class EditFile : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var fileName = ReadInput.GetName("Unesite naziv datoteke koju zelite preimenovati");
         if (fileName == null) return;
 
@@ -139,6 +146,7 @@ public class RenameFolder : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var folderName = ReadInput.GetName("unesite naziv mape koje zelite preimenovat");
         if (folderName == null) return;
 
@@ -160,6 +168,7 @@ public class RenameFile : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var fileName = ReadInput.GetName("unesite naziv datoteke koju zelite preimenovat");
         if (fileName == null) return;
 
@@ -181,6 +190,7 @@ public class CurrentDir : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.WriteLine($"trenunto se nalazite u direktoriju: {CommandAction.CurrentDirectory()}");
+
         ReadInput.WaitForUser();
     }
 }
@@ -194,6 +204,7 @@ public class UserFoldersAndFiles() : INavigationAction
     {
         userFolders = userService.GetFoldersOrFiles<Folder>(user);
         userFiles = userService.GetFoldersOrFiles<File>(user);
+
         Helper.ShowUserFoldersAndFiles(user, userService, userFolders, userFiles);
         ReadInput.WaitForUser();
     }
@@ -207,6 +218,7 @@ public class StartSharingFolderAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var email = ReadInput.GetName("unesite email korisnika s kojim zelite podijeliti mapu");
         if (email == null) return;
 
@@ -225,6 +237,7 @@ public class StartSharingFileAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var email = ReadInput.GetName("unesite email korisnika s kojim zelite podijeliti datoteku");
         if (email == null) return;
 
@@ -242,6 +255,7 @@ public class StopSharingFolderAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var email = ReadInput.GetName("unesite email korisnika s kojim zelite prestati dijeliti mapu");
         if (email == null) return;
 
@@ -260,6 +274,7 @@ public class StopSharingFileAction : INavigationAction
          ICommentService commentService, ISharedItemService sharedItemService)
     {
         Console.Clear();
+
         var email = ReadInput.GetName("unesite email korisnika s kojim zelite prestati dijeliti datoteku");
         if (email == null) return;
 

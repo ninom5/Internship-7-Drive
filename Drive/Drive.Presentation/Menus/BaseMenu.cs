@@ -18,7 +18,11 @@ namespace Drive.Presentation.Menus
         {
             Thread.Sleep(1500);
             Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+
             Console.WriteLine($"------------{Title}------------");
+            Console.ResetColor();
 
             for (int i = 0; i < Options.Count; i++)
             {

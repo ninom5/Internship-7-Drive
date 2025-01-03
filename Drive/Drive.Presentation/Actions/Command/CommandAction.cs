@@ -26,16 +26,26 @@ namespace Drive.Presentation.Actions.Command
 
             Console.WriteLine(" ili navigacija za upravljanje sa strelicama");
 
+
             string text = "COMMAND MODE";
+
             int totalDashes = Console.WindowWidth - text.Length - 2;
             int leftDashes = totalDashes / 2;
             int rightDashes = totalDashes - leftDashes;
+
             string centeredText = new string('-', leftDashes) + " " + text + " " + new string('-', rightDashes);
+
+            
 
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
+
                 Console.WriteLine($"\n{centeredText}" +
                     "\n>");
+
+                Console.ResetColor();
+
                 var command = Console.ReadLine()?.Trim();
 
                 if (string.IsNullOrEmpty(command))
@@ -313,13 +323,7 @@ namespace Drive.Presentation.Actions.Command
             var listOfSharedItems = _sharedItemService.GetAllUserShared(user).Where(item => item.ItemType == Data.Enums.DataType.File && item.Id == fileToDelete.Id);
 
             foreach (var sharedItem in listOfSharedItems)
-            {
                 SharedItemsProcesses.RemoveFileIfShared(fileToDelete, user, sharedItem.SharedWith, _sharedItemService, _commentService);
-                //if (_sharedItemService.Remove(sharedItem) == Domain.Enums.Status.Failed)
-                //    Console.WriteLine($"Pogreska prilikom brisanja podijeljene datoteke: {sharedItem.Id} s korisnikom: {sharedItem.SharedWith}");
-                //else
-                //    Console.WriteLine($"uspjesno brisanja podijeljene datoteke: {sharedItem.Id} s korisnikom: {sharedItem.SharedWith.Name}");
-            }
 
             var deleteFileStatus = _fileService.DeleteFile(fileToDelete);
             if (deleteFileStatus != Domain.Enums.Status.Success)

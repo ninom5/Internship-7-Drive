@@ -18,6 +18,7 @@ namespace Drive.Presentation.Actions.Navigation
             while (true)
             {
                 Console.Clear();
+
                 string text = "NAVIGATION MODE";
 
                 int totalDashes = Console.WindowWidth - text.Length - 2;
@@ -26,12 +27,16 @@ namespace Drive.Presentation.Actions.Navigation
 
                 string centeredText = new string('-', leftDashes) + " " + text + " " + new string('-', rightDashes);
 
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+
                 Console.WriteLine($"\n{centeredText}\n");
+
+                Console.ResetColor();
 
                 for (int i = 0; i < actions.Count; i++)
                 {
                     if (i == selectedIndex)
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                        Console.BackgroundColor = ConsoleColor.DarkGreen;
                     else
                         Console.BackgroundColor = ConsoleColor.Black;
 

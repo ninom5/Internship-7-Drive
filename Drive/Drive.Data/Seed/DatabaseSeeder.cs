@@ -305,6 +305,51 @@ namespace Drive.Data.Seed
                         SharedById = 1,
                         SharedAt = DateTime.UtcNow
                     },
+                    new SharedItem
+                    {
+                        Id = 3,
+                        ItemType = DataType.File,
+                        ItemId = 4,
+                        SharedWithId = 2,
+                        SharedById = 1,
+                        SharedAt = DateTime.UtcNow
+                    },
+                    new SharedItem
+                    {
+                        Id = 4,
+                        ItemType = DataType.File,
+                        ItemId = 6,
+                        SharedWithId = 1,
+                        SharedById = 2,
+                        SharedAt = DateTime.UtcNow
+                    },
+                    new SharedItem
+                    {
+                        Id = 5,
+                        ItemType = DataType.File,
+                        ItemId = 7,
+                        SharedWithId = 4,
+                        SharedById = 3,
+                        SharedAt = DateTime.UtcNow
+                    },
+                    new SharedItem
+                    {
+                        Id = 6,
+                        ItemType = DataType.File,
+                        ItemId = 8,
+                        SharedWithId = 5,
+                        SharedById = 3,
+                        SharedAt = DateTime.UtcNow
+                    },
+                    new SharedItem
+                    {
+                        Id = 7,
+                        ItemType = DataType.File,
+                        ItemId = 9,
+                        SharedWithId = 3,
+                        SharedById = 5,
+                        SharedAt = DateTime.UtcNow
+                    }
                 });
 
 

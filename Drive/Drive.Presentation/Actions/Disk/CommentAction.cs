@@ -147,9 +147,7 @@ namespace Drive.Presentation.Actions.Disk
             {
                 if (comment.User != null)
                 {
-                    string formattedDate = comment.LastModifiedAt.HasValue
-                        ? comment.LastModifiedAt.Value.ToString("dd.MM.yyyy HH:mm")
-                        : "problem s dohvacanjem datuma";
+                    string formattedDate = comment.LastModifiedAt.HasValue ? comment.LastModifiedAt.Value.ToString("dd.MM.yyyy HH:mm") : "problem s dohvacanjem datuma";
 
                     Console.WriteLine(string.Format("{0,-5} | {1,-30} | {2,-20}",
                         comment.Id,
@@ -159,7 +157,7 @@ namespace Drive.Presentation.Actions.Disk
 
                     Console.WriteLine("Sadržaj:");
                     string content = comment.Content;
-                    int lineLength = 1000;//80 
+                    int lineLength = 1000;
 
                     for (int i = 0; i < content.Length; i += lineLength)
                     {
@@ -171,30 +169,6 @@ namespace Drive.Presentation.Actions.Disk
                 }
             }
         }
-
-
-
-        //public static void ShowComments(File file, ICommentService commentService)
-        //{
-        //    Console.Clear();
-
-        //    var commentsForFile = commentService.GetCommentsByFile(file);
-        //    if(!commentsForFile.Any())
-        //    {
-        //        Console.WriteLine("Nema komentara za odabrani file");
-        //        return;
-        //    }
-
-        //    Console.WriteLine("Id - Email - Datum (zadnje promjene) - sadrzaj\n");
-        //    foreach (var comment in commentsForFile)
-        //    {
-        //        if (comment.User != null)
-        //        {
-        //            Console.WriteLine($"\nID: {comment.Id} - Email: {comment.User.Email} - Datum: {comment.LastModifiedAt} \n" +
-        //                $"Sadrzaj: {comment.Content}");
-        //        }
-        //    }
-        //}
 
         public static void CommentCommands(File file, User user, ICommentService _commentService)
         {

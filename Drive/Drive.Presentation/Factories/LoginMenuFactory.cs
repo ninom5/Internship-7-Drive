@@ -18,7 +18,7 @@ namespace Drive.Presentation.Factories
                 "Dijeljeno sa mnom" => new UserSharedFilesAction(userService, loggedUser, sharedItemService, fileService, commentService),
                 "Postavke Profila" => new UserProfileMenu(userService, loggedUser),
                 "Odjava iz profila" => new LogOutAction(userService, folderService),
-                _ => throw new ArgumentException($"Unknown action: {action}")
+                _ => throw new ArgumentException($"Pogreska prilikom kreiranja akcije: {action}")
             };
         }
     }

@@ -10,9 +10,7 @@ namespace Drive.Presentation.Utilities
     {
         public static void DisplayFilesForFolder(IEnumerable<File> files, int folderId)
         {
-            var folderFiles = files
-                .Where(file => file.FolderId == folderId)
-                .OrderBy(file => file.LastModifiedAt);
+            var folderFiles = files.Where(file => file.FolderId == folderId).OrderBy(file => file.LastModifiedAt);
 
             foreach (var file in folderFiles)
             {
@@ -27,6 +25,7 @@ namespace Drive.Presentation.Utilities
                 Console.WriteLine($"pogreska prilikom brisanja datoteke: {file.Name}");
                 return;
             }
+
             Console.WriteLine($"Uspjesno izbrisana datoteka: {file.Name} u mapi: {folder.Name}");
         }
         public static void ShareFile(File file, User user, User shareToUser, ISharedItemService sharedItemService)
@@ -43,6 +42,7 @@ namespace Drive.Presentation.Utilities
                 Console.WriteLine($"Pogreska prilikom dijeljenja datoteke: {file.Name}");
                 return;
             }
+
             Console.WriteLine($"Datoteka: {file.Name} uspjesno podijeljena s korisnikom: {shareToUser.Name}");
         }
 
